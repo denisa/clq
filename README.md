@@ -1,0 +1,2 @@
+# clq
+Changelog query tool
