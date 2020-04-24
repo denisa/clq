@@ -19,8 +19,7 @@ jobs:
       run: make test
     - name: Send coverage
       if: "matrix.platform == 'ubuntu-latest'"
-      env:
-        COVERALLS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: |
-        GO111MODULE=off go get github.com/mattn/goveralls
-        $(go env GOPATH)/bin/goveralls -coverprofile=coverage.out -service=github
+      uses: coverallsapp/github-action@master
+      with:
+        github-token: ${{ secrets.coveralls_io }}
+        path-to-lcov: coverage.out
