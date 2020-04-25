@@ -2,8 +2,10 @@
 Changelog query tool
 
 ![test](https://github.com/denisa/clq/workflows/test/badge.svg)
+[![Coverage Status](https://coveralls.io/repos/github/denisa/clq/badge.svg?branch=master)](https://coveralls.io/github/denisa/clq?branch=master)
 
 # Supported grammar
+```
 CHANGELOG  = TITLE [ UNRELEASED ] { RELEASED | YANKED  }
 TITLE           = "#" inline content LINE_ENDING { markdown paragraph }
 UNRELEASED      = UNRELEASED_HEAD { CHANGES }
@@ -22,6 +24,7 @@ SECURITY        = "### Security" LINE_ENDING
 CHANGE_DESC     = "- " inline content LINE_ENDING
 ISO_DATE        = YYYY "-" MM "-" DD
 LINE_ENDING     = "U+000A" | "U+000D" | "U+000DU+000A"
+```
 Note:
 - The latest version comes first.
 - Definition of SEMVER at https://semver.org
