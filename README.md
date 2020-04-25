@@ -1,6 +1,8 @@
 # clq
 Changelog query tool
 
+![test](https://github.com/denisa/clq/workflows/test/badge.svg)
+
 # Supported grammar
 CHANGELOG  = TITLE [ UNRELEASED ] { RELEASED | YANKED  }
 TITLE           = "#" inline content LINE_ENDING { markdown paragraph }
