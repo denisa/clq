@@ -1,0 +1,9 @@
+[
+  { "name": "unreleased_and_yanked.md", "success": 0},
+  { "name": "unreleased_and_yanked.md", "success": 1, "arguments": ["-release"]},
+  { "name": "released_and_yanked.md", "success": 0},
+  { "name": "released_and_yanked.md", "success": 0, "arguments": ["-release"]},
+  { "name": "no_release.md", "success": 1},
+  { "name": "unreleased_and_yanked.md", "success": 2, "arguments": ["-unsupported"]},
+  { "name": "this file does not exist.md", "success": 1}
+]

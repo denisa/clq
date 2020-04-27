@@ -1,29 +1,27 @@
-# clq
-Changelog query tool
+# clq — Changelog validation and query tool
 
 [![test](https://github.com/denisa/clq/workflows/test/badge.svg)](https://github.com/denisa/clq/actions?query=workflow%3Atest+branch%3Amaster)
 [![Coverage Status](https://coveralls.io/repos/github/denisa/clq/badge.svg?branch=master)](https://coveralls.io/github/denisa/clq?branch=master)
 
-# Supported grammar
+# Grammar for supported Changelog
 ```
-CHANGELOG  = TITLE [ UNRELEASED ] { RELEASED | YANKED  }
-TITLE           = "#" inline content LINE_ENDING { markdown paragraph }
-UNRELEASED      = UNRELEASED_HEAD { CHANGES }
-RELEASED        = RELEASED_HEAD { CHANGES }
-YANKED          = YANKED_HEAD { CHANGES }
-UNRELEASED_HEAD = "## [Unreleased]" LINE_ENDING
-RELEASED_HEAD   = "## [" SEMVER "] - " ISO_DATE [ LABEL ] LINE_ENDING
-YANKED_HEAD     = "## " SEMVER " - " ISO_DATE "[YANKED]" LINE_ENDING
-CHANGES         = [ ADDED ] [ CHANGED ] [ DEPRECATED ] [ REMOVED ] [ FIXED ] [ SECURITY ]
-ADDED           = "### Added" LINE_ENDING
-CHANGED         = "### Changed" LINE_ENDING
-DEPRECATED      = "### Deprecated" LINE_ENDING
-REMOVED         = "### Removed" LINE_ENDING
-FIXED           = "### Fixed" LINE_ENDING
-SECURITY        = "### Security" LINE_ENDING
-CHANGE_DESC     = "- " inline content LINE_ENDING
-ISO_DATE        = YYYY "-" MM "-" DD
-LINE_ENDING     = "U+000A" | "U+000D" | "U+000DU+000A"
+CHANGELOG       = TITLE, [ UNRELEASED ], { RELEASED | YANKED  };
+TITLE           = "#", ? inline content ?, LINE-ENDING, { ? markdown paragraph ? };
+UNRELEASED      = UNRELEASED-HEAD, { CHANGES };
+RELEASED        = RELEASED-HEAD, { CHANGES };
+YANKED          = YANKED-HEAD, { CHANGES };
+UNRELEASED-HEAD = "## [Unreleased]", LINE-ENDING;
+RELEASED-HEAD   = "## [", SEMVER, "] - ", ISO-DATE, [ LABEL ], LINE-ENDING;
+YANKED-HEAD     = "## ", SEMVER, " - ", ISO-DATE, "[YANKED]", LINE-ENDING;
+CHANGES         = CHANGE-KINDS, { CHANGE-DESC };
+CHANGE-KINDS    = "### ", ( "Added" | "Changed" | "Deprecated" | "Removed" | "Fixed" | "Security" ), LINE-ENDING;
+CHANGE-DESC     = "- ", ? inline content ?, LINE-ENDING;
+ISO-DATE        = YEAR, "-", MONTH, "-" DAY;
+YEAR            = DIGIT, DIGIT, DIGIT, DIGIT;
+MONTH           = DIGIT, DIGIT;
+DAY             = DIGIT, DIGIT;
+LINE-ENDING     = "U+000A" | "U+000D" | "U+000DU+000A";
+DIGIT           = "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9";
 ```
 Note:
 - The latest version comes first.

@@ -1,6 +1,12 @@
 package main
 
 import (
+	"bufio"
+	"encoding/json"
+	"io"
+	"os"
+	"path/filepath"
+	"strings"
 	"testing"
 )
 
@@ -8,28 +14,47 @@ func TestChangelogShouldSucceed(t *testing.T) {
 	executeClq(t, 0, "CHANGELOG.md")
 }
 
-func TestGoodDevWithDevModeShouldSucceed(t *testing.T) {
-	executeClq(t, 0, "testdata/good_dev.md")
-}
+func TestScenarios(t *testing.T) {
+	type Scenario struct {
+		Name      string
+		Success   int
+		Arguments []string
+	}
+	file, err := os.Open("testdata/scenarios.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer file.Close()
 
-func TestGoodDevWithReleaseModeShouldFail(t *testing.T) {
-	executeClq(t, 1, "-release", "testdata/good_dev.md")
-}
+	dec := json.NewDecoder(bufio.NewReader(file))
 
-func TestGoodRelWithDevModeShouldSucceed(t *testing.T) {
-	executeClq(t, 0, "testdata/good_rel.md")
-}
+	testFiles := allTestFiles(t)
+	var scenarios []Scenario
+	for {
+		if err := dec.Decode(&scenarios); err == io.EOF {
+			break
+		} else if err != nil {
+			t.Fatal(err)
+		}
+		for _, scenario := range scenarios {
+			delete(testFiles, scenario.Name)
+			t.Run(scenario.Name, func(t *testing.T) {
+				args := append(scenario.Arguments, filepath.Join("testdata", scenario.Name))
+				executeClq(t, scenario.Success, args...)
+			})
+		}
+	}
 
-func TestGoodRelWithReleaseModeShouldSucceed(t *testing.T) {
-	executeClq(t, 0, "-release", "testdata/good_rel.md")
-}
-
-func TestBadDevWithDevModeShouldFail(t *testing.T) {
-	executeClq(t, 1, "testdata/bad_dev.md")
-}
-
-func TestBadDevWithReleaseModeShouldFail(t *testing.T) {
-	executeClq(t, 1, "-release", "testdata/bad_dev.md")
+	if len(testFiles) != 0 {
+		var buf strings.Builder
+		for val, _ := range testFiles {
+			if buf.Len() > 0 {
+				buf.WriteString(", ")
+			}
+			buf.WriteString(val)
+		}
+		t.Fatalf("Unused test files: " + buf.String())
+	}
 }
 
 func executeClq(t *testing.T, expected int, arguments ...string) {
@@ -37,5 +62,25 @@ func executeClq(t *testing.T, expected int, arguments ...string) {
 	if expected != actual {
 		t.Errorf("Expected %d but received %v", expected, actual)
 	}
+}
 
+func allTestFiles(t *testing.T) map[string]bool {
+	file, err := os.Open("testdata")
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer file.Close()
+
+	names, err := file.Readdirnames(0)
+	if err != nil {
+		t.Fatal(err)
+	}
+	result := make(map[string]bool)
+	for _, val := range names {
+		if val == "scenarios.json" {
+			continue
+		}
+		result[val] = true
+	}
+	return result
 }
