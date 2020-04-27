@@ -70,11 +70,15 @@ type Renderer struct {
 	text                     strings.Builder
 	h1Released, h1Unreleased bool
 	changes                  changeMap
+	hasChangeDescriptions    bool
+	headers                  stack
 }
 
 func NewRenderer(opts ...Option) renderer.NodeRenderer {
 	r := &Renderer{
-		Config: NewConfig(),
+		Config:  NewConfig(),
+		changes: make(changeMap),
+		headers: NewStack(),
 	}
 
 	for _, opt := range opts {
@@ -107,6 +111,8 @@ func (r *Renderer) visitDocument(w util.BufWriter, source []byte, node ast.Node,
 	if !entering {
 		if !r.h1Released && !r.h1Unreleased {
 			err = errors.New("Validation error: No release defined in changelog")
+		} else if (r.headers.release() || r.headers.change()) && !r.hasChangeDescriptions {
+			err = errors.New("No change descriptions for " + r.headers.asPath())
 		}
 	}
 	return ast.WalkContinue, err
@@ -120,35 +126,51 @@ func (r *Renderer) visitHeading(w util.BufWriter, source []byte, node ast.Node, 
 		n := node.(*ast.Heading)
 		switch n.Level {
 		case 1:
+			r.headers.resetTo(0, r.text.String())
 			err = r.validateDocumentHeading()
 		case 2:
-			err = r.validateReleaseHeading()
+			if (r.headers.release() || r.headers.change()) && !r.hasChangeDescriptions {
+				err = errors.New("No change descriptions for " + r.headers.asPath())
+			} else {
+				r.headers.resetTo(1, r.text.String())
+				err = r.validateReleaseHeading()
+				r.hasChangeDescriptions = false
+			}
 		case 3:
-			err = r.validateChangeHeading()
+			if r.headers.title() {
+				err = errors.New("Changes must be in a release " + r.headers.asPath())
+			} else if r.headers.change() && !r.hasChangeDescriptions {
+				err = errors.New("No change descriptions for " + r.headers.asPath())
+			} else {
+				r.headers.resetTo(2, r.text.String())
+				err = r.validateChangeHeading()
+				r.hasChangeDescriptions = false
+			}
 		}
 	}
 	return ast.WalkContinue, err
 }
+
 func (r *Renderer) validateDocumentHeading() error { return nil }
 
 func (r *Renderer) validateReleaseHeading() error {
 	if matched, _ := regexp.MatchString(`^\[\s*Unreleased\s*\]$`, r.text.String()); matched {
 		if r.Release {
-			return errors.New("Validation error: [Unreleased] not supported in release mode")
+			return errors.New("Validation error: [Unreleased] not supported in release mode " + r.headers.asPath())
 		}
 		if r.h1Unreleased {
-			return errors.New("Validation error: Multiple [Unreleased] not supported")
+			return errors.New("Validation error: Multiple [Unreleased] not supported " + r.headers.asPath())
 		}
 		if r.h1Released {
-			return errors.New("Validation error: [Unreleased] must come before any release")
+			return errors.New("Validation error: [Unreleased] must come before any release " + r.headers.asPath())
 		}
 		r.h1Unreleased = true
-	} else if matched, _ := regexp.MatchString(`^\s+`+semver+`\s+-\s+\d\d\d\d-\d\d-\d\d\s+\[\s*YANKED\s*]?$`, r.text.String()); matched {
+	} else if matched, _ := regexp.MatchString(`^`+semver+`\s+-\s+\d\d\d\d-\d\d-\d\d\s+\[\s*YANKED\s*]?$`, r.text.String()); matched {
 		if !r.h1Released && !r.h1Unreleased {
-			return errors.New("Validation error: Changelog cannot start with a [YANKED] release, insert a release or a [Unreleased] first")
+			return errors.New("Validation error: Changelog cannot start with a [YANKED] release, insert a release or a [Unreleased] first " + r.headers.asPath())
 		}
 	} else if matched, _ := regexp.MatchString(`^\[\s*`+semver+`\s*\]\s+-\s+\d\d\d\d-\d\d-\d\d\s+\[\s*YANKED\s*]$`, r.text.String()); matched {
-		return errors.New("Validation error: the version of a [YANKED] release cannot stand between [...]")
+		return errors.New("Validation error: the version of a [YANKED] release cannot stand between [...] " + r.headers.asPath())
 	} else if matched, _ := regexp.MatchString(`^\[\s*`+semver+`\s*\]\s+-\s+\d\d\d\d-\d\d-\d\d(\s+.+)?$`, r.text.String()); matched {
 		r.h1Released = true
 	}
@@ -161,15 +183,15 @@ var changes = []string{"Added", "Removed", "Changed", "Deprecated", "Fixed", "Se
 func (r *Renderer) validateChangeHeading() error {
 	change := r.text.String()
 	for _, val := range changes {
-		if matched, _ := regexp.MatchString(`^\s+`+val+`$`, change); matched {
+		if matched, _ := regexp.MatchString(`^`+val+`$`, change); matched {
 			if r.changes[val] {
-				return errors.New("Validation error: Multiple headings " + val + " not supported")
+				return errors.New("Validation error: Multiple headings " + val + " not supported " + r.headers.asPath())
 			}
 			r.changes[val] = true
+			return nil
 		}
-		return nil
 	}
-	return errors.New("Validation error: Unknown change headings " + change + " not supported")
+	return errors.New("Validation error: Unknown change headings " + change + " not supported " + r.headers.asPath())
 }
 
 func (r *Renderer) visitBlockquote(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
@@ -202,6 +224,9 @@ func (r *Renderer) visitList(w util.BufWriter, source []byte, node ast.Node, ent
 }
 
 func (r *Renderer) visitListItem(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
+	if r.headers.change() {
+		r.hasChangeDescriptions = true
+	}
 	return ast.WalkContinue, nil
 }
 

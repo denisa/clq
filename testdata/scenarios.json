@@ -1,0 +1,21 @@
+[
+  { "name": "unreleased_and_yanked.md", "success": 0},
+  { "name": "unreleased_and_yanked.md", "success": 1, "arguments": ["-release"]},
+  { "name": "released_and_yanked.md", "success": 0},
+  { "name": "released_and_yanked.md", "success": 0, "arguments": ["-release"]},
+  { "name": "no_release.md", "success": 1},
+  { "name": "unreleased_and_yanked.md", "success": 2, "arguments": ["-unsupported"]},
+  { "name": "this file does not exist.md", "success": 1},
+  { "name": "duplicate_change_headings.md", "success": 1},
+  { "name": "unknown_change_heading.md", "success": 1},
+  { "name": "multiple_unreleased.md", "success": 1},
+  { "name": "unreleased_after_released.md", "success": 1},
+  { "name": "initial_yanked.md", "success": 1},
+  { "name": "misformatted_yanked.md", "success": 1},
+  { "name": "released_without_changes.md", "success": 1},
+  { "name": "released_without_change_description.md", "success": 1},
+  { "name": "last_released_without_changes.md", "success": 1},
+  { "name": "last_released_without_change_description.md", "success": 1},
+  { "name": "change_without_change_description.md", "success": 1},
+  { "name": "change_without_release.md", "success": 1}
+]
