@@ -5,7 +5,6 @@ import (
 	"flag"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"os"
 
 	"github.com/denisa/clq/internal/validator"
@@ -35,11 +34,13 @@ func entryPoint(name string, arguments ...string) int {
 	} else {
 		documents = options.Args()
 	}
+	var hasError bool
 	for _, document := range documents {
 		data, err := readInput(document)
 		if err != nil {
-			log.Println(err)
-			return 1
+			fmt.Fprintln(os.Stderr, err)
+			hasError = true
+			continue
 		}
 
 		validator := validator.NewRenderer(validator.WithRelease(*release))
@@ -54,10 +55,13 @@ func entryPoint(name string, arguments ...string) int {
 		if err := md.Convert(data, &buf); err != nil {
 			fmt.Println("❗️")
 			fmt.Fprintln(os.Stderr, err)
-			return 1
+			hasError = true
+			continue
 		}
 		fmt.Println("✅")
-
+	}
+	if hasError {
+		return 1
 	}
 	return 0
 }
