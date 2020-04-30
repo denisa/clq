@@ -1,4 +1,4 @@
-# Yanked release Wrong Date
+# Heading Release Yanked Wrong Date
 The release date doesn't exist
 ## [Unreleased]
 ### Fixed
