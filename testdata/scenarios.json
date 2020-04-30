@@ -17,5 +17,9 @@
   { "name": "last_released_without_changes.md", "success": 1},
   { "name": "last_released_without_change_description.md", "success": 1},
   { "name": "change_without_change_description.md", "success": 1},
-  { "name": "change_without_release.md", "success": 1}
+  { "name": "change_without_release.md", "success": 1},
+  { "name": "released_wrong_date.md", "success": 1},
+  { "name": "yanked_wrong_date.md", "success": 1},
+  { "name": "yanked_without_changes.md", "success": 1},
+  { "name": "yanked_without_change_description.md", "success": 1}
 ]

@@ -4,6 +4,7 @@ import (
 	"errors"
 	"regexp"
 	"strings"
+	"time"
 
 	"github.com/yuin/goldmark/ast"
 	"github.com/yuin/goldmark/renderer"
@@ -153,6 +154,9 @@ func (r *Renderer) visitHeading(w util.BufWriter, source []byte, node ast.Node, 
 
 func (r *Renderer) validateDocumentHeading() error { return nil }
 
+var yankedRelease = regexp.MustCompile(`^` + semver + `\s+-\s+(?P<date>\d\d\d\d-\d\d-\d\d)\s+\[\s*YANKED\s*]?$`)
+var release = regexp.MustCompile(`^\[\s*` + semver + `\s*\]\s+-\s+(?P<date>\d\d\d\d-\d\d-\d\d)(?:\s+(?P<label>.+))?$`)
+
 func (r *Renderer) validateReleaseHeading() error {
 	if matched, _ := regexp.MatchString(`^\[\s*Unreleased\s*\]$`, r.text.String()); matched {
 		if r.Release {
@@ -165,17 +169,37 @@ func (r *Renderer) validateReleaseHeading() error {
 			return errors.New("Validation error: [Unreleased] must come before any release " + r.headers.asPath())
 		}
 		r.h1Unreleased = true
-	} else if matched, _ := regexp.MatchString(`^`+semver+`\s+-\s+\d\d\d\d-\d\d-\d\d\s+\[\s*YANKED\s*]?$`, r.text.String()); matched {
+	} else if matches := yankedRelease.FindStringSubmatch(r.text.String()); matches != nil {
 		if !r.h1Released && !r.h1Unreleased {
 			return errors.New("Validation error: Changelog cannot start with a [YANKED] release, insert a release or a [Unreleased] first " + r.headers.asPath())
 		}
-	} else if matched, _ := regexp.MatchString(`^\[\s*`+semver+`\s*\]\s+-\s+\d\d\d\d-\d\d-\d\d\s+\[\s*YANKED\s*]$`, r.text.String()); matched {
-		return errors.New("Validation error: the version of a [YANKED] release cannot stand between [...] " + r.headers.asPath())
-	} else if matched, _ := regexp.MatchString(`^\[\s*`+semver+`\s*\]\s+-\s+\d\d\d\d-\d\d-\d\d(\s+.+)?$`, r.text.String()); matched {
+		if _, err := time.Parse("2006-01-02", subexp(yankedRelease, matches, "date")); err != nil {
+			return errors.New("Validation error: Illegal date (" + err.Error() + ")" + r.headers.asPath())
+		}
+	} else if matches := release.FindStringSubmatch(r.text.String()); matches != nil {
+		if matched, _ := regexp.MatchString(`[\s*YANKED\s*]`, subexp(release, matches, "label")); matched {
+			return errors.New("Validation error: the version of a [YANKED] release cannot stand between [...] " + r.headers.asPath())
+		} else if _, err := time.Parse("2006-01-02", subexp(release, matches, "date")); err != nil {
+			return errors.New("Validation error: Illegal date (" + err.Error() + ")" + r.headers.asPath())
+		}
 		r.h1Released = true
 	}
 	r.changes = make(changeMap)
 	return nil
+}
+
+func subexp(exp *regexp.Regexp, matches []string, subexp string) string {
+	for index, name := range exp.SubexpNames() {
+		if index >= len(matches) {
+			continue
+		}
+
+		if name == subexp {
+			return matches[index]
+		}
+	}
+
+	return ""
 }
 
 var changes = []string{"Added", "Removed", "Changed", "Deprecated", "Fixed", "Security"}
