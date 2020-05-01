@@ -16,9 +16,9 @@ func TestChangelogShouldSucceed(t *testing.T) {
 
 func TestScenarios(t *testing.T) {
 	type Scenario struct {
-		Name      string
-		Success   int
-		Arguments []string
+		Name      string   `json:"name"`
+		Success   int      `json:"success"`
+		Arguments []string `json:"arguments,omitempty"`
 	}
 	file, err := os.Open("testdata/scenarios.json")
 	if err != nil {
@@ -51,7 +51,9 @@ func TestScenarios(t *testing.T) {
 			if buf.Len() > 0 {
 				buf.WriteString(", ")
 			}
-			buf.WriteString(val)
+			if val, err := json.Marshal(Scenario{Name: val, Success: 999999}); err == nil {
+				buf.Write(val)
+			}
 		}
 		t.Fatalf("Unused test files: " + buf.String())
 	}
