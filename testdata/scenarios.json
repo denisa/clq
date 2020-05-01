@@ -12,11 +12,11 @@
     "result": 1
   },
   {
-    "name": "heading_release_misformatted_yanked.md",
+    "name": "heading_release_wrong_date.md",
     "result": 1
   },
   {
-    "name": "heading_release_wrong_date.md",
+    "name": "heading_release_yanked_version_brackets.md",
     "result": 1
   },
   {

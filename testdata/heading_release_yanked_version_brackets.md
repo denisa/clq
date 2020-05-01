@@ -1,4 +1,4 @@
-# Heading Release Misformatted Yanked
+# Heading Release Yanked Version brackets
 In a Yanked release, the version is not enclosed in square brackets
 ## [Unreleased]
 ### Fixed
