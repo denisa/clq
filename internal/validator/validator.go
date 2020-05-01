@@ -9,8 +9,6 @@ import (
 	"github.com/yuin/goldmark/util"
 )
 
-const semver string = `(?P<major>0|[1-9]\d*)\.(?P<minor>0|[1-9]\d*)\.(?P<patch>0|[1-9]\d*)(?:-(?P<prerelease>(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+(?P<buildmetadata>[0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?`
-
 // A Config struct has configurations for the Validator renderer.
 type Config struct {
 	Release bool
@@ -189,13 +187,23 @@ func (r *Renderer) validateReleaseHeading() error {
 		if !r.h1Released && !r.h1Unreleased {
 			return errors.New("Validation error: Changelog cannot start with a [YANKED] release, insert a release or a [Unreleased] first " + r.headers.AsPath())
 		}
-		if (r.previousRelease != Release{} && r.previousRelease.date.Before(release.date)) {
-			return errors.New("Validation error: release '" + release.Name() + "' should be older than '" + r.previousRelease.Name() + "'")
+		if r.previousRelease.Name() != "" {
+			if r.previousRelease.date.Before(release.date) {
+				return errors.New("Validation error: release '" + release.Name() + "' should be older than '" + r.previousRelease.Name() + "'")
+			}
+			if r.previousRelease.version.LTE(release.version) {
+				return errors.New("Validation error: release '" + release.Name() + "' should be older than '" + r.previousRelease.Name() + "'")
+			}
 		}
 		r.previousRelease = release
 	} else {
-		if (r.previousRelease != Release{} && r.previousRelease.date.Before(release.date)) {
-			return errors.New("Validation error: release '" + release.Name() + "' should be older than '" + r.previousRelease.Name() + "'")
+		if r.previousRelease.Name() != "" {
+			if r.previousRelease.date.Before(release.date) {
+				return errors.New("Validation error: release '" + release.Name() + "' should be older than '" + r.previousRelease.Name() + "'")
+			}
+			if r.previousRelease.version.LTE(release.version) {
+				return errors.New("Validation error: release '" + release.Name() + "' should be older than '" + r.previousRelease.Name() + "'")
+			}
 		}
 		r.previousRelease = release
 		r.h1Released = true

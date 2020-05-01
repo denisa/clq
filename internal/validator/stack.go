@@ -6,6 +6,8 @@ import (
 	"regexp"
 	"strings"
 	"time"
+
+	"github.com/blang/semver"
 )
 
 const (
@@ -13,6 +15,9 @@ const (
 	releaseHeading
 	changeHeading
 )
+
+const semverPattern string = `(?P<semver>(?P<major>0|[1-9]\d*)\.(?P<minor>0|[1-9]\d*)\.(?P<patch>0|[1-9]\d*)(?:-(?P<prerelease>(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+(?P<buildmetadata>[0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?)`
+const isoDatePattern string = `(?P<date>\d\d\d\d-\d\d-\d\d)`
 
 type Heading interface {
 	Name() string
@@ -44,30 +49,39 @@ type Release struct {
 	name               string
 	unreleased, yanked bool
 	date               time.Time
+	version            semver.Version
 }
 
 func newRelease(s string) (Heading, error) {
 	if matched, _ := regexp.MatchString(`^\[\s*Unreleased\s*\]$`, s); matched {
 		return Release{name: s, unreleased: true}, nil
 	}
-	yankedReleaseRE := regexp.MustCompile(`^` + semver + `\s+-\s+(?P<date>\d\d\d\d-\d\d-\d\d)\s+\[\s*YANKED\s*]?$`)
+	yankedReleaseRE := regexp.MustCompile(`^` + semverPattern + `\s+-\s+` + isoDatePattern + `\s+\[\s*YANKED\s*]?$`)
 	if matches := yankedReleaseRE.FindStringSubmatch(s); matches != nil {
 		date, err := time.Parse("2006-01-02", subexp(yankedReleaseRE, matches, "date"))
 		if err != nil {
 			return nil, errors.New("Validation error: Illegal date (" + err.Error() + ") for " + s)
 		}
-		return Release{name: s, date: date, yanked: true}, nil
+		version, err := semver.Make(subexp(yankedReleaseRE, matches, "semver"))
+		if err != nil {
+			return nil, errors.New("Validation error: Illegal version (" + err.Error() + ") for " + s)
+		}
+		return Release{name: s, date: date, version: version, yanked: true}, nil
 	}
-	releaseRE := regexp.MustCompile(`^\[\s*` + semver + `\s*\]\s+-\s+(?P<date>\d\d\d\d-\d\d-\d\d)(?:\s+(?P<label>.+))?$`)
+	releaseRE := regexp.MustCompile(`^\[\s*` + semverPattern + `\s*\]\s+-\s+` + isoDatePattern + `(?:\s+(?P<label>.+))?$`)
 	if matches := releaseRE.FindStringSubmatch(s); matches != nil {
 		date, err := time.Parse("2006-01-02", subexp(yankedReleaseRE, matches, "date"))
 		if err != nil {
 			return nil, errors.New("Validation error: Illegal date (" + err.Error() + ") for " + s)
 		}
+		version, err := semver.Make(subexp(yankedReleaseRE, matches, "semver"))
+		if err != nil {
+			return nil, errors.New("Validation error: Illegal version (" + err.Error() + ") for " + s)
+		}
 		if matched, _ := regexp.MatchString(`[\s*YANKED\s*]`, subexp(releaseRE, matches, "label")); matched {
 			return nil, errors.New("Validation error: the version of a [YANKED] release cannot stand between [...] for " + s)
 		}
-		return Release{name: s, date: date}, nil
+		return Release{name: s, date: date, version: version}, nil
 	}
 	return nil, errors.New("Validation error: Unknown release header for " + s)
 }

@@ -1,143 +1,167 @@
 [
   {
     "name": "this file does not exist.md",
-    "success": 1
+    "result": 1
   },
   {
     "name": "heading_change_unknown_heading.md",
-    "success": 1
+    "result": 1
   },
   {
     "name": "heading_release_not_recognized.md",
-    "success": 1
+    "result": 1
   },
   {
     "name": "heading_release_misformatted_yanked.md",
-    "success": 1
+    "result": 1
   },
   {
     "name": "heading_release_wrong_date.md",
-    "success": 1
+    "result": 1
   },
   {
     "name": "heading_release_yanked_wrong_date.md",
-    "success": 1
+    "result": 1
+  },
+  {
+    "name": "heading_release_yanked_wrong_version.md",
+    "result": 1
+  },
+  {
+    "name": "heading_release_wrong_version.md",
+    "result": 1
   },
   {
     "name": "heading_title_empty.md",
-    "success": 1
+    "result": 1
   },
   {
     "name": "sort_date_newer_release_first.md",
-    "success": 0
+    "result": 0
   },
   {
     "name": "sort_date_two_releases_same_day.md",
-    "success": 0
+    "result": 0
   },
   {
     "name": "sort_date_older_release_first.md",
-    "success": 1
+    "result": 1
   },
   {
     "name": "sort_date_newer_yanked_first.md",
-    "success": 0
+    "result": 0
   },
   {
     "name": "sort_date_older_yanked_first.md",
-    "success": 1
+    "result": 1
   },
   {
     "name": "sort_date_release_newer_than_yanked.md",
-    "success": 0
+    "result": 0
   },
   {
     "name": "sort_date_release_and_yanked_same_day.md",
-    "success": 0
+    "result": 0
   },
   {
     "name": "sort_date_release_older_than_yanked.md",
-    "success": 1
+    "result": 1
+  },
+  {
+    "name": "sort_version_older_yanked_first.md",
+    "result": 1
+  },
+  {
+    "name": "sort_version_older_release_first.md",
+    "result": 1
   },
   {
     "name": "unreleased_and_yanked.md",
-    "success": 0
+    "result": 0
   },
   {
     "name": "unreleased_and_yanked.md",
-    "success": 1,
+    "result": 1,
     "arguments": [
       "-release"
     ]
   },
   {
     "name": "released_and_yanked.md",
-    "success": 0
+    "result": 0
   },
   {
     "name": "released_and_yanked.md",
-    "success": 0,
+    "result": 0,
     "arguments": [
       "-release"
     ]
   },
   {
     "name": "no_release_header.md",
-    "success": 1
+    "result": 1
   },
   {
     "name": "unreleased_and_yanked.md",
-    "success": 2,
+    "result": 2,
     "arguments": [
       "-unsupported"
     ]
   },
   {
     "name": "duplicate_change_headings.md",
-    "success": 1
+    "result": 1
   },
   {
     "name": "multiple_unreleased.md",
-    "success": 1
+    "result": 1
   },
   {
     "name": "unreleased_after_released.md",
-    "success": 1
+    "result": 1
   },
   {
     "name": "initial_yanked.md",
-    "success": 1
+    "result": 1
+  },
+  {
+    "name": "same_version_two_releases.md",
+    "result": 1
+  },
+  {
+    "name": "same_version_release_and_yanked.md",
+    "result": 1
   },
   {
     "name": "released_without_changes.md",
-    "success": 1
+    "result": 1
   },
   {
     "name": "released_without_change_description.md",
-    "success": 1
+    "result": 1
   },
   {
     "name": "last_released_without_changes.md",
-    "success": 1
+    "result": 1
   },
   {
     "name": "last_released_without_change_description.md",
-    "success": 1
+    "result": 1
   },
   {
     "name": "change_without_change_description.md",
-    "success": 1
+    "result": 1
   },
   {
     "name": "change_without_release.md",
-    "success": 1
+    "result": 1
   },
   {
     "name": "yanked_without_changes.md",
-    "success": 1
+    "result": 1
   },
   {
     "name": "yanked_without_change_description.md",
-    "success": 1
+    "result": 1
   }
 ]

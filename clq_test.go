@@ -17,7 +17,7 @@ func TestChangelogShouldSucceed(t *testing.T) {
 func TestScenarios(t *testing.T) {
 	type Scenario struct {
 		Name      string   `json:"name"`
-		Success   int      `json:"success"`
+		Result    int      `json:"result"`
 		Arguments []string `json:"arguments,omitempty"`
 	}
 	file, err := os.Open("testdata/scenarios.json")
@@ -40,7 +40,7 @@ func TestScenarios(t *testing.T) {
 			delete(testFiles, scenario.Name)
 			t.Run(scenario.Name, func(t *testing.T) {
 				args := append(scenario.Arguments, filepath.Join("testdata", scenario.Name))
-				executeClq(t, scenario.Success, args...)
+				executeClq(t, scenario.Result, args...)
 			})
 		}
 	}
@@ -51,7 +51,7 @@ func TestScenarios(t *testing.T) {
 			if buf.Len() > 0 {
 				buf.WriteString(", ")
 			}
-			if val, err := json.Marshal(Scenario{Name: val, Success: 999999}); err == nil {
+			if val, err := json.Marshal(Scenario{Name: val, Result: 999999}); err == nil {
 				buf.Write(val)
 			}
 		}
