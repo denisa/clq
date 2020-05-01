@@ -38,9 +38,11 @@ func newTitle(s string) (Heading, error) {
 	}
 	return Title{name: s}, nil
 }
+
 func (h Title) Name() string {
 	return h.name
 }
+
 func (h Title) AsPath() string {
 	return asPath(h.name)
 }
@@ -59,14 +61,15 @@ func newRelease(s string) (Heading, error) {
 	{
 		releaseRE := regexp.MustCompile(`^\[\s*` + semverPattern + `\s*\]\s+-\s+` + isoDatePattern + `(?:\s+(?P<label>.+))?$`)
 		if matches := releaseRE.FindStringSubmatch(s); matches != nil {
-			date, err := time.Parse("2006-01-02", subexp(releaseRE, matches, "date"))
+			groups := releaseRE.SubexpNames()
+			date, err := time.Parse("2006-01-02", subexp(groups, matches, "date"))
 			if err != nil {
 				return nil, errors.New("Validation error: Illegal date (" + err.Error() + ") for " + s)
 			}
-			if matched, _ := regexp.MatchString(`[\s*YANKED\s*]`, subexp(releaseRE, matches, "label")); matched {
+			if matched, _ := regexp.MatchString(`[\s*YANKED\s*]`, subexp(groups, matches, "label")); matched {
 				return nil, errors.New("Validation error: the version of a [YANKED] release cannot stand between [...] for " + s)
 			}
-			version, err := semver.Make(subexp(releaseRE, matches, "semver"))
+			version, err := semver.Make(subexp(groups, matches, "semver"))
 			if err != nil {
 				return nil, errors.New("Validation error: Illegal version (" + err.Error() + ") for " + s)
 			}
@@ -74,13 +77,14 @@ func newRelease(s string) (Heading, error) {
 		}
 	}
 	{
-		yankedReleaseRE := regexp.MustCompile(`^` + semverPattern + `\s+-\s+` + isoDatePattern + `\s+\[\s*YANKED\s*]?$`)
-		if matches := yankedReleaseRE.FindStringSubmatch(s); matches != nil {
-			date, err := time.Parse("2006-01-02", subexp(yankedReleaseRE, matches, "date"))
+		releaseRE := regexp.MustCompile(`^` + semverPattern + `\s+-\s+` + isoDatePattern + `\s+\[\s*YANKED\s*]?$`)
+		if matches := releaseRE.FindStringSubmatch(s); matches != nil {
+			groups := releaseRE.SubexpNames()
+			date, err := time.Parse("2006-01-02", subexp(groups, matches, "date"))
 			if err != nil {
 				return nil, errors.New("Validation error: Illegal date (" + err.Error() + ") for " + s)
 			}
-			version, err := semver.Make(subexp(yankedReleaseRE, matches, "semver"))
+			version, err := semver.Make(subexp(groups, matches, "semver"))
 			if err != nil {
 				return nil, errors.New("Validation error: Illegal version (" + err.Error() + ") for " + s)
 			}
@@ -93,8 +97,65 @@ func newRelease(s string) (Heading, error) {
 func (h Release) Name() string {
 	return h.name
 }
+
 func (h Release) AsPath() string {
 	return asPath(h.name)
+}
+
+func (r *Release) isRelease() bool {
+	return r.date != time.Time{} && !r.unreleased && len(r.version.Pre) == 0 && len(r.version.Build) == 0
+}
+
+const (
+	semverMajor = iota
+	semverMinor
+	semverPatch
+	semverPrerelease
+	semverBuild
+)
+
+var changeKind = map[string]int{"Added": semverMajor, "Removed": semverMajor, "Changed": semverMinor, "Deprecated": semverMinor, "Fixed": semverPatch, "Security": semverPatch}
+
+func keysOf(m map[string]int) string {
+	var keys strings.Builder
+	for k := range m {
+		if keys.Len() > 0 {
+			keys.WriteString(", ")
+		}
+		keys.WriteString("\"")
+		keys.WriteString(k)
+		keys.WriteString("\"")
+	}
+	return keys.String()
+}
+
+func keysFor(m map[string]int, level int) []string {
+	var result []string
+	for k, l := range m {
+		if l == level {
+			result = append(result, k)
+		}
+	}
+	return result
+}
+
+func nextRelease(c changeMap, v semver.Version) semver.Version {
+	for _, k := range keysFor(changeKind, semverMajor) {
+		if c[k] {
+			return semver.Version{Major: v.Major + 1, Minor: 0, Patch: 0}
+		}
+	}
+	for _, k := range keysFor(changeKind, semverMinor) {
+		if c[k] {
+			return semver.Version{Major: v.Major, Minor: v.Minor + 1, Patch: 0}
+		}
+	}
+	for _, k := range keysFor(changeKind, semverPatch) {
+		if c[k] {
+			return semver.Version{Major: v.Major, Minor: v.Minor, Patch: v.Patch + 1}
+		}
+	}
+	return v
 }
 
 type Change struct {
@@ -102,13 +163,13 @@ type Change struct {
 }
 
 func newChange(s string) (Heading, error) {
-	var changes = []string{"Added", "Removed", "Changed", "Deprecated", "Fixed", "Security"}
-	for _, val := range changes {
+	for val := range changeKind {
 		if matched, _ := regexp.MatchString(`^`+val+`$`, s); matched {
 			return Change{name: s}, nil
 		}
 	}
-	return nil, errors.New("Validation error: Unknown change headings '" + s + "' not supported")
+
+	return nil, errors.New("Validation error: Unknown change headings '" + s + "' is not one of [" + keysOf(changeKind) + "]")
 }
 
 func (h Change) Name() string {
@@ -166,9 +227,9 @@ func (s *stack) Peek() (Heading, error) {
 	}
 	return s.s[l-1], nil
 }
-func (s *stack) ResetTo(depth int, name string) error {
+func (s *stack) ResetTo(depth int, name string) (Heading, error) {
 	if depth > s.depth() {
-		return fmt.Errorf("Attempting to reset to %d for a stack of depth %d", depth, s.depth())
+		return nil, fmt.Errorf("Attempting to reset to %d for a stack of depth %d", depth, s.depth())
 	}
 	var h Heading
 	{
@@ -182,7 +243,7 @@ func (s *stack) ResetTo(depth int, name string) error {
 			h, err = newChange(name)
 		}
 		if err != nil {
-			return err
+			return nil, err
 		}
 	}
 
@@ -190,7 +251,7 @@ func (s *stack) ResetTo(depth int, name string) error {
 		s.pop()
 	}
 	s.push(h)
-	return nil
+	return h, nil
 }
 
 func (s *stack) AsPath() string {
@@ -201,12 +262,8 @@ func (s *stack) AsPath() string {
 	return path.String()
 }
 
-func subexp(exp *regexp.Regexp, matches []string, subexp string) string {
-	for index, name := range exp.SubexpNames() {
-		if index >= len(matches) {
-			continue
-		}
-
+func subexp(groups []string, matches []string, subexp string) string {
+	for index, name := range groups {
 		if name == subexp {
 			return matches[index]
 		}

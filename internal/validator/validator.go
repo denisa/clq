@@ -3,6 +3,7 @@ package validator
 import (
 	"errors"
 	"strings"
+	"time"
 
 	"github.com/yuin/goldmark/ast"
 	"github.com/yuin/goldmark/renderer"
@@ -121,27 +122,47 @@ func (r *Renderer) visitHeading(w util.BufWriter, source []byte, node ast.Node, 
 	if entering {
 		r.text.Reset()
 	} else {
+		var h Heading
 		n := node.(*ast.Heading)
 		switch n.Level {
 		case 1:
-			err = r.headers.ResetTo(titleHeading, r.text.String())
+			h, err = r.headers.ResetTo(titleHeading, r.text.String())
 			if err != nil {
 				break
 			}
-			err = r.validateDocumentHeading()
+
+			title := h.(Title)
+			err = r.validateDocumentHeading(title)
 		case 2:
 			if (r.headers.release() || r.headers.change()) && !r.hasChangeDescriptions {
 				err = errors.New("No change descriptions for " + r.headers.AsPath())
 			} else {
-				err = r.headers.ResetTo(releaseHeading, r.text.String())
+				h, err = r.headers.ResetTo(releaseHeading, r.text.String())
 				if err != nil {
 					break
 				}
-				err = r.validateReleaseHeading()
+
+				release := h.(Release)
+				err = r.validateReleaseHeading(release)
 				if err != nil {
 					break
+				}
+
+				if r.previousRelease.isRelease() && release.isRelease() {
+					nextRelease := nextRelease(r.changes, release.version)
+					if !r.previousRelease.version.EQ(nextRelease) {
+						err = errors.New("Release '" + r.previousRelease.Name() + "' should have version " + nextRelease.String())
+					}
+				}
+
+				if release.unreleased {
+					r.h1Unreleased = true
+				} else if !release.yanked {
+					r.h1Released = true
 				}
 				r.hasChangeDescriptions = false
+				r.changes = make(changeMap)
+				r.previousRelease = release
 			}
 		case 3:
 			if r.headers.title() {
@@ -149,11 +170,13 @@ func (r *Renderer) visitHeading(w util.BufWriter, source []byte, node ast.Node, 
 			} else if r.headers.change() && !r.hasChangeDescriptions {
 				err = errors.New("No change descriptions for " + r.headers.AsPath())
 			} else {
-				err = r.headers.ResetTo(changeHeading, r.text.String())
+				h, err = r.headers.ResetTo(changeHeading, r.text.String())
 				if err != nil {
 					break
 				}
-				err = r.validateChangeHeading()
+
+				change := h.(Change)
+				err = r.validateChangeHeading(change)
 				if err != nil {
 					break
 				}
@@ -164,14 +187,9 @@ func (r *Renderer) visitHeading(w util.BufWriter, source []byte, node ast.Node, 
 	return ast.WalkContinue, err
 }
 
-func (r *Renderer) validateDocumentHeading() error { return nil }
+func (r *Renderer) validateDocumentHeading(title Title) error { return nil }
 
-func (r *Renderer) validateReleaseHeading() error {
-	h, err := r.headers.Peek()
-	if err != nil {
-		return err
-	}
-	release := h.(Release)
+func (r *Renderer) validateReleaseHeading(release Release) error {
 	if release.unreleased {
 		if r.Release {
 			return errors.New("Validation error: [Unreleased] not supported in release mode " + r.headers.AsPath())
@@ -182,22 +200,13 @@ func (r *Renderer) validateReleaseHeading() error {
 		if r.h1Released {
 			return errors.New("Validation error: [Unreleased] must come before any release " + r.headers.AsPath())
 		}
-		r.h1Unreleased = true
-	} else if release.yanked {
-		if !r.h1Released && !r.h1Unreleased {
-			return errors.New("Validation error: Changelog cannot start with a [YANKED] release, insert a release or a [Unreleased] first " + r.headers.AsPath())
-		}
-		if r.previousRelease.Name() != "" {
-			if r.previousRelease.date.Before(release.date) {
-				return errors.New("Validation error: release '" + release.Name() + "' should be older than '" + r.previousRelease.Name() + "'")
-			}
-			if r.previousRelease.version.LTE(release.version) {
-				return errors.New("Validation error: release '" + release.Name() + "' should be older than '" + r.previousRelease.Name() + "'")
-			}
-		}
-		r.previousRelease = release
 	} else {
-		if r.previousRelease.Name() != "" {
+		if release.yanked {
+			if !r.h1Released && !r.h1Unreleased {
+				return errors.New("Validation error: Changelog cannot start with a [YANKED] release, insert a release or a [Unreleased] first " + r.headers.AsPath())
+			}
+		}
+		if (r.previousRelease.date != time.Time{}) {
 			if r.previousRelease.date.Before(release.date) {
 				return errors.New("Validation error: release '" + release.Name() + "' should be older than '" + r.previousRelease.Name() + "'")
 			}
@@ -205,23 +214,15 @@ func (r *Renderer) validateReleaseHeading() error {
 				return errors.New("Validation error: release '" + release.Name() + "' should be older than '" + r.previousRelease.Name() + "'")
 			}
 		}
-		r.previousRelease = release
-		r.h1Released = true
 	}
-	r.changes = make(changeMap)
 	return nil
 }
 
-func (r *Renderer) validateChangeHeading() error {
-	h, err := r.headers.Peek()
-	if err != nil {
-		return err
+func (r *Renderer) validateChangeHeading(change Change) error {
+	if r.changes[change.Name()] {
+		return errors.New("Validation error: Multiple headings " + change.Name() + " not supported " + r.headers.AsPath())
 	}
-	changeHeading := h.(Change)
-	if r.changes[changeHeading.Name()] {
-		return errors.New("Validation error: Multiple headings " + changeHeading.Name() + " not supported " + r.headers.AsPath())
-	}
-	r.changes[changeHeading.Name()] = true
+	r.changes[change.Name()] = true
 	return nil
 }
 

@@ -5,6 +5,8 @@ import (
 	"regexp"
 	"strconv"
 	"testing"
+
+	"github.com/blang/semver"
 )
 
 type testHeading struct {
@@ -161,7 +163,7 @@ func TestResetEmptyStackToZeroIsSameAsPush(t *testing.T) {
 
 func TestResetEmptyStackToALevelShouldFail(t *testing.T) {
 	s := NewStack()
-	err := s.ResetTo(releaseHeading, "[Unreleased]")
+	_, err := s.ResetTo(releaseHeading, "[Unreleased]")
 	assertErrorExpected(t, err)
 }
 
@@ -214,6 +216,13 @@ func TestChange(t *testing.T) {
 	assertHeadingInterface(t, "Security", h)
 }
 
+func TestNextRelease(t *testing.T) {
+	assertVersionEquals(t, semver.Version{Major: 1, Minor: 0, Patch: 0}, nextRelease(changeMap{"Added": true}, semver.Version{}))
+	assertVersionEquals(t, semver.Version{Major: 0, Minor: 1, Patch: 0}, nextRelease(changeMap{"Changed": true}, semver.Version{}))
+	assertVersionEquals(t, semver.Version{Major: 0, Minor: 0, Patch: 1}, nextRelease(changeMap{"Fixed": true}, semver.Version{}))
+	assertVersionEquals(t, semver.Version{Major: 0, Minor: 0, Patch: 0}, nextRelease(changeMap{}, semver.Version{}))
+}
+
 func TestSubexp(t *testing.T) {
 	testcases := []struct {
 		input  string
@@ -257,7 +266,7 @@ func TestSubexp(t *testing.T) {
 
 			matches := re.FindStringSubmatch(testcase.input)
 
-			value := subexp(re, matches, testcase.subexp)
+			value := subexp(re.SubexpNames(), matches, testcase.subexp)
 			assertStringEquals(t, testcase.value, value)
 		})
 	}
@@ -301,4 +310,8 @@ func assertErrorExpected(t *testing.T, err error) {
 	if err == nil {
 		t.Error("Expected an error")
 	}
+}
+
+func assertVersionEquals(t *testing.T, expected semver.Version, actual semver.Version) {
+	assertStringEquals(t, expected.String(), actual.String())
 }
