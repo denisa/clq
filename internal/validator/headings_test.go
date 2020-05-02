@@ -7,6 +7,7 @@ import (
 	"testing"
 
 	"github.com/blang/semver"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestTitle(t *testing.T) {
@@ -25,10 +26,20 @@ func TestChange(t *testing.T) {
 }
 
 func TestNextRelease(t *testing.T) {
-	assertVersionEquals(t, semver.Version{Major: 1, Minor: 0, Patch: 0}, nextRelease(changeMap{"Added": true}, semver.Version{}))
-	assertVersionEquals(t, semver.Version{Major: 0, Minor: 1, Patch: 0}, nextRelease(changeMap{"Changed": true}, semver.Version{}))
-	assertVersionEquals(t, semver.Version{Major: 0, Minor: 0, Patch: 1}, nextRelease(changeMap{"Fixed": true}, semver.Version{}))
-	assertVersionEquals(t, semver.Version{Major: 0, Minor: 0, Patch: 0}, nextRelease(changeMap{}, semver.Version{}))
+	testcases := []struct {
+		changeMap changeMap
+		expected  semver.Version
+	}{
+		{changeMap{"Added": true}, semver.Version{Major: 1, Minor: 0, Patch: 0}},
+		{changeMap{"Changed": true}, semver.Version{Major: 0, Minor: 1, Patch: 0}},
+		{changeMap{"Fixed": true}, semver.Version{Major: 0, Minor: 0, Patch: 1}},
+		{changeMap{}, semver.Version{}},
+	}
+	for _, testcase := range testcases {
+		t.Run(testcase.expected.String(), func(t *testing.T) {
+			assert.Equal(t, testcase.expected, nextRelease(testcase.changeMap, semver.Version{}))
+		})
+	}
 }
 
 func TestSubexp(t *testing.T) {
@@ -66,35 +77,27 @@ func TestSubexp(t *testing.T) {
 
 	for index, testcase := range testcases {
 		t.Run(strconv.Itoa(index), func(t *testing.T) {
+			assert := assert.New(t)
 			re, err := regexp.Compile(testcase.exp)
 			if err != nil {
-				assertNoErrorExpected(t, err)
+				assert.Nil(err)
 				return
 			}
 
 			matches := re.FindStringSubmatch(testcase.input)
 
 			value := subexp(re.SubexpNames(), matches, testcase.subexp)
-			assertStringEquals(t, testcase.value, value)
+			assert.Equal(testcase.value, value)
 		})
 	}
 }
 
 func assertHeadingInterface(t *testing.T, name string, actual Heading) {
-	assertStringEquals(t, name, actual.Name())
-	assertStringEquals(t, asPath(actual.Name()), actual.AsPath())
+	assert.Equal(t, name, actual.Name())
+	assert.Equal(t, asPath(actual.Name()), actual.AsPath())
 }
 
-func assertHeadingEquals(t *testing.T, expected Heading, actual Heading) {
-	if expected.Name() != actual.Name() {
-		t.Errorf("Expected %v but received %v", expected, actual)
-	}
-	if reflect.TypeOf(expected) != reflect.TypeOf(actual) {
-		t.Errorf("Expected %v but received %v", reflect.TypeOf(expected), reflect.TypeOf(actual))
-	}
-
-}
-
-func assertVersionEquals(t *testing.T, expected semver.Version, actual semver.Version) {
-	assertStringEquals(t, expected.String(), actual.String())
+func assertHeadingEquals(assert *assert.Assertions, expected Heading, actual Heading) {
+	assert.Equal(expected, actual)
+	assert.Equal(reflect.TypeOf(expected), reflect.TypeOf(actual))
 }
