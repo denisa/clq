@@ -15,16 +15,10 @@ jobs:
         go-version: ${{ matrix.go-version }}
     - name: Checkout code
       uses: actions/checkout@v1
-    - run: make test
-    - name: Convert coverage file
-      if: "matrix.platform == 'ubuntu-latest'"
-      uses: jandelgado/gcov2lcov-action@v1.0.0
-      with:
-        infile: coverage.out
-        outfile: coverage.lcov
+    - run: make lcov
     - name: Send coverage
       if: "matrix.platform == 'ubuntu-latest'"
-      uses: coverallsapp/github-action@v1.0.0
+      uses: coverallsapp/github-action@v1.1.1
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         path-to-lcov: coverage.lcov
