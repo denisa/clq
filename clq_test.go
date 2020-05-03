@@ -47,7 +47,7 @@ func TestScenarios(t *testing.T) {
 
 	if len(testFiles) != 0 {
 		var buf strings.Builder
-		for val, _ := range testFiles {
+		for val := range testFiles {
 			if buf.Len() > 0 {
 				buf.WriteString(", ")
 			}

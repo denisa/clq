@@ -12,7 +12,7 @@
     "result": 1
   },
   {
-    "name": "heading_release_wrong_date.md",
+    "name": "heading_release_date_wrong.md",
     "result": 1
   },
   {
@@ -20,15 +20,15 @@
     "result": 1
   },
   {
-    "name": "heading_release_yanked_wrong_date.md",
+    "name": "heading_release_yanked_date_wrong.md",
     "result": 1
   },
   {
-    "name": "heading_release_yanked_wrong_version.md",
+    "name": "heading_release_yanked_version_wrong.md",
     "result": 1
   },
   {
-    "name": "heading_release_wrong_version.md",
+    "name": "heading_release_version_wrong.md",
     "result": 1
   },
   {
@@ -65,6 +65,30 @@
   },
   {
     "name": "sort_date_release_older_than_yanked.md",
+    "result": 1
+  },
+  {
+    "name": "sort_version_increment_major_wrong.md",
+    "result": 1
+  },
+  {
+    "name": "sort_version_increment_major.md",
+    "result": 0
+  },
+  {
+    "name": "sort_version_increment_minor.md",
+    "result": 0
+  },
+  {
+    "name": "sort_version_increment_minor_wrong.md",
+    "result": 1
+  },
+  {
+    "name": "sort_version_increment_patch.md",
+    "result": 0
+  },
+  {
+    "name": "sort_version_increment_patch_wrong.md",
     "result": 1
   },
   {

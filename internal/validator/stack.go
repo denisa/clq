@@ -3,11 +3,7 @@ package validator
 import (
 	"errors"
 	"fmt"
-	"regexp"
 	"strings"
-	"time"
-
-	"github.com/blang/semver"
 )
 
 const (
@@ -15,108 +11,6 @@ const (
 	releaseHeading
 	changeHeading
 )
-
-const semverPattern string = `(?P<semver>\S+?)`
-const isoDatePattern string = `(?P<date>\d\d\d\d-\d\d-\d\d)`
-
-type Heading interface {
-	Name() string
-	AsPath() string
-}
-
-func asPath(name string) string {
-	return "{" + name + "}"
-}
-
-type Title struct {
-	name string
-}
-
-func newTitle(s string) (Heading, error) {
-	if s == "" {
-		return nil, errors.New("Validation error: Title cannot stay empty")
-	}
-	return Title{name: s}, nil
-}
-func (h Title) Name() string {
-	return h.name
-}
-func (h Title) AsPath() string {
-	return asPath(h.name)
-}
-
-type Release struct {
-	name               string
-	unreleased, yanked bool
-	date               time.Time
-	version            semver.Version
-}
-
-func newRelease(s string) (Heading, error) {
-	if matched, _ := regexp.MatchString(`^\[\s*Unreleased\s*\]$`, s); matched {
-		return Release{name: s, unreleased: true}, nil
-	}
-	{
-		releaseRE := regexp.MustCompile(`^\[\s*` + semverPattern + `\s*\]\s+-\s+` + isoDatePattern + `(?:\s+(?P<label>.+))?$`)
-		if matches := releaseRE.FindStringSubmatch(s); matches != nil {
-			date, err := time.Parse("2006-01-02", subexp(releaseRE, matches, "date"))
-			if err != nil {
-				return nil, errors.New("Validation error: Illegal date (" + err.Error() + ") for " + s)
-			}
-			if matched, _ := regexp.MatchString(`[\s*YANKED\s*]`, subexp(releaseRE, matches, "label")); matched {
-				return nil, errors.New("Validation error: the version of a [YANKED] release cannot stand between [...] for " + s)
-			}
-			version, err := semver.Make(subexp(releaseRE, matches, "semver"))
-			if err != nil {
-				return nil, errors.New("Validation error: Illegal version (" + err.Error() + ") for " + s)
-			}
-			return Release{name: s, date: date, version: version}, nil
-		}
-	}
-	{
-		yankedReleaseRE := regexp.MustCompile(`^` + semverPattern + `\s+-\s+` + isoDatePattern + `\s+\[\s*YANKED\s*]?$`)
-		if matches := yankedReleaseRE.FindStringSubmatch(s); matches != nil {
-			date, err := time.Parse("2006-01-02", subexp(yankedReleaseRE, matches, "date"))
-			if err != nil {
-				return nil, errors.New("Validation error: Illegal date (" + err.Error() + ") for " + s)
-			}
-			version, err := semver.Make(subexp(yankedReleaseRE, matches, "semver"))
-			if err != nil {
-				return nil, errors.New("Validation error: Illegal version (" + err.Error() + ") for " + s)
-			}
-			return Release{name: s, date: date, version: version, yanked: true}, nil
-		}
-	}
-	return nil, errors.New("Validation error: Unknown release header for " + s)
-}
-
-func (h Release) Name() string {
-	return h.name
-}
-func (h Release) AsPath() string {
-	return asPath(h.name)
-}
-
-type Change struct {
-	name string
-}
-
-func newChange(s string) (Heading, error) {
-	var changes = []string{"Added", "Removed", "Changed", "Deprecated", "Fixed", "Security"}
-	for _, val := range changes {
-		if matched, _ := regexp.MatchString(`^`+val+`$`, s); matched {
-			return Change{name: s}, nil
-		}
-	}
-	return nil, errors.New("Validation error: Unknown change headings '" + s + "' not supported")
-}
-
-func (h Change) Name() string {
-	return h.name
-}
-func (h Change) AsPath() string {
-	return asPath(h.name)
-}
 
 type stack struct {
 	s []Heading
@@ -166,10 +60,11 @@ func (s *stack) Peek() (Heading, error) {
 	}
 	return s.s[l-1], nil
 }
-func (s *stack) ResetTo(depth int, name string) error {
+func (s *stack) ResetTo(depth int, name string) (Heading, error) {
 	if depth > s.depth() {
-		return fmt.Errorf("Attempting to reset to %d for a stack of depth %d", depth, s.depth())
+		return nil, fmt.Errorf("Attempting to reset to %d for a stack of depth %d", depth, s.depth())
 	}
+
 	var h Heading
 	{
 		var err error
@@ -182,15 +77,13 @@ func (s *stack) ResetTo(depth int, name string) error {
 			h, err = newChange(name)
 		}
 		if err != nil {
-			return err
+			return nil, err
 		}
 	}
 
-	for i := s.depth(); i > depth; i-- {
-		s.pop()
-	}
+	s.s = s.s[:depth]
 	s.push(h)
-	return nil
+	return h, nil
 }
 
 func (s *stack) AsPath() string {
@@ -199,18 +92,4 @@ func (s *stack) AsPath() string {
 		path.WriteString(heading.AsPath())
 	}
 	return path.String()
-}
-
-func subexp(exp *regexp.Regexp, matches []string, subexp string) string {
-	for index, name := range exp.SubexpNames() {
-		if index >= len(matches) {
-			continue
-		}
-
-		if name == subexp {
-			return matches[index]
-		}
-	}
-
-	return ""
 }
