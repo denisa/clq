@@ -1,39 +1,55 @@
 [
   {
+    "platform": "unix",
     "name": "this file does not exist.md",
-    "result": 1
+    "result": 1,
+    "error": "❗️ open testdata/this file does not exist.md: no such file or directory\n"
+  },
+  {
+    "platform": "windows",
+    "name": "this file does not exist.md",
+    "result": 1,
+    "error": "❗️ open testdata\\this file does not exist.md: The system cannot find the file specified.\n"
   },
   {
     "name": "heading_change_unknown_heading.md",
-    "result": 1
+    "result": 1,
+    "error": "❗️ Validation error: Unknown change headings \"Corrected\" is not one of [Added, Removed, Changed, Deprecated, Fixed, Security]\n"
   },
   {
     "name": "heading_release_not_recognized.md",
-    "result": 1
+    "result": 1,
+    "error": "❗️ Validation error: Unknown release header for \"Information missing here\"\n"
   },
   {
     "name": "heading_release_date_wrong.md",
-    "result": 1
+    "result": 1,
+    "error": "❗️ Validation error: Illegal date (parsing time \"2020-02-31\": day out of range) for [1.2.3] - 2020-02-31\n"
   },
   {
     "name": "heading_release_yanked_version_brackets.md",
-    "result": 1
+    "result": 1,
+    "error": "❗️ Validation error: the version of a [YANKED] release cannot stand between [...] for [1.2.3] - 2020-02-29 [YANKED]\n"
   },
   {
     "name": "heading_release_yanked_date_wrong.md",
-    "result": 1
+    "result": 1,
+    "error": "❗️ Validation error: Illegal date (parsing time \"2020-02-31\": day out of range) for 1.2.3 - 2020-02-31 [YANKED]\n"
   },
   {
     "name": "heading_release_yanked_version_wrong.md",
-    "result": 1
+    "result": 1,
+    "error": "❗️ Validation error: Illegal version (Minor number must not contain leading zeroes \"02\") for 1.02.3 - 2020-02-28 [YANKED]\n"
   },
   {
     "name": "heading_release_version_wrong.md",
-    "result": 1
+    "result": 1,
+    "error": "❗️ Validation error: Illegal version (Minor number must not contain leading zeroes \"02\") for [1.02.3] - 2020-02-01\n"
   },
   {
     "name": "heading_title_empty.md",
-    "result": 1
+    "result": 1,
+    "error": "❗️ Validation error: Changelog cannot stay empty\n"
   },
   {
     "name": "sort_date_newer_release_first.md",
@@ -45,7 +61,8 @@
   },
   {
     "name": "sort_date_older_release_first.md",
-    "result": 1
+    "result": 1,
+    "error": "❗️ Validation error: release \"[1.2.2] - 2020-02-29\" should be older than \"[1.2.3] - 2020-02-28\"\n"
   },
   {
     "name": "sort_date_newer_yanked_first.md",
@@ -53,7 +70,8 @@
   },
   {
     "name": "sort_date_older_yanked_first.md",
-    "result": 1
+    "result": 1,
+    "error": "❗️ Validation error: release \"[1.2.2] - 2020-02-29\" should be older than \"1.2.3 - 2020-02-28 [YANKED]\"\n"
   },
   {
     "name": "sort_date_release_newer_than_yanked.md",
@@ -65,11 +83,13 @@
   },
   {
     "name": "sort_date_release_older_than_yanked.md",
-    "result": 1
+    "result": 1,
+    "error": "❗️ Validation error: release \"1.2.2 - 2020-02-29 [YANKED]\" should be older than \"[1.2.3] - 2020-02-28\"\n"
   },
   {
     "name": "sort_version_increment_major_wrong.md",
-    "result": 1
+    "result": 1,
+    "error": "❗️ Release \"[2.0.0] - 2020-02-29\" should have version 1.3.0\n"
   },
   {
     "name": "sort_version_increment_major.md",
@@ -81,7 +101,8 @@
   },
   {
     "name": "sort_version_increment_minor_wrong.md",
-    "result": 1
+    "result": 1,
+    "error": "❗️ Release \"[1.3.0] - 2020-02-29\" should have version 2.0.0\n"
   },
   {
     "name": "sort_version_increment_patch.md",
@@ -89,15 +110,18 @@
   },
   {
     "name": "sort_version_increment_patch_wrong.md",
-    "result": 1
+    "result": 1,
+    "error": "❗️ Release \"[1.2.3] - 2020-02-29\" should have version 2.0.0\n"
   },
   {
     "name": "sort_version_older_yanked_first.md",
-    "result": 1
+    "result": 1,
+    "error": "❗️ Validation error: release \"[1.2.3] - 2020-02-28\" should sort before \"1.2.2 - 2020-02-29 [YANKED]\"\n"
   },
   {
     "name": "sort_version_older_release_first.md",
-    "result": 1
+    "result": 1,
+    "error": "❗️ Validation error: release \"[1.2.3] - 2020-02-28\" should sort before \"[1.2.2] - 2020-02-29\"\n"
   },
   {
     "name": "unreleased_and_yanked.md",
@@ -108,7 +132,8 @@
     "result": 1,
     "arguments": [
       "-release"
-    ]
+    ],
+    "error": "❗️ Validation error: \"[Unreleased]\" not supported in release mode {Unreleased and Yanked}{[Unreleased]}\n"
   },
   {
     "name": "released_and_yanked.md",
@@ -123,69 +148,148 @@
   },
   {
     "name": "no_release_header.md",
-    "result": 1
-  },
-  {
-    "name": "unreleased_and_yanked.md",
-    "result": 2,
-    "arguments": [
-      "-unsupported"
-    ]
+    "result": 1,
+    "error": "❗️ Validation error: No release defined in changelog\n"
   },
   {
     "name": "duplicate_change_headings.md",
-    "result": 1
+    "result": 1,
+    "error": "❗️ Validation error: Multiple headings \"Fixed\" not supported {Duplicate change headings}{[1.2.3] - 2020-02-29}{Fixed}\n"
   },
   {
     "name": "multiple_unreleased.md",
-    "result": 1
+    "result": 1,
+    "error": "❗️ Validation error: Multiple \"[Unreleased]\" not supported {Multiple unreleased}{[Unreleased]}\n"
   },
   {
     "name": "unreleased_after_released.md",
-    "result": 1
+    "result": 1,
+    "error": "❗️ Validation error: \"[Unreleased]\" must come before any release {Unreleased after released}{[Unreleased]}\n"
   },
   {
     "name": "initial_yanked.md",
-    "result": 1
+    "result": 1,
+    "error": "❗️ Validation error: Changelog cannot start with a \"[YANKED]\" release, insert a release or a \"[Unreleased]\" first {Initial Yanked}{1.2.3 - 2020-02-29 [YANKED]}\n"
   },
   {
     "name": "same_version_two_releases.md",
-    "result": 1
+    "result": 1,
+    "error": "❗️ Validation error: release \"[1.2.3] - 2020-02-28\" should sort before \"[1.2.3] - 2020-02-29\"\n"
   },
   {
     "name": "same_version_release_and_yanked.md",
-    "result": 1
+    "result": 1,
+    "error": "❗️ Validation error: release \"1.2.3 - 2020-02-28 [YANKED]\" should sort before \"[1.2.3] - 2020-02-29\"\n"
   },
   {
     "name": "released_without_changes.md",
-    "result": 1
+    "result": 1,
+    "error": "❗️ No change descriptions for {Release without changes}{[1.2.3] - 2020-02-29}\n"
   },
   {
     "name": "released_without_change_description.md",
-    "result": 1
+    "result": 1,
+    "error": "❗️ No change descriptions for {Release without change description}{[1.2.3] - 2020-02-29}{Fixed}\n"
   },
   {
     "name": "last_released_without_changes.md",
-    "result": 1
+    "result": 1,
+    "error": "❗️ No change descriptions for {Last release without changes}{[1.2.2] - 2020-02-29}\n"
   },
   {
     "name": "last_released_without_change_description.md",
-    "result": 1
+    "result": 1,
+    "error": "❗️ No change descriptions for {Last release without change description}{[1.2.2] - 2020-02-29}{Fixed}\n"
   },
   {
     "name": "change_without_change_description.md",
-    "result": 1
+    "result": 1,
+    "error": "❗️ No change descriptions for {Change without change description}{[2.0.0] - 2020-02-29}{Fixed}\n"
   },
   {
     "name": "change_without_release.md",
-    "result": 1
+    "result": 1,
+    "error": "❗️ Changes must be in a release {Change without release}\n"
   },
   {
     "name": "yanked_without_changes.md",
-    "result": 1
+    "result": 1,
+    "error": "❗️ No change descriptions for {Yanked release without changes}{1.2.3 - 2020-02-29 [YANKED]}\n"
   },
   {
     "name": "yanked_without_change_description.md",
-    "result": 1
+    "result": 1,
+    "error": "❗️ No change descriptions for {Yanked release without change description}{1.2.3 - 2020-02-29 [YANKED]}{Added}\n"
+  },
+  {
+    "result": 2,
+    "arguments": [
+      "-unsupported"
+    ],
+    "input": "# Change log\n## [Unreleased]\n### Added\n- dummy",
+    "error": "flag provided but not defined: -unsupported\n\nUsage: clq { flags } <path to changelog.md>\n\nOptions are:\n  -query string\n    \tA query to extract information out of the change log\n  -release\n    \tEnable release-mode validation\n"
+  },
+  {
+    "result": 2,
+    "arguments": [
+      "-query",
+      "releases[0].foobar"
+    ],
+    "input": "# Change log\n## [Unreleased]\n### Added\n- dummy",
+    "error": "❗️ Query attribute not recognized \"foobar\" for a \"release\"\n"
+  },
+  {
+    "name": "query_release_version.md",
+    "result": 0,
+    "arguments": [
+      "-query",
+      "releases[0].version"
+    ],
+    "output": "1.0.0\n"
+  },
+  {
+    "result": 0,
+    "arguments": [
+      "-query",
+      "title"
+    ],
+    "input": "# Change log\n## [Unreleased]\n### Added\n- dummy",
+    "output": "Change log\n"
+  },
+  {
+    "result": 0,
+    "arguments": [
+      "-query",
+      "releases[0].status",
+      "testdata/released_and_yanked.md",
+      "testdata/sort_date_newer_release_first.md"
+    ],
+    "output": "✅ testdata/released_and_yanked.md: released\n✅ testdata/sort_date_newer_release_first.md: released\n"
+  },
+  {
+    "result": 0,
+    "arguments": [
+      "-query",
+      "releases[0].status",
+      "testdata/released_and_yanked.md",
+      "testdata/sort_date_newer_release_first.md"
+    ],
+    "output": "✅ testdata/released_and_yanked.md: released\n✅ testdata/sort_date_newer_release_first.md: released\n"
+  },
+  {
+    "result": 1,
+    "arguments": [
+      "testdata/no_release_header.md",
+      "testdata/sort_date_newer_release_first.md"
+    ],
+    "error": "❗️ testdata/no_release_header.md: Validation error: No release defined in changelog\n"
+  },
+  {
+    "result": 1,
+    "arguments": [
+      "testdata/yanked_without_changes.md",
+      "testdata/yanked_without_change_description.md"
+    ],
+    "error": "❗️ testdata/yanked_without_changes.md: No change descriptions for {Yanked release without changes}{1.2.3 - 2020-02-29 [YANKED]}\n❗️ testdata/yanked_without_change_description.md: No change descriptions for {Yanked release without change description}{1.2.3 - 2020-02-29 [YANKED]}{Added}\n"
   }
 ]

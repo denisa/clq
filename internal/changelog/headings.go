@@ -1,9 +1,9 @@
 package changelog
 
 import (
-	"errors"
 	"fmt"
 	"regexp"
+	"sort"
 	"strings"
 	"time"
 
@@ -40,7 +40,7 @@ type Changelog struct {
 
 func newChangelog(s string) (Heading, error) {
 	if s == "" {
-		return nil, errors.New("Validation error: Changelog cannot stay empty")
+		return nil, fmt.Errorf("Validation error: Changelog cannot stay empty")
 	}
 	return Changelog{title: s}, nil
 }
@@ -76,15 +76,15 @@ func newRelease(s string) (Heading, error) {
 			groups := releaseRE.SubexpNames()
 			date, err := time.Parse("2006-01-02", subexp(groups, matches, "date"))
 			if err != nil {
-				return nil, errors.New("Validation error: Illegal date (" + err.Error() + ") for " + s)
+				return nil, fmt.Errorf("Validation error: Illegal date (%v) for %v", err, s)
 			}
 			label := subexp(groups, matches, "label")
 			if matched, _ := regexp.MatchString(`[\s*YANKED\s*]`, label); matched {
-				return nil, errors.New("Validation error: the version of a [YANKED] release cannot stand between [...] for " + s)
+				return nil, fmt.Errorf("Validation error: the version of a [YANKED] release cannot stand between [...] for %v", s)
 			}
 			version, err := semver.Make(subexp(groups, matches, "semver"))
 			if err != nil {
-				return nil, errors.New("Validation error: Illegal version (" + err.Error() + ") for " + s)
+				return nil, fmt.Errorf("Validation error: Illegal version (%v) for %v", err, s)
 			}
 			return Release{name: s, date: date, version: version, label: label}, nil
 		}
@@ -95,16 +95,16 @@ func newRelease(s string) (Heading, error) {
 			groups := releaseRE.SubexpNames()
 			date, err := time.Parse("2006-01-02", subexp(groups, matches, "date"))
 			if err != nil {
-				return nil, errors.New("Validation error: Illegal date (" + err.Error() + ") for " + s)
+				return nil, fmt.Errorf("Validation error: Illegal date (%v) for %v", err, s)
 			}
 			version, err := semver.Make(subexp(groups, matches, "semver"))
 			if err != nil {
-				return nil, errors.New("Validation error: Illegal version (" + err.Error() + ") for " + s)
+				return nil, fmt.Errorf("Validation error: Illegal version (%v) for %v", err, s)
 			}
 			return Release{name: s, date: date, version: version, yanked: true}, nil
 		}
 	}
-	return nil, errors.New("Validation error: Unknown release header for " + s)
+	return nil, fmt.Errorf("Validation error: Unknown release header for %q", s)
 }
 
 func (h Release) Name() string {
@@ -168,10 +168,10 @@ func (h *Release) NextRelease(c ChangeMap) semver.Version {
 
 func (h *Release) SortsBefore(other Release) error {
 	if h.date.Before(other.date) {
-		return errors.New("Validation error: release '" + other.Name() + "' should be older than '" + h.Name() + "'")
+		return fmt.Errorf("Validation error: release %q should be older than %q", other.Name(), h.Name())
 	}
 	if h.version.LTE(other.version) {
-		return errors.New("Validation error: release '" + other.Name() + "' should be older than '" + h.Name() + "'")
+		return fmt.Errorf("Validation error: release %q should sort before %q", other.Name(), h.Name())
 	}
 	return nil
 }
@@ -196,7 +196,7 @@ func newChange(s string) (Heading, error) {
 		}
 	}
 
-	return nil, errors.New("Validation error: Unknown change headings '" + s + "' is not one of [" + keysOf(changeKind) + "]")
+	return nil, fmt.Errorf("Validation error: Unknown change headings %q is not one of [%v]", s, keysOf(changeKind))
 }
 
 func (h Change) Name() string {
@@ -209,16 +209,11 @@ func (h Change) AsPath() string {
 var changeKind = map[string]int{"Added": semverMajor, "Removed": semverMajor, "Changed": semverMinor, "Deprecated": semverMinor, "Fixed": semverPatch, "Security": semverPatch}
 
 func keysOf(m map[string]int) string {
-	var keys strings.Builder
-	sep := ""
-	for k := range m {
-		keys.WriteString(sep)
-		keys.WriteString("\"")
-		keys.WriteString(k)
-		keys.WriteString("\"")
-		sep = ", "
+	var changes []string
+	for i := range []int{semverMajor, semverMinor, semverPatch, semverPrerelease, semverBuild} {
+		changes = append(changes, keysFor(m, i)...)
 	}
-	return keys.String()
+	return strings.Join(changes, ", ")
 }
 
 func keysFor(m map[string]int, level int) []string {
@@ -228,6 +223,7 @@ func keysFor(m map[string]int, level int) []string {
 			result = append(result, k)
 		}
 	}
+	sort.Strings(result)
 	return result
 }
 
