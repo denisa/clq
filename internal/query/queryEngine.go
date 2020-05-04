@@ -55,7 +55,7 @@ func (qe *QueryEngine) newChangelogQuery(name string, queryElements []string) er
 		}
 		return nil
 	}
-	return fmt.Errorf("Attribute not recognized %v", name)
+	return fmt.Errorf("Query attribute not recognized %q", name)
 }
 
 type changelogQuery struct {
@@ -79,7 +79,7 @@ func (q *changelogQuery) Reset() {}
 
 func (qe *QueryEngine) newReleaseQuery(name string, queryElements []string) error {
 	if i, err := strconv.Atoi(name); err != nil {
-		return fmt.Errorf("Release index %q parsing error: %v", name, err)
+		return fmt.Errorf("Query release selector %q parsing error: %v", name, err)
 	} else {
 		var f func(changelog.Release) string
 		if len(queryElements) == 0 {
@@ -96,7 +96,7 @@ func (qe *QueryEngine) newReleaseQuery(name string, queryElements []string) erro
 		} else {
 			switch queryElements[0] {
 			default:
-				return fmt.Errorf("Unsupported attribute %q", queryElements[0])
+				return fmt.Errorf("Query attribute not recognized %q for a \"release\"", queryElements[0])
 			case "date":
 				f = func(r changelog.Release) string { return r.Date() }
 			case "label":

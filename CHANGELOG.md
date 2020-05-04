@@ -21,4 +21,5 @@ Categories:
 
 ## [Unreleased]
 ### Added
-- basic validation
+- basic validations
+- basic queries

@@ -1,10 +1,11 @@
 package validator
 
 import (
-	"errors"
+	"fmt"
 	"strings"
 
 	"github.com/denisa/clq/internal/changelog"
+	"github.com/denisa/clq/internal/query"
 	"github.com/yuin/goldmark/ast"
 	"github.com/yuin/goldmark/renderer"
 	"github.com/yuin/goldmark/util"
@@ -12,27 +13,37 @@ import (
 
 // A Config struct has configurations for the Validator renderer.
 type Config struct {
-	Release bool
+	release     bool
+	queryEngine query.QueryEngine
 }
 
 // NewConfig returns a new Config with defaults.
 func NewConfig() Config {
-	return Config{
-		Release: false,
-	}
-}
-
-// SetOption implements renderer.NodeRenderer.SetOption.
-func (c *Config) SetOption(name renderer.OptionName, value interface{}) {
-	switch name {
-	case optRelease:
-		c.Release = value.(bool)
-	}
+	return Config{}
 }
 
 // An Option interface sets options for Validator based renderers.
 type Option interface {
 	SetValidationOption(*Config)
+}
+
+// Query is the optional query
+const optQuery renderer.OptionName = "Query"
+
+type withQuery struct {
+	value query.QueryEngine
+}
+
+func (o *withQuery) SetValidationOption(c *Config) {
+	c.queryEngine = o.value
+}
+
+// WithQuery is a functional option that allow you to set the query string to
+// the renderer.
+func WithQuery(queryEngine query.QueryEngine) interface {
+	Option
+} {
+	return &withQuery{queryEngine}
 }
 
 // Release is an option that control the validation mode
@@ -42,18 +53,13 @@ type withRelease struct {
 	value bool
 }
 
-func (o *withRelease) SetConfig(c *renderer.Config) {
-	c.Options[optRelease] = o.value
-}
-
 func (o *withRelease) SetValidationOption(c *Config) {
-	c.Release = o.value
+	c.release = o.value
 }
 
 // WithRelease is a functional option that allow you to set the release mode to
 // the renderer.
 func WithRelease(release bool) interface {
-	renderer.Option
 	Option
 } {
 	return &withRelease{release}
@@ -97,12 +103,11 @@ func (r *Renderer) RegisterFuncs(reg renderer.NodeRendererFuncRegisterer) {
 func (r *Renderer) visitDocument(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
 	if !entering {
 		if !r.h1Released && !r.h1Unreleased {
-			return ast.WalkStop, errors.New("Validation error: No release defined in changelog")
+			return ast.WalkStop, fmt.Errorf("Validation error: No release defined in changelog")
 		}
 		if (r.headers.Release() || r.headers.Change()) && !r.hasChangeDescriptions {
-			return ast.WalkStop, errors.New("No change descriptions for " + r.headers.AsPath())
+			return ast.WalkStop, fmt.Errorf("No change descriptions for %v", r.headers.AsPath())
 		}
-		w.WriteString(r.queryEngine.Result())
 	}
 	return ast.WalkContinue, nil
 }
@@ -125,9 +130,11 @@ func (r *Renderer) visitHeading(w util.BufWriter, source []byte, node ast.Node, 
 		if err := r.validateDocumentHeading(title); err != nil {
 			return ast.WalkStop, err
 		}
+
+		r.queryEngine.Apply(w, title)
 	case 2:
 		if (r.headers.Release() || r.headers.Change()) && !r.hasChangeDescriptions {
-			if err := errors.New("No change descriptions for " + r.headers.AsPath()); err != nil {
+			if err := fmt.Errorf("No change descriptions for %v", r.headers.AsPath()); err != nil {
 				return ast.WalkStop, err
 			}
 		} else {
@@ -144,7 +151,7 @@ func (r *Renderer) visitHeading(w util.BufWriter, source []byte, node ast.Node, 
 			if r.previousRelease.IsRelease() && release.IsRelease() {
 				nextRelease := release.NextRelease(r.changes)
 				if !r.previousRelease.HasRelease(nextRelease) {
-					return ast.WalkStop, errors.New("Release '" + r.previousRelease.Name() + "' should have version " + nextRelease.String())
+					return ast.WalkStop, fmt.Errorf("Release %q should have version %v", r.previousRelease.Name(), nextRelease.String())
 				}
 			}
 
@@ -156,12 +163,14 @@ func (r *Renderer) visitHeading(w util.BufWriter, source []byte, node ast.Node, 
 			r.hasChangeDescriptions = false
 			r.changes = make(changelog.ChangeMap)
 			r.previousRelease = release
+
+			r.queryEngine.Apply(w, release)
 		}
 	case 3:
 		if r.headers.Title() {
-			return ast.WalkStop, errors.New("Changes must be in a release " + r.headers.AsPath())
+			return ast.WalkStop, fmt.Errorf("Changes must be in a release %v", r.headers.AsPath())
 		} else if r.headers.Change() && !r.hasChangeDescriptions {
-			return ast.WalkStop, errors.New("No change descriptions for " + r.headers.AsPath())
+			return ast.WalkStop, fmt.Errorf("No change descriptions for %v", r.headers.AsPath())
 		} else {
 			h, err := r.headers.ResetTo(changelog.ChangeHeading, r.text.String())
 			if err != nil {
@@ -173,6 +182,8 @@ func (r *Renderer) visitHeading(w util.BufWriter, source []byte, node ast.Node, 
 				return ast.WalkStop, err
 			}
 			r.hasChangeDescriptions = false
+
+			r.queryEngine.Apply(w, change)
 		}
 	}
 	return ast.WalkContinue, nil
@@ -182,19 +193,19 @@ func (r *Renderer) validateDocumentHeading(title changelog.Changelog) error { re
 
 func (r *Renderer) validateReleaseHeading(release changelog.Release) error {
 	if release.Unreleased() {
-		if r.Release {
-			return errors.New("Validation error: [Unreleased] not supported in release mode " + r.headers.AsPath())
+		if r.release {
+			return fmt.Errorf("Validation error: \"[Unreleased]\" not supported in release mode %v", r.headers.AsPath())
 		}
 		if r.h1Unreleased {
-			return errors.New("Validation error: Multiple [Unreleased] not supported " + r.headers.AsPath())
+			return fmt.Errorf("Validation error: Multiple \"[Unreleased]\" not supported %v", r.headers.AsPath())
 		}
 		if r.h1Released {
-			return errors.New("Validation error: [Unreleased] must come before any release " + r.headers.AsPath())
+			return fmt.Errorf("Validation error: \"[Unreleased]\" must come before any release %v", r.headers.AsPath())
 		}
 	} else {
 		if release.Yanked() {
 			if !r.h1Released && !r.h1Unreleased {
-				return errors.New("Validation error: Changelog cannot start with a [YANKED] release, insert a release or a [Unreleased] first " + r.headers.AsPath())
+				return fmt.Errorf("Validation error: Changelog cannot start with a \"[YANKED]\" release, insert a release or a \"[Unreleased]\" first %v", r.headers.AsPath())
 			}
 		}
 		if r.previousRelease.HasBeenReleased() {
@@ -208,7 +219,7 @@ func (r *Renderer) validateReleaseHeading(release changelog.Release) error {
 
 func (r *Renderer) validateChangeHeading(change changelog.Change) error {
 	if r.changes[change.Name()] {
-		return errors.New("Validation error: Multiple headings " + change.Name() + " not supported " + r.headers.AsPath())
+		return fmt.Errorf("Validation error: Multiple headings %q not supported %v", change.Name(), r.headers.AsPath())
 	}
 	r.changes[change.Name()] = true
 	return nil

@@ -4,26 +4,37 @@ import (
 	"bytes"
 	"flag"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"os"
 
+	"github.com/denisa/clq/internal/query"
 	"github.com/denisa/clq/internal/validator"
 	"github.com/yuin/goldmark"
 	"github.com/yuin/goldmark/renderer"
+	"github.com/yuin/goldmark/text"
 	"github.com/yuin/goldmark/util"
 )
 
-func main() {
-	os.Exit(entryPoint(os.Args[0], os.Args[1:]...))
+type Clq struct {
+	stdin          io.Reader
+	stdout, stderr io.Writer
 }
 
-func entryPoint(name string, arguments ...string) int {
+func main() {
+	clq := &Clq{stdin: os.Stdin, stdout: os.Stdout, stderr: os.Stderr}
+	os.Exit(clq.entryPoint(os.Args[0], os.Args[1:]...))
+}
+
+func (clq *Clq) entryPoint(name string, arguments ...string) int {
 	options := flag.NewFlagSet(name, flag.ContinueOnError)
+	options.SetOutput(clq.stderr)
 	options.Usage = func() {
-		fmt.Fprintf(flag.CommandLine.Output(), "Usage: %s { flags } <path to changelog.md>\nOptions are:\n", options.Name())
+		fmt.Fprintf(options.Output(), "\nUsage: %s { flags } <path to changelog.md>\n\nOptions are:\n", options.Name())
 		options.PrintDefaults()
 	}
 	var release = options.Bool("release", false, "Enable release-mode validation")
+	var queryString = options.String("query", "", "A query to extract information out of the change log")
 	if options.Parse(arguments) != nil {
 		return 2
 	}
@@ -34,41 +45,67 @@ func entryPoint(name string, arguments ...string) int {
 	} else {
 		documents = options.Args()
 	}
+
 	var hasError bool
 	for _, document := range documents {
-		data, err := readInput(document)
+		queryEngine, err := query.NewQueryEngine(*queryString)
 		if err != nil {
-			fmt.Fprintln(os.Stderr, err)
+			fmt.Fprintf(clq.stderr, "❗️ %v\n", err)
+			hasError = true
+			return 2
+		}
+
+		source, err := clq.readInput(document)
+		if err != nil {
+			if len(documents) == 1 {
+				fmt.Fprintf(clq.stderr, "❗️ %v\n", err)
+			} else {
+				fmt.Fprintf(clq.stderr, "❗️ %v: %v\n", document, err)
+			}
 			hasError = true
 			continue
 		}
 
-		validator := validator.NewRenderer(validator.WithRelease(*release))
-		md := goldmark.New(
-			goldmark.WithRenderer(
-				renderer.NewRenderer(renderer.WithNodeRenderers(
-					util.Prioritized(validator, 1000)))),
-		)
+		reader := text.NewReader(source)
+		doc := goldmark.DefaultParser().Parse(reader)
 
-		fmt.Print("Processing ", document, "...")
+		validationEngine := renderer.NewRenderer(
+			renderer.WithNodeRenderers(
+				util.Prioritized(
+					validator.NewRenderer(
+						validator.WithQuery(*queryEngine),
+						validator.WithRelease(*release)),
+					1000)))
+
 		var buf bytes.Buffer
-		if err := md.Convert(data, &buf); err != nil {
-			fmt.Println("❗️")
-			fmt.Fprintln(os.Stderr, err)
+		if err := validationEngine.Render(&buf, source, doc); err != nil {
+			if len(documents) == 1 {
+				fmt.Fprintf(clq.stderr, "❗️ %v\n", err)
+			} else {
+				fmt.Fprintf(clq.stderr, "❗️ %v: %v\n", document, err)
+			}
 			hasError = true
 			continue
 		}
-		fmt.Println("✅")
+
+		if buf.Len() > 0 {
+			if len(documents) == 1 {
+				fmt.Fprintln(clq.stdout, buf.String())
+			} else {
+				fmt.Fprintf(clq.stdout, "✅ %v: %v\n", document, buf.String())
+			}
+		}
 	}
+
 	if hasError {
 		return 1
 	}
 	return 0
 }
 
-func readInput(input string) ([]byte, error) {
+func (clq *Clq) readInput(input string) ([]byte, error) {
 	if input == "-" {
-		return ioutil.ReadAll(os.Stdin)
+		return ioutil.ReadAll(clq.stdin)
 	}
 
 	f, err := os.Open(input)

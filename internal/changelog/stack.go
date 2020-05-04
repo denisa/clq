@@ -1,7 +1,6 @@
 package changelog
 
 import (
-	"errors"
 	"fmt"
 	"strings"
 )
@@ -40,7 +39,7 @@ func (s *Stack) push(v Heading) {
 func (s *Stack) pop() (Heading, error) {
 	l := s.depth()
 	if l == 0 {
-		return nil, errors.New("Empty stack")
+		return nil, fmt.Errorf("Empty stack")
 	}
 	res := s.s[l-1]
 	s.s = s.s[:l-1]
@@ -50,7 +49,7 @@ func (s *Stack) pop() (Heading, error) {
 func (s *Stack) Peek() (Heading, error) {
 	l := s.depth()
 	if l == 0 {
-		return nil, errors.New("Empty stack")
+		return nil, fmt.Errorf("Empty stack")
 	}
 	return s.s[l-1], nil
 }
