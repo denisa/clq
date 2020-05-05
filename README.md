@@ -2,6 +2,7 @@
 
 [![test](https://github.com/denisa/clq/workflows/test/badge.svg)](https://github.com/denisa/clq/actions?query=workflow%3Atest+branch%3Amaster)
 [![Coverage Status](https://coveralls.io/repos/github/denisa/clq/badge.svg?branch=master)](https://coveralls.io/github/denisa/clq?branch=master)
+![Semantic Versioning](https://img.shields.io/badge/Sematic%20Versioning-2.0.0-informational)
 
 # Grammar for supported Changelog
 ```
