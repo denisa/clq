@@ -91,18 +91,9 @@ func (r *Renderer) RegisterFuncs(reg renderer.NodeRendererFuncRegisterer) {
 	reg.Register(ast.KindHeading, r.visitHeading)
 	reg.Register(ast.KindList, r.visitList)
 	reg.Register(ast.KindListItem, r.visitListItem)
-	reg.Register(ast.KindParagraph, r.visitParagraph)
-	reg.Register(ast.KindTextBlock, r.visitTextBlock)
-	reg.Register(ast.KindThematicBreak, r.visitThematicBreak)
 
-	reg.Register(ast.KindAutoLink, r.visitAutoLink)
-	reg.Register(ast.KindCodeSpan, r.visitCodeSpan)
-	reg.Register(ast.KindEmphasis, r.visitEmphasis)
 	reg.Register(ast.KindImage, r.visitImage)
-	reg.Register(ast.KindLink, r.visitLink)
-	reg.Register(ast.KindRawHTML, r.visitRawHTML)
 	reg.Register(ast.KindText, r.visitText)
-	reg.Register(ast.KindString, r.visitString)
 }
 
 func (r *Renderer) visitDocument(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
@@ -226,31 +217,6 @@ func (r *Renderer) validateChangeHeading(change Change) error {
 	return nil
 }
 
-func (r *Renderer) visitBlockquote(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
-	return ast.WalkContinue, nil
-}
-
-func (r *Renderer) visitCodeBlock(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
-	if entering {
-		r.writeLines(w, source, node)
-	}
-	return ast.WalkContinue, nil
-}
-
-func (r *Renderer) visitFencedCodeBlock(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
-	if entering {
-		r.writeLines(w, source, node)
-	}
-	return ast.WalkContinue, nil
-}
-
-func (r *Renderer) visitHTMLBlock(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
-	if entering {
-		r.writeLines(w, source, node)
-	}
-	return ast.WalkContinue, nil
-}
-
 func (r *Renderer) visitList(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
 	return ast.WalkContinue, nil
 }
@@ -262,50 +228,7 @@ func (r *Renderer) visitListItem(w util.BufWriter, source []byte, node ast.Node,
 	return ast.WalkContinue, nil
 }
 
-func (r *Renderer) visitParagraph(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
-	return ast.WalkContinue, nil
-}
-
-func (r *Renderer) visitTextBlock(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
-	if !entering {
-		if _, ok := node.NextSibling().(ast.Node); ok && node.FirstChild() != nil {
-			r.text.WriteByte('\n')
-		}
-	}
-	return ast.WalkContinue, nil
-}
-
-func (r *Renderer) visitThematicBreak(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
-	return ast.WalkContinue, nil
-}
-
-func (r *Renderer) visitAutoLink(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
-	return ast.WalkContinue, nil
-}
-
-func (r *Renderer) visitCodeSpan(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
-	if entering {
-		return ast.WalkSkipChildren, nil
-	}
-	return ast.WalkContinue, nil
-}
-
-func (r *Renderer) visitEmphasis(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
-	return ast.WalkContinue, nil
-}
-
-func (r *Renderer) visitLink(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
-	return ast.WalkContinue, nil
-}
-
 func (r *Renderer) visitImage(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
-	if entering {
-		return ast.WalkSkipChildren, nil
-	}
-	return ast.WalkContinue, nil
-}
-
-func (r *Renderer) visitRawHTML(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
 	if entering {
 		return ast.WalkSkipChildren, nil
 	}
@@ -319,20 +242,4 @@ func (r *Renderer) visitText(w util.BufWriter, source []byte, node ast.Node, ent
 		r.text.Write(segment.Value(source))
 	}
 	return ast.WalkContinue, nil
-}
-
-func (r *Renderer) visitString(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
-	if entering {
-		n := node.(*ast.String)
-		r.text.Write(n.Value)
-	}
-	return ast.WalkContinue, nil
-}
-
-func (r *Renderer) writeLines(w util.BufWriter, source []byte, node ast.Node) {
-	l := node.Lines().Len()
-	for i := 0; i < l; i++ {
-		line := node.Lines().At(i)
-		r.text.Write(line.Value(source))
-	}
 }
