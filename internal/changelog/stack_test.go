@@ -1,4 +1,4 @@
-package validator
+package changelog
 
 import (
 	"testing"
@@ -13,9 +13,11 @@ type testHeading struct {
 func newTestHeading(s string) Heading {
 	return testHeading{name: s}
 }
+
 func (h testHeading) Name() string {
 	return h.name
 }
+
 func (h testHeading) AsPath() string {
 	return asPath(h.name)
 }
@@ -25,9 +27,9 @@ func TestNewStackIsEmpty(t *testing.T) {
 
 	s := NewStack()
 	assert.True(s.empty(), "empty stack expected")
-	assert.False(s.title(), "title not expected")
-	assert.False(s.release(), "release not expected")
-	assert.False(s.change(), "change not expected")
+	assert.False(s.Title(), "title not expected")
+	assert.False(s.Release(), "release not expected")
+	assert.False(s.Change(), "change not expected")
 }
 
 func TestOneLevelStackIsDocument(t *testing.T) {
@@ -36,9 +38,9 @@ func TestOneLevelStackIsDocument(t *testing.T) {
 	s := NewStack()
 	s.push(newTestHeading("first"))
 	assert.False(s.empty(), "empty stack not expected")
-	assert.True(s.title(), "title expected")
-	assert.False(s.release(), "release not expected")
-	assert.False(s.change(), "change not expected")
+	assert.True(s.Title(), "title expected")
+	assert.False(s.Release(), "release not expected")
+	assert.False(s.Change(), "change not expected")
 }
 func TestTwoLevelStackIsRelease(t *testing.T) {
 	assert := assert.New(t)
@@ -47,9 +49,9 @@ func TestTwoLevelStackIsRelease(t *testing.T) {
 	s.push(newTestHeading("first"))
 	s.push(newTestHeading("second"))
 	assert.False(s.empty(), "empty stack not expected")
-	assert.False(s.title(), "title not expected")
-	assert.True(s.release(), "release expected")
-	assert.False(s.change(), "change not expected")
+	assert.False(s.Title(), "title not expected")
+	assert.True(s.Release(), "release expected")
+	assert.False(s.Change(), "change not expected")
 
 }
 func TestThreeLevelStackIsChange(t *testing.T) {
@@ -60,9 +62,9 @@ func TestThreeLevelStackIsChange(t *testing.T) {
 	s.push(newTestHeading("second"))
 	s.push(newTestHeading("third"))
 	assert.False(s.empty(), "empty stack not expected")
-	assert.False(s.title(), "title not expected")
-	assert.False(s.release(), "release not expected")
-	assert.True(s.change(), "change expected")
+	assert.False(s.Title(), "title not expected")
+	assert.False(s.Release(), "release not expected")
+	assert.True(s.Change(), "change expected")
 }
 
 func TestPopReturnsPushedContent(t *testing.T) {
@@ -139,13 +141,13 @@ func TestStackDepthGrowsAndShrink(t *testing.T) {
 
 func TestResetEmptyStackToZeroIsSameAsPush(t *testing.T) {
 	s := NewStack()
-	s.ResetTo(titleHeading, "title")
+	s.ResetTo(TitleHeading, "title")
 	assert.Equal(t, "{title}", s.AsPath())
 }
 
 func TestResetEmptyStackToALevelShouldFail(t *testing.T) {
 	s := NewStack()
-	_, err := s.ResetTo(releaseHeading, "[Unreleased]")
+	_, err := s.ResetTo(ReleaseHeading, "[Unreleased]")
 	assert.NotNil(t, err)
 }
 
@@ -153,7 +155,7 @@ func TestResetFilledStackToZeroIsSameAsPushToEmptyStack(t *testing.T) {
 	assert := assert.New(t)
 
 	s := NewStack()
-	if h, err := newTitle("title"); err == nil {
+	if h, err := newChangelog("title"); err == nil {
 		s.push(h)
 	}
 	if h, err := newRelease("[Unreleased]"); err == nil {
@@ -164,7 +166,7 @@ func TestResetFilledStackToZeroIsSameAsPushToEmptyStack(t *testing.T) {
 	}
 	assert.Equal("{title}{[Unreleased]}{Added}", s.AsPath())
 
-	s.ResetTo(titleHeading, "other title")
+	s.ResetTo(TitleHeading, "other title")
 	assert.Equal("{other title}", s.AsPath())
 }
 
@@ -172,7 +174,7 @@ func TestResetFilledStackToOneIsSameAsTwoPushToEmptyStack(t *testing.T) {
 	assert := assert.New(t)
 
 	s := NewStack()
-	if h, err := newTitle("title"); err == nil {
+	if h, err := newChangelog("title"); err == nil {
 		s.push(h)
 	}
 	if h, err := newRelease("[Unreleased]"); err == nil {
@@ -183,6 +185,6 @@ func TestResetFilledStackToOneIsSameAsTwoPushToEmptyStack(t *testing.T) {
 	}
 	assert.Equal("{title}{[Unreleased]}{Added}", s.AsPath())
 
-	s.ResetTo(releaseHeading, "1.2.3 - 2020-04-15 [YANKED]")
+	s.ResetTo(ReleaseHeading, "1.2.3 - 2020-04-15 [YANKED]")
 	assert.Equal("{title}{1.2.3 - 2020-04-15 [YANKED]}", s.AsPath())
 }

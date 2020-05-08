@@ -1,4 +1,4 @@
-package validator
+package changelog
 
 import (
 	"reflect"
@@ -10,8 +10,28 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestTitle(t *testing.T) {
-	h, _ := newTitle("changelog")
+func TestNewHeadingChangelog(t *testing.T) {
+	h, _ := NewHeading(TitleHeading, "changelog")
+	assertHeadingInterface(t, "changelog", h)
+}
+
+func TestNewHeadingRelease(t *testing.T) {
+	h, _ := NewHeading(ReleaseHeading, "[Unreleased]")
+	assertHeadingInterface(t, "[Unreleased]", h)
+}
+
+func TestNewHeadingChange(t *testing.T) {
+	h, _ := NewHeading(ChangeHeading, "Security")
+	assertHeadingInterface(t, "Security", h)
+}
+
+func TestNewHeadingUnknown(t *testing.T) {
+	_, err := NewHeading(-1, "Who knows what")
+	assert.Error(t, err)
+}
+
+func TestChangelog(t *testing.T) {
+	h, _ := newChangelog("changelog")
 	assertHeadingInterface(t, "changelog", h)
 }
 
@@ -20,26 +40,27 @@ func TestRelease(t *testing.T) {
 	assertHeadingInterface(t, "[Unreleased]", h)
 }
 
-func TestChange(t *testing.T) {
-	h, _ := newChange("Security")
-	assertHeadingInterface(t, "Security", h)
-}
-
 func TestNextRelease(t *testing.T) {
 	testcases := []struct {
-		changeMap changeMap
+		changeMap ChangeMap
 		expected  semver.Version
 	}{
-		{changeMap{"Added": true}, semver.Version{Major: 1, Minor: 0, Patch: 0}},
-		{changeMap{"Changed": true}, semver.Version{Major: 0, Minor: 1, Patch: 0}},
-		{changeMap{"Fixed": true}, semver.Version{Major: 0, Minor: 0, Patch: 1}},
-		{changeMap{}, semver.Version{}},
+		{ChangeMap{"Added": true}, semver.Version{Major: 1, Minor: 0, Patch: 0}},
+		{ChangeMap{"Changed": true}, semver.Version{Major: 0, Minor: 1, Patch: 0}},
+		{ChangeMap{"Fixed": true}, semver.Version{Major: 0, Minor: 0, Patch: 1}},
+		{ChangeMap{}, semver.Version{}},
 	}
 	for _, testcase := range testcases {
 		t.Run(testcase.expected.String(), func(t *testing.T) {
-			assert.Equal(t, testcase.expected, nextRelease(testcase.changeMap, semver.Version{}))
+			r := &Release{}
+			assert.Equal(t, testcase.expected, r.NextRelease(testcase.changeMap))
 		})
 	}
+}
+
+func TestChange(t *testing.T) {
+	h, _ := newChange("Security")
+	assertHeadingInterface(t, "Security", h)
 }
 
 func TestSubexp(t *testing.T) {

@@ -1,7 +1,8 @@
-package validator
+package changelog
 
 import (
 	"errors"
+	"fmt"
 	"regexp"
 	"strings"
 	"time"
@@ -9,32 +10,52 @@ import (
 	"github.com/blang/semver"
 )
 
+const (
+	TitleHeading = iota
+	ReleaseHeading
+	ChangeHeading
+)
+
 type Heading interface {
 	Name() string
 	AsPath() string
 }
 
-// Level 1 heading, title of the changelog
-type Title struct {
-	name string
-}
-
-func newTitle(s string) (Heading, error) {
-	if s == "" {
-		return nil, errors.New("Validation error: Title cannot stay empty")
+func NewHeading(level int, name string) (Heading, error) {
+	switch level {
+	case TitleHeading:
+		return newChangelog(name)
+	case ReleaseHeading:
+		return newRelease(name)
+	case ChangeHeading:
+		return newChange(name)
 	}
-	return Title{name: s}, nil
+	return nil, fmt.Errorf("Unknown heading level %v", level)
 }
 
-func (h Title) Name() string {
-	return h.name
+// Level 1, changelog
+type Changelog struct {
+	title string
 }
 
-func (h Title) AsPath() string {
-	return asPath(h.name)
+func newChangelog(s string) (Heading, error) {
+	if s == "" {
+		return nil, errors.New("Validation error: Changelog cannot stay empty")
+	}
+	return Changelog{title: s}, nil
 }
 
-// Level 2 heading, release
+func (h Changelog) Name() string {
+	return h.title
+}
+
+func (h Changelog) AsPath() string {
+	return asPath(h.title)
+}
+
+// Level 2, release
+type ChangeMap map[string]bool
+
 type Release struct {
 	name               string
 	unreleased, yanked bool
@@ -93,8 +114,53 @@ func (h Release) AsPath() string {
 	return asPath(h.name)
 }
 
-func (r *Release) isRelease() bool {
-	return r.date != time.Time{} && !r.unreleased && len(r.version.Pre) == 0 && len(r.version.Build) == 0
+func (h *Release) IsRelease() bool {
+	return h.HasBeenReleased() && !h.unreleased && len(h.version.Pre) == 0 && len(h.version.Build) == 0
+}
+
+func (h *Release) Unreleased() bool {
+	return h.unreleased
+}
+
+func (h *Release) Yanked() bool {
+	return h.yanked
+}
+
+func (h *Release) HasBeenReleased() bool {
+	return h.date != time.Time{}
+}
+
+func (h *Release) HasRelease(nextRelease semver.Version) bool {
+	return h.version.EQ(nextRelease)
+}
+
+func (h *Release) NextRelease(c ChangeMap) semver.Version {
+	for _, k := range keysFor(changeKind, semverMajor) {
+		if c[k] {
+			return semver.Version{Major: h.version.Major + 1, Minor: 0, Patch: 0}
+		}
+	}
+	for _, k := range keysFor(changeKind, semverMinor) {
+		if c[k] {
+			return semver.Version{Major: h.version.Major, Minor: h.version.Minor + 1, Patch: 0}
+		}
+	}
+	for _, k := range keysFor(changeKind, semverPatch) {
+		if c[k] {
+			return semver.Version{Major: h.version.Major, Minor: h.version.Minor, Patch: h.version.Patch + 1}
+		}
+	}
+	return h.version
+}
+
+func (h *Release) SortsBefore(other Release) error {
+	if h.date.Before(other.date) {
+		return errors.New("Validation error: release '" + other.Name() + "' should be older than '" + h.Name() + "'")
+	}
+	if h.version.LTE(other.version) {
+		return errors.New("Validation error: release '" + other.Name() + "' should be older than '" + h.Name() + "'")
+	}
+	return nil
 }
 
 const (
@@ -105,7 +171,7 @@ const (
 	semverBuild
 )
 
-// Level 3 heading, change groups
+// Level 3, change groups
 type Change struct {
 	name string
 }
@@ -131,13 +197,13 @@ var changeKind = map[string]int{"Added": semverMajor, "Removed": semverMajor, "C
 
 func keysOf(m map[string]int) string {
 	var keys strings.Builder
+	sep := ""
 	for k := range m {
-		if keys.Len() > 0 {
-			keys.WriteString(", ")
-		}
+		keys.WriteString(sep)
 		keys.WriteString("\"")
 		keys.WriteString(k)
 		keys.WriteString("\"")
+		sep = ", "
 	}
 	return keys.String()
 }
@@ -150,25 +216,6 @@ func keysFor(m map[string]int, level int) []string {
 		}
 	}
 	return result
-}
-
-func nextRelease(c changeMap, v semver.Version) semver.Version {
-	for _, k := range keysFor(changeKind, semverMajor) {
-		if c[k] {
-			return semver.Version{Major: v.Major + 1, Minor: 0, Patch: 0}
-		}
-	}
-	for _, k := range keysFor(changeKind, semverMinor) {
-		if c[k] {
-			return semver.Version{Major: v.Major, Minor: v.Minor + 1, Patch: 0}
-		}
-	}
-	for _, k := range keysFor(changeKind, semverPatch) {
-		if c[k] {
-			return semver.Version{Major: v.Major, Minor: v.Minor, Patch: v.Patch + 1}
-		}
-	}
-	return v
 }
 
 func asPath(name string) string {
