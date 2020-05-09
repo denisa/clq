@@ -1,8 +1,5 @@
 .PHONY: test install cov lcov
 
-bin/gcov2lcov:
-	@env GOBIN=$$PWD/bin GO111MODULE=on go install github.com/jandelgado/gcov2lcov
-
 test:
 	go test -v ./... -covermode=count -coverprofile=coverage.out -coverpkg=./...
 
@@ -14,3 +11,7 @@ lcov: test bin/gcov2lcov
 
 install: test
 	go install ./...
+
+bin/gcov2lcov:
+	@env GOBIN=$$PWD/bin GO111MODULE=on go install github.com/jandelgado/gcov2lcov
+
