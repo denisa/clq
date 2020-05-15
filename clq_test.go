@@ -8,6 +8,8 @@ import (
 	"path/filepath"
 	"strings"
 	"testing"
+
+	"github.com/stretchr/testify/require"
 )
 
 func TestChangelogShouldSucceed(t *testing.T) {
@@ -20,10 +22,9 @@ func TestScenarios(t *testing.T) {
 		Result    int      `json:"result"`
 		Arguments []string `json:"arguments,omitempty"`
 	}
+	require := require.New(t)
 	file, err := os.Open("testdata/scenarios.json")
-	if err != nil {
-		t.Fatal(err)
-	}
+	require.NoError(err)
 	defer file.Close()
 
 	dec := json.NewDecoder(bufio.NewReader(file))
@@ -33,8 +34,8 @@ func TestScenarios(t *testing.T) {
 	for {
 		if err := dec.Decode(&scenarios); err == io.EOF {
 			break
-		} else if err != nil {
-			t.Fatal(err)
+		} else {
+			require.NoError(err)
 		}
 		for _, scenario := range scenarios {
 			delete(testFiles, scenario.Name)
@@ -55,28 +56,23 @@ func TestScenarios(t *testing.T) {
 				buf.Write(val)
 			}
 		}
-		t.Fatalf("Unused test files: " + buf.String())
+		require.Failf("Unused test files: %v", buf.String())
 	}
 }
 
 func executeClq(t *testing.T, expected int, arguments ...string) {
 	var actual = entryPoint("clq", arguments...)
-	if expected != actual {
-		t.Errorf("Expected %d but received %v", expected, actual)
-	}
+	require.Equal(t, expected, actual)
 }
 
 func allTestFiles(t *testing.T) map[string]bool {
 	file, err := os.Open("testdata")
-	if err != nil {
-		t.Fatal(err)
-	}
+	require.NoError(t, err)
 	defer file.Close()
 
 	names, err := file.Readdirnames(0)
-	if err != nil {
-		t.Fatal(err)
-	}
+	require.NoError(t, err)
+
 	result := make(map[string]bool)
 	for _, val := range names {
 		if val == "scenarios.json" {
