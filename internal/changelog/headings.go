@@ -57,7 +57,7 @@ func (h Changelog) AsPath() string {
 type ChangeMap map[string]bool
 
 type Release struct {
-	name               string
+	name, label        string
 	unreleased, yanked bool
 	date               time.Time
 	version            semver.Version
@@ -78,14 +78,15 @@ func newRelease(s string) (Heading, error) {
 			if err != nil {
 				return nil, errors.New("Validation error: Illegal date (" + err.Error() + ") for " + s)
 			}
-			if matched, _ := regexp.MatchString(`[\s*YANKED\s*]`, subexp(groups, matches, "label")); matched {
+			label := subexp(groups, matches, "label")
+			if matched, _ := regexp.MatchString(`[\s*YANKED\s*]`, label); matched {
 				return nil, errors.New("Validation error: the version of a [YANKED] release cannot stand between [...] for " + s)
 			}
 			version, err := semver.Make(subexp(groups, matches, "semver"))
 			if err != nil {
 				return nil, errors.New("Validation error: Illegal version (" + err.Error() + ") for " + s)
 			}
-			return Release{name: s, date: date, version: version}, nil
+			return Release{name: s, date: date, version: version, label: label}, nil
 		}
 	}
 	{
@@ -112,6 +113,18 @@ func (h Release) Name() string {
 
 func (h Release) AsPath() string {
 	return asPath(h.name)
+}
+
+func (h Release) Date() string {
+	return h.date.Format("2006-01-02")
+}
+
+func (h Release) Label() string {
+	return h.label
+}
+
+func (h Release) Version() string {
+	return h.version.String()
 }
 
 func (h *Release) IsRelease() bool {
