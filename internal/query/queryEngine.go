@@ -89,9 +89,7 @@ func (qe *QueryEngine) newReleaseQuery(name string, queryElements []string) erro
 					Date    string `json:"date,omitempty"`
 				}
 				res, _ := json.Marshal(Release{Version: r.Version(), Date: r.Date()})
-				var b strings.Builder
-				_, _ = b.Write(res)
-				return b.String()
+				return string(res)
 			}
 		} else {
 			switch queryElements[0] {
