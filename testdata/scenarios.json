@@ -277,12 +277,22 @@
     "output": "✅ testdata/released_and_yanked.md: released\n✅ testdata/sort_date_newer_release_first.md: released\n"
   },
   {
+    "platform": "unix",
     "result": 1,
     "arguments": [
-      "testdata/no_release_header.md",
+      "testdata/this file does not exist.md",
       "testdata/sort_date_newer_release_first.md"
     ],
-    "error": "❗️ testdata/no_release_header.md: Validation error: No release defined in changelog\n"
+    "error": "❗️ testdata/this file does not exist.md: open testdata/this file does not exist.md: no such file or directory\n"
+  },
+  {
+    "platform": "windows",
+    "result": 1,
+    "arguments": [
+      "testdata/this file does not exist.md",
+      "testdata/sort_date_newer_release_first.md"
+    ],
+    "error": "❗️ testdata/this file does not exist.md: open testdata/this file does not exist.md: The system cannot find the file specified.\n"
   },
   {
     "result": 1,
