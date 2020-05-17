@@ -1,10 +1,11 @@
 package validator
 
 import (
-	"errors"
+	"fmt"
 	"strings"
-	"time"
 
+	"github.com/denisa/clq/internal/changelog"
+	"github.com/denisa/clq/internal/query"
 	"github.com/yuin/goldmark/ast"
 	"github.com/yuin/goldmark/renderer"
 	"github.com/yuin/goldmark/util"
@@ -12,27 +13,37 @@ import (
 
 // A Config struct has configurations for the Validator renderer.
 type Config struct {
-	Release bool
+	release     bool
+	queryEngine query.QueryEngine
 }
 
 // NewConfig returns a new Config with defaults.
 func NewConfig() Config {
-	return Config{
-		Release: false,
-	}
-}
-
-// SetOption implements renderer.NodeRenderer.SetOption.
-func (c *Config) SetOption(name renderer.OptionName, value interface{}) {
-	switch name {
-	case optRelease:
-		c.Release = value.(bool)
-	}
+	return Config{}
 }
 
 // An Option interface sets options for Validator based renderers.
 type Option interface {
 	SetValidationOption(*Config)
+}
+
+// Query is the optional query
+const optQuery renderer.OptionName = "Query"
+
+type withQuery struct {
+	value query.QueryEngine
+}
+
+func (o *withQuery) SetValidationOption(c *Config) {
+	c.queryEngine = o.value
+}
+
+// WithQuery is a functional option that allow you to set the query string to
+// the renderer.
+func WithQuery(queryEngine query.QueryEngine) interface {
+	Option
+} {
+	return &withQuery{queryEngine}
 }
 
 // Release is an option that control the validation mode
@@ -42,24 +53,17 @@ type withRelease struct {
 	value bool
 }
 
-func (o *withRelease) SetConfig(c *renderer.Config) {
-	c.Options[optRelease] = o.value
-}
-
 func (o *withRelease) SetValidationOption(c *Config) {
-	c.Release = o.value
+	c.release = o.value
 }
 
 // WithRelease is a functional option that allow you to set the release mode to
 // the renderer.
 func WithRelease(release bool) interface {
-	renderer.Option
 	Option
 } {
 	return &withRelease{release}
 }
-
-type changeMap map[string]bool
 
 // A Renderer struct is an implementation of renderer.NodeRenderer that validates
 // a changelog.
@@ -67,17 +71,17 @@ type Renderer struct {
 	Config
 	text                     strings.Builder
 	h1Released, h1Unreleased bool
-	changes                  changeMap
+	changes                  changelog.ChangeMap
 	hasChangeDescriptions    bool
-	headers                  stack
-	previousRelease          Release
+	headers                  changelog.Stack
+	previousRelease          changelog.Release
 }
 
 func NewRenderer(opts ...Option) renderer.NodeRenderer {
 	r := &Renderer{
 		Config:  NewConfig(),
-		changes: make(changeMap),
-		headers: NewStack(),
+		changes: make(changelog.ChangeMap),
+		headers: changelog.NewStack(),
 	}
 
 	for _, opt := range opts {
@@ -97,121 +101,125 @@ func (r *Renderer) RegisterFuncs(reg renderer.NodeRendererFuncRegisterer) {
 }
 
 func (r *Renderer) visitDocument(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
-	var err error
 	if !entering {
 		if !r.h1Released && !r.h1Unreleased {
-			err = errors.New("Validation error: No release defined in changelog")
-		} else if (r.headers.release() || r.headers.change()) && !r.hasChangeDescriptions {
-			err = errors.New("No change descriptions for " + r.headers.AsPath())
+			return ast.WalkStop, fmt.Errorf("Validation error: No release defined in changelog")
+		}
+		if (r.headers.Release() || r.headers.Change()) && !r.hasChangeDescriptions {
+			return ast.WalkStop, fmt.Errorf("No change descriptions for %v", r.headers.AsPath())
 		}
 	}
-	return ast.WalkContinue, err
+	return ast.WalkContinue, nil
 }
 
 func (r *Renderer) visitHeading(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
-	var err error
 	if entering {
 		r.text.Reset()
-	} else {
-		var h Heading
-		n := node.(*ast.Heading)
-		switch n.Level {
-		case 1:
-			h, err = r.headers.ResetTo(titleHeading, r.text.String())
+		return ast.WalkContinue, nil
+	}
+
+	n := node.(*ast.Heading)
+	switch n.Level {
+	case 1:
+		h, err := r.headers.ResetTo(changelog.TitleHeading, r.text.String())
+		if err != nil {
+			return ast.WalkStop, err
+		}
+
+		title := h.(changelog.Changelog)
+		if err := r.validateDocumentHeading(title); err != nil {
+			return ast.WalkStop, err
+		}
+
+		r.queryEngine.Apply(w, title)
+	case 2:
+		if (r.headers.Release() || r.headers.Change()) && !r.hasChangeDescriptions {
+			if err := fmt.Errorf("No change descriptions for %v", r.headers.AsPath()); err != nil {
+				return ast.WalkStop, err
+			}
+		} else {
+			h, err := r.headers.ResetTo(changelog.ReleaseHeading, r.text.String())
 			if err != nil {
-				break
+				return ast.WalkStop, err
 			}
 
-			title := h.(Title)
-			err = r.validateDocumentHeading(title)
-		case 2:
-			if (r.headers.release() || r.headers.change()) && !r.hasChangeDescriptions {
-				err = errors.New("No change descriptions for " + r.headers.AsPath())
-			} else {
-				h, err = r.headers.ResetTo(releaseHeading, r.text.String())
-				if err != nil {
-					break
-				}
-
-				release := h.(Release)
-				err = r.validateReleaseHeading(release)
-				if err != nil {
-					break
-				}
-
-				if r.previousRelease.isRelease() && release.isRelease() {
-					nextRelease := nextRelease(r.changes, release.version)
-					if !r.previousRelease.version.EQ(nextRelease) {
-						err = errors.New("Release '" + r.previousRelease.Name() + "' should have version " + nextRelease.String())
-					}
-				}
-
-				if release.unreleased {
-					r.h1Unreleased = true
-				} else if !release.yanked {
-					r.h1Released = true
-				}
-				r.hasChangeDescriptions = false
-				r.changes = make(changeMap)
-				r.previousRelease = release
+			release := h.(changelog.Release)
+			if err := r.validateReleaseHeading(release); err != nil {
+				return ast.WalkStop, err
 			}
-		case 3:
-			if r.headers.title() {
-				err = errors.New("Changes must be in a release " + r.headers.AsPath())
-			} else if r.headers.change() && !r.hasChangeDescriptions {
-				err = errors.New("No change descriptions for " + r.headers.AsPath())
-			} else {
-				h, err = r.headers.ResetTo(changeHeading, r.text.String())
-				if err != nil {
-					break
-				}
 
-				change := h.(Change)
-				err = r.validateChangeHeading(change)
-				if err != nil {
-					break
+			if r.previousRelease.IsRelease() && release.IsRelease() {
+				nextRelease := release.NextRelease(r.changes)
+				if !r.previousRelease.HasRelease(nextRelease) {
+					return ast.WalkStop, fmt.Errorf("Release %q should have version %v", r.previousRelease.Name(), nextRelease.String())
 				}
-				r.hasChangeDescriptions = false
 			}
+
+			if release.Unreleased() {
+				r.h1Unreleased = true
+			} else if !release.Yanked() {
+				r.h1Released = true
+			}
+			r.hasChangeDescriptions = false
+			r.changes = make(changelog.ChangeMap)
+			r.previousRelease = release
+
+			r.queryEngine.Apply(w, release)
+		}
+	case 3:
+		if r.headers.Title() {
+			return ast.WalkStop, fmt.Errorf("Changes must be in a release %v", r.headers.AsPath())
+		} else if r.headers.Change() && !r.hasChangeDescriptions {
+			return ast.WalkStop, fmt.Errorf("No change descriptions for %v", r.headers.AsPath())
+		} else {
+			h, err := r.headers.ResetTo(changelog.ChangeHeading, r.text.String())
+			if err != nil {
+				return ast.WalkStop, err
+			}
+
+			change := h.(changelog.Change)
+			if err := r.validateChangeHeading(change); err != nil {
+				return ast.WalkStop, err
+			}
+			r.hasChangeDescriptions = false
+
+			r.queryEngine.Apply(w, change)
 		}
 	}
-	return ast.WalkContinue, err
+	return ast.WalkContinue, nil
 }
 
-func (r *Renderer) validateDocumentHeading(title Title) error { return nil }
+func (r *Renderer) validateDocumentHeading(title changelog.Changelog) error { return nil }
 
-func (r *Renderer) validateReleaseHeading(release Release) error {
-	if release.unreleased {
-		if r.Release {
-			return errors.New("Validation error: [Unreleased] not supported in release mode " + r.headers.AsPath())
+func (r *Renderer) validateReleaseHeading(release changelog.Release) error {
+	if release.Unreleased() {
+		if r.release {
+			return fmt.Errorf("Validation error: \"[Unreleased]\" not supported in release mode %v", r.headers.AsPath())
 		}
 		if r.h1Unreleased {
-			return errors.New("Validation error: Multiple [Unreleased] not supported " + r.headers.AsPath())
+			return fmt.Errorf("Validation error: Multiple \"[Unreleased]\" not supported %v", r.headers.AsPath())
 		}
 		if r.h1Released {
-			return errors.New("Validation error: [Unreleased] must come before any release " + r.headers.AsPath())
+			return fmt.Errorf("Validation error: \"[Unreleased]\" must come before any release %v", r.headers.AsPath())
 		}
 	} else {
-		if release.yanked {
+		if release.Yanked() {
 			if !r.h1Released && !r.h1Unreleased {
-				return errors.New("Validation error: Changelog cannot start with a [YANKED] release, insert a release or a [Unreleased] first " + r.headers.AsPath())
+				return fmt.Errorf("Validation error: Changelog cannot start with a \"[YANKED]\" release, insert a release or a \"[Unreleased]\" first %v", r.headers.AsPath())
 			}
 		}
-		if (r.previousRelease.date != time.Time{}) {
-			if r.previousRelease.date.Before(release.date) {
-				return errors.New("Validation error: release '" + release.Name() + "' should be older than '" + r.previousRelease.Name() + "'")
-			}
-			if r.previousRelease.version.LTE(release.version) {
-				return errors.New("Validation error: release '" + release.Name() + "' should be older than '" + r.previousRelease.Name() + "'")
+		if r.previousRelease.HasBeenReleased() {
+			if err := r.previousRelease.SortsBefore(release); err != nil {
+				return err
 			}
 		}
 	}
 	return nil
 }
 
-func (r *Renderer) validateChangeHeading(change Change) error {
+func (r *Renderer) validateChangeHeading(change changelog.Change) error {
 	if r.changes[change.Name()] {
-		return errors.New("Validation error: Multiple headings " + change.Name() + " not supported " + r.headers.AsPath())
+		return fmt.Errorf("Validation error: Multiple headings %q not supported %v", change.Name(), r.headers.AsPath())
 	}
 	r.changes[change.Name()] = true
 	return nil
@@ -222,7 +230,7 @@ func (r *Renderer) visitList(w util.BufWriter, source []byte, node ast.Node, ent
 }
 
 func (r *Renderer) visitListItem(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
-	if r.headers.change() {
+	if r.headers.Change() {
 		r.hasChangeDescriptions = true
 	}
 	return ast.WalkContinue, nil
