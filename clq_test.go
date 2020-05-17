@@ -47,12 +47,12 @@ func TestScenarios(t *testing.T) {
 				switch scenario.Platform {
 				case "unix":
 					if os.Getuid() == -1 {
-						t.Skipf("Running on Windows, skipping %v/%v", scenario.Name, scenario.Platform)
+						t.SkipNow()
 						return
 					}
 				case "windows":
 					if os.Getuid() != -1 {
-						t.Skipf("Running on Unix, skipping %v/%v", scenario.Name, scenario.Platform)
+						t.SkipNow()
 						return
 					}
 				}
