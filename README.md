@@ -61,15 +61,15 @@ clq validates that the changelog file conforms to the grammar. It further valida
 
 clq is generally lenient with the spaces, accepting them between square brackets for example.
 
-_Note_ that pre-releases might or might not be supported at this time.
+_Note_ that pre-releases might or might not be supported at this time.\
 ![P’têt ben… P’têt pas… J’peux pas dire…](https://lestribulationsdunfrancophoneenfrancophonie.files.wordpress.com/2017/02/http-www-etaletaculture-frwp-contentuploads201512une-reponse-de-normands.jpg?w=317&h=269)\
 (Astérix & Obélix, _Le tour de Gaule_, 1953)
 
 # Query Expression Language
 ```
-QUERY = "title" | ( "releases[", RELEASE_SELECTOR, "]", [ "." ( "date", "label", "version", "status")] );
+QUERY            = "title" | ( "releases[", RELEASE_SELECTOR, "]", [ "." ( "date", "label", "version", "status")] );
 RELEASE_SELECTOR = DIGIT+;
-DIGIT           = "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9";
+DIGIT            = "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9";
 ```
 The query expression is a sequence of _query elements_.
 
