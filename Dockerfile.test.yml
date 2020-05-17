@@ -1,0 +1,7 @@
+version: '3'
+services:
+  sut:
+    build: .
+    volumes:
+      - ./CHANGELOG.md:/home/CHANGELOG.md:ro
+    command: [ "/home/CHANGELOG.md" ]

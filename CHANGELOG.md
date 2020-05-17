@@ -23,3 +23,4 @@ Categories:
 ### Added
 - basic validations
 - basic queries
+- docker image
