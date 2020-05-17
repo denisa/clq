@@ -11,7 +11,6 @@ import (
 )
 
 type Query interface {
-	Reset()
 	Select(w util.BufWriter, heading changelog.Heading) bool
 }
 
@@ -34,7 +33,6 @@ func NewQueryEngine(query string) (*QueryEngine, error) {
 func (qe *QueryEngine) Apply(w util.BufWriter, heading changelog.Heading) {
 	if qe.current < len(qe.queries) && qe.queries[qe.current].Select(w, heading) {
 		qe.current++
-		qe.queries[qe.current].Reset()
 	}
 }
 
@@ -74,8 +72,6 @@ func (q *changelogQuery) Select(w util.BufWriter, heading changelog.Heading) boo
 		return false
 	}
 }
-
-func (q *changelogQuery) Reset() {}
 
 func (qe *QueryEngine) newReleaseQuery(name string, queryElements []string) error {
 	if i, err := strconv.Atoi(name); err != nil {
@@ -136,8 +132,4 @@ func (q *releaseQuery) Select(w util.BufWriter, heading changelog.Heading) bool 
 		w.WriteString(q.project(h))
 	}
 	return selected && q.project == nil
-}
-
-func (q *releaseQuery) Reset() {
-	q.cursor = 0
 }

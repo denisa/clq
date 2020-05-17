@@ -127,9 +127,7 @@ func (r *Renderer) visitHeading(w util.BufWriter, source []byte, node ast.Node, 
 		}
 
 		title := h.(changelog.Changelog)
-		if err := r.validateDocumentHeading(title); err != nil {
-			return ast.WalkStop, err
-		}
+		// no validation rules defined for the title...
 
 		r.queryEngine.Apply(w, title)
 	case 2:
@@ -188,8 +186,6 @@ func (r *Renderer) visitHeading(w util.BufWriter, source []byte, node ast.Node, 
 	}
 	return ast.WalkContinue, nil
 }
-
-func (r *Renderer) validateDocumentHeading(title changelog.Changelog) error { return nil }
 
 func (r *Renderer) validateReleaseHeading(release changelog.Release) error {
 	if release.Unreleased() {
