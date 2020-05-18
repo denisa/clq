@@ -1,6 +1,7 @@
 # clq — Changelog validation and query tool
 
 [![test](https://github.com/denisa/clq/workflows/test/badge.svg)](https://github.com/denisa/clq/actions?query=workflow%3Atest+branch%3Amaster)
+[![Docker Automated build](https://img.shields.io/docker/automated/denisa/clq)](https://hub.docker.com/repository/docker/denisa/clq/builds)
 [![Coverage Status](https://coveralls.io/repos/github/denisa/clq/badge.svg?branch=master)](https://coveralls.io/github/denisa/clq?branch=master)
 ![Semantic Versioning](https://img.shields.io/badge/Sematic%20Versioning-2.0.0-informational)
 
@@ -21,6 +22,12 @@ validates the file and further enforces that the most recent release is neither 
 - `clq -query releases[0].version CHANGELOG.md`\
 validates the complete changelog and returns the version of the most recent release.
 
+# Execution with Docker
+A small docker image offers a simple no-installation executable.
+
+A single changelog file can be validated with a simple `docker run clq < CHANGELOG.md`.
+
+To operate on multiple files is more complex and we recommend either multiple individual invocations, or the installation of native binaries.
 
 # Grammar for supported Changelog
 ```
