@@ -16,6 +16,7 @@ func NewStack() Stack {
 func (s *Stack) empty() bool {
 	return s.depth() == 0
 }
+
 func (s *Stack) Title() bool {
 	return s.depth() == 1
 }
@@ -53,8 +54,9 @@ func (s *Stack) Peek() (Heading, error) {
 	}
 	return s.s[l-1], nil
 }
-func (s *Stack) ResetTo(depth int, name string) (Heading, error) {
-	if depth > s.depth() {
+
+func (s *Stack) ResetTo(depth HeadingKind, name string) (Heading, error) {
+	if depth > HeadingKind(s.depth()) {
 		return nil, fmt.Errorf("Attempting to reset to %d for a stack of depth %d", depth, s.depth())
 	}
 

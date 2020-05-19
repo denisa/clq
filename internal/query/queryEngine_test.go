@@ -144,7 +144,7 @@ func TestQuerySecondRelease(t *testing.T) {
 	require.JSONEq("{\"version\":\"1.2.2\", \"date\":\"2020-05-15\"}", result)
 }
 
-func newHeading(level int, text string) changelog.Heading {
+func newHeading(level changelog.HeadingKind, text string) changelog.Heading {
 	h, _ := changelog.NewHeading(level, text)
 	return h
 }

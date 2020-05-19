@@ -10,8 +10,10 @@ import (
 	"github.com/blang/semver"
 )
 
+type HeadingKind int
+
 const (
-	TitleHeading = iota
+	TitleHeading HeadingKind = iota
 	ReleaseHeading
 	ChangeHeading
 )
@@ -21,7 +23,7 @@ type Heading interface {
 	AsPath() string
 }
 
-func NewHeading(level int, name string) (Heading, error) {
+func NewHeading(level HeadingKind, name string) (Heading, error) {
 	switch level {
 	case TitleHeading:
 		return newChangelog(name)
@@ -176,13 +178,19 @@ func (h *Release) SortsBefore(other Release) error {
 	return nil
 }
 
+type incrementKind int
+
 const (
-	semverMajor = iota
+	semverMajor incrementKind = iota
 	semverMinor
 	semverPatch
 	semverPrerelease
 	semverBuild
 )
+
+type changeToIncrementKind map[string]incrementKind
+
+var changeKind = changeToIncrementKind{"Added": semverMajor, "Removed": semverMajor, "Changed": semverMinor, "Deprecated": semverMinor, "Fixed": semverPatch, "Security": semverPatch}
 
 // Level 3, change groups
 type Change struct {
@@ -206,17 +214,15 @@ func (h Change) AsPath() string {
 	return asPath(h.name)
 }
 
-var changeKind = map[string]int{"Added": semverMajor, "Removed": semverMajor, "Changed": semverMinor, "Deprecated": semverMinor, "Fixed": semverPatch, "Security": semverPatch}
-
-func keysOf(m map[string]int) string {
+func keysOf(m changeToIncrementKind) string {
 	var changes []string
-	for i := range []int{semverMajor, semverMinor, semverPatch, semverPrerelease, semverBuild} {
+	for _, i := range []incrementKind{semverMajor, semverMinor, semverPatch, semverPrerelease, semverBuild} {
 		changes = append(changes, keysFor(m, i)...)
 	}
 	return strings.Join(changes, ", ")
 }
 
-func keysFor(m map[string]int, level int) []string {
+func keysFor(m changeToIncrementKind, level incrementKind) []string {
 	var result []string
 	for k, l := range m {
 		if l == level {
