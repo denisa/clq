@@ -20,7 +20,7 @@ func TestNewHeadingUnknown(t *testing.T) {
 
 func requireHeadingInterface(t *testing.T, name string, actual Heading) {
 	require.Equal(t, name, actual.Name())
-	require.Equal(t, asPath(actual.Name()), actual.AsPath())
+	require.Equal(t, asPath(actual.Name()), actual.String())
 }
 
 func requireHeadingEquals(require *require.Assertions, expected Heading, actual Heading) {

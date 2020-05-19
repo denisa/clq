@@ -20,6 +20,6 @@ func (h Changelog) Name() string {
 	return h.title
 }
 
-func (h Changelog) AsPath() string {
+func (h Changelog) String() string {
 	return asPath(h.title)
 }

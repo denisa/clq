@@ -18,7 +18,7 @@ func (h testHeading) Name() string {
 	return h.name
 }
 
-func (h testHeading) AsPath() string {
+func (h testHeading) String() string {
 	return asPath(h.name)
 }
 
@@ -93,15 +93,15 @@ func TestStackDepthGrowsAndShrink(t *testing.T) {
 
 	s := NewStack()
 	require.Equal(0, s.depth())
-	require.Equal("", s.AsPath())
+	require.Equal("", s.String())
 
 	s.push(newTestHeading("first"))
 	require.Equal(1, s.depth())
-	require.Equal("{first}", s.AsPath())
+	require.Equal("{first}", s.String())
 
 	s.push(newTestHeading("second"))
 	require.Equal(2, s.depth())
-	require.Equal("{first}{second}", s.AsPath())
+	require.Equal("{first}{second}", s.String())
 
 	if actual, err := s.pop(); err == nil {
 		requireHeadingEquals(require, newTestHeading("second"), actual)
@@ -109,7 +109,7 @@ func TestStackDepthGrowsAndShrink(t *testing.T) {
 		t.Error(err)
 	}
 	require.Equal(1, s.depth())
-	require.Equal("{first}", s.AsPath())
+	require.Equal("{first}", s.String())
 
 	if actual, err := s.pop(); err == nil {
 		requireHeadingEquals(require, newTestHeading("first"), actual)
@@ -118,13 +118,13 @@ func TestStackDepthGrowsAndShrink(t *testing.T) {
 	}
 
 	require.Equal(0, s.depth())
-	require.Equal("", s.AsPath())
+	require.Equal("", s.String())
 }
 
 func TestResetEmptyStackToZeroIsSameAsPush(t *testing.T) {
 	s := NewStack()
 	s.ResetTo(TitleHeading, "title")
-	require.Equal(t, "{title}", s.AsPath())
+	require.Equal(t, "{title}", s.String())
 }
 
 func TestResetEmptyStackToALevelShouldFail(t *testing.T) {
@@ -146,10 +146,10 @@ func TestResetFilledStackToZeroIsSameAsPushToEmptyStack(t *testing.T) {
 	if h, err := newChange("Added"); err == nil {
 		s.push(h)
 	}
-	require.Equal("{title}{[Unreleased]}{Added}", s.AsPath())
+	require.Equal("{title}{[Unreleased]}{Added}", s.String())
 
 	s.ResetTo(TitleHeading, "other title")
-	require.Equal("{other title}", s.AsPath())
+	require.Equal("{other title}", s.String())
 }
 
 func TestResetFilledStackToOneIsSameAsTwoPushToEmptyStack(t *testing.T) {
@@ -165,8 +165,8 @@ func TestResetFilledStackToOneIsSameAsTwoPushToEmptyStack(t *testing.T) {
 	if h, err := newChange("Added"); err == nil {
 		s.push(h)
 	}
-	require.Equal("{title}{[Unreleased]}{Added}", s.AsPath())
+	require.Equal("{title}{[Unreleased]}{Added}", s.String())
 
 	s.ResetTo(ReleaseHeading, "1.2.3 - 2020-04-15 [YANKED]")
-	require.Equal("{title}{1.2.3 - 2020-04-15 [YANKED]}", s.AsPath())
+	require.Equal("{title}{1.2.3 - 2020-04-15 [YANKED]}", s.String())
 }

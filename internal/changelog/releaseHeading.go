@@ -66,7 +66,7 @@ func (h Release) Name() string {
 	return h.name
 }
 
-func (h Release) AsPath() string {
+func (h Release) String() string {
 	return asPath(h.name)
 }
 
@@ -82,27 +82,27 @@ func (h Release) Version() string {
 	return h.version.String()
 }
 
-func (h *Release) IsRelease() bool {
+func (h Release) IsRelease() bool {
 	return h.HasBeenReleased() && !h.unreleased && len(h.version.Pre) == 0 && len(h.version.Build) == 0
 }
 
-func (h *Release) Unreleased() bool {
+func (h Release) Unreleased() bool {
 	return h.unreleased
 }
 
-func (h *Release) Yanked() bool {
+func (h Release) Yanked() bool {
 	return h.yanked
 }
 
-func (h *Release) HasBeenReleased() bool {
+func (h Release) HasBeenReleased() bool {
 	return h.date != time.Time{}
 }
 
-func (h *Release) HasRelease(nextRelease semver.Version) bool {
+func (h Release) HasRelease(nextRelease semver.Version) bool {
 	return h.version.EQ(nextRelease)
 }
 
-func (h *Release) NextRelease(c ChangeMap) semver.Version {
+func (h Release) NextRelease(c ChangeMap) semver.Version {
 	for _, k := range keysFor(changeKind, semverMajor) {
 		if c[k] {
 			return semver.Version{Major: h.version.Major + 1, Minor: 0, Patch: 0}
@@ -121,7 +121,7 @@ func (h *Release) NextRelease(c ChangeMap) semver.Version {
 	return h.version
 }
 
-func (h *Release) SortsBefore(other Release) error {
+func (h Release) SortsBefore(other Release) error {
 	if h.date.Before(other.date) {
 		return fmt.Errorf("Validation error: release %q should be older than %q", other.Name(), h.Name())
 	}

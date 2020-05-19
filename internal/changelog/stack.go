@@ -61,10 +61,10 @@ func (s *Stack) ResetTo(depth HeadingKind, name string) (Heading, error) {
 	}
 }
 
-func (s *Stack) AsPath() string {
+func (s Stack) String() string {
 	var path strings.Builder
 	for _, heading := range s.s {
-		path.WriteString(heading.AsPath())
+		path.WriteString(heading.String())
 	}
 	return path.String()
 }

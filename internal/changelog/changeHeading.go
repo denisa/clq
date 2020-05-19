@@ -23,6 +23,6 @@ func newChange(s string) (Heading, error) {
 func (h Change) Name() string {
 	return h.name
 }
-func (h Change) AsPath() string {
+func (h Change) String() string {
 	return asPath(h.name)
 }

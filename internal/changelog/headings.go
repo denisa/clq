@@ -16,7 +16,7 @@ const (
 
 type Heading interface {
 	Name() string
-	AsPath() string
+	String() string
 }
 
 func asPath(name string) string {
