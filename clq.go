@@ -19,6 +19,8 @@ import (
 type Clq struct {
 	stdin          io.Reader
 	stdout, stderr io.Writer
+	verbose        bool
+	documents      []string
 }
 
 func main() {
@@ -33,21 +35,21 @@ func (clq *Clq) entryPoint(name string, arguments ...string) int {
 		fmt.Fprintf(options.Output(), "\nUsage: %s { flags } <path to changelog.md>\n\nOptions are:\n", options.Name())
 		options.PrintDefaults()
 	}
-	var release = options.Bool("release", false, "Enable release-mode validation")
 	var queryString = options.String("query", "", "A query to extract information out of the change log")
+	var release = options.Bool("release", false, "Enable release-mode validation")
+	options.BoolVar(&clq.verbose, "with-filename", false, "Always print filename headers with output lines")
 	if options.Parse(arguments) != nil {
 		return 2
 	}
 
-	var documents []string
 	if options.NArg() == 0 {
-		documents = []string{"-"}
+		clq.documents = []string{"-"}
 	} else {
-		documents = options.Args()
+		clq.documents = options.Args()
 	}
 
 	var hasError bool
-	for _, document := range documents {
+	for _, document := range clq.documents {
 		queryEngine, err := query.NewQueryEngine(*queryString)
 		if err != nil {
 			fmt.Fprintf(clq.stderr, "❗️ %v\n", err)
@@ -57,11 +59,7 @@ func (clq *Clq) entryPoint(name string, arguments ...string) int {
 
 		source, err := clq.readInput(document)
 		if err != nil {
-			if len(documents) == 1 {
-				fmt.Fprintf(clq.stderr, "❗️ %v\n", err)
-			} else {
-				fmt.Fprintf(clq.stderr, "❗️ %v: %v\n", document, err)
-			}
+			clq.error(document, err)
 			hasError = true
 			continue
 		}
@@ -79,22 +77,11 @@ func (clq *Clq) entryPoint(name string, arguments ...string) int {
 
 		var buf bytes.Buffer
 		if err := validationEngine.Render(&buf, source, doc); err != nil {
-			if len(documents) == 1 {
-				fmt.Fprintf(clq.stderr, "❗️ %v\n", err)
-			} else {
-				fmt.Fprintf(clq.stderr, "❗️ %v: %v\n", document, err)
-			}
+			clq.error(document, err)
 			hasError = true
 			continue
 		}
-
-		if buf.Len() > 0 {
-			if len(documents) == 1 {
-				fmt.Fprintln(clq.stdout, buf.String())
-			} else {
-				fmt.Fprintf(clq.stdout, "✅ %v: %v\n", document, buf.String())
-			}
-		}
+		clq.output(document, buf.String())
 	}
 
 	if hasError {
@@ -107,12 +94,31 @@ func (clq *Clq) readInput(input string) ([]byte, error) {
 	if input == "-" {
 		return ioutil.ReadAll(clq.stdin)
 	}
+	return ioutil.ReadFile(input)
+}
 
-	f, err := os.Open(input)
-	if err != nil {
-		return nil, err
+func (clq *Clq) withFileName() bool {
+	return clq.verbose || len(clq.documents) > 1
+}
+
+func (clq *Clq) error(document string, err error) {
+	if pErr, ok := err.(*os.PathError); ok {
+		fmt.Fprintf(clq.stderr, "❗️ %v: %v\n", pErr.Path, pErr.Err.Error())
+	} else if clq.withFileName() {
+		fmt.Fprintf(clq.stderr, "❗️ %v: %v\n", document, err)
+	} else {
+		fmt.Fprintf(clq.stderr, "❗️ %v\n", err)
 	}
-	defer f.Close()
+}
 
-	return ioutil.ReadAll(f)
+func (clq *Clq) output(document string, result string) {
+	if result == "" {
+		if clq.verbose {
+			fmt.Fprintf(clq.stdout, "✅ %v\n", document)
+		}
+	} else if clq.withFileName() {
+		fmt.Fprintf(clq.stdout, "✅ %v: %v\n", document, result)
+	} else {
+		fmt.Fprintln(clq.stdout, result)
+	}
 }
