@@ -14,6 +14,18 @@ clq writes validation error to standard error.
 
 When processing multiple files, clq prefixes every line on standard out and standard error with the file name.
 
+```
+Usage: clq { options } <path to changelog.md>
+
+Options are:
+  -query string
+    	A query to extract information out of the change log
+  -release
+    	Enable release-mode validation
+  -with-filename
+    	Always print filename headers with output lines
+```
+
 Example:
 - `clq CHANGELOG.md`\
 validates the file.

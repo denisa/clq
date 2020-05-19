@@ -16,6 +16,7 @@ func NewStack() Stack {
 func (s *Stack) empty() bool {
 	return s.depth() == 0
 }
+
 func (s *Stack) Title() bool {
 	return s.depth() == 1
 }
@@ -46,15 +47,8 @@ func (s *Stack) pop() (Heading, error) {
 	return res, nil
 }
 
-func (s *Stack) Peek() (Heading, error) {
-	l := s.depth()
-	if l == 0 {
-		return nil, fmt.Errorf("Empty stack")
-	}
-	return s.s[l-1], nil
-}
-func (s *Stack) ResetTo(depth int, name string) (Heading, error) {
-	if depth > s.depth() {
+func (s *Stack) ResetTo(depth HeadingKind, name string) (Heading, error) {
+	if depth > HeadingKind(s.depth()) {
 		return nil, fmt.Errorf("Attempting to reset to %d for a stack of depth %d", depth, s.depth())
 	}
 
@@ -67,10 +61,10 @@ func (s *Stack) ResetTo(depth int, name string) (Heading, error) {
 	}
 }
 
-func (s *Stack) AsPath() string {
+func (s Stack) String() string {
 	var path strings.Builder
 	for _, heading := range s.s {
-		path.WriteString(heading.AsPath())
+		path.WriteString(heading.String())
 	}
 	return path.String()
 }

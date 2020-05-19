@@ -3,13 +3,13 @@
     "platform": "unix",
     "name": "this file does not exist.md",
     "result": 1,
-    "error": "❗️ open testdata/this file does not exist.md: no such file or directory\n"
+    "error": "❗️ testdata/this file does not exist.md: no such file or directory\n"
   },
   {
     "platform": "windows",
     "name": "this file does not exist.md",
     "result": 1,
-    "error": "❗️ open testdata\\this file does not exist.md: The system cannot find the file specified.\n"
+    "error": "❗️ testdata\\this file does not exist.md: The system cannot find the file specified.\n"
   },
   {
     "name": "heading_change_unknown_heading.md",
@@ -129,10 +129,10 @@
   },
   {
     "name": "unreleased_and_yanked.md",
-    "result": 1,
     "arguments": [
       "-release"
     ],
+    "result": 1,
     "error": "❗️ Validation error: \"[Unreleased]\" not supported in release mode {Unreleased and Yanked}{[Unreleased]}\n"
   },
   {
@@ -141,10 +141,10 @@
   },
   {
     "name": "released_and_yanked.md",
-    "result": 0,
     "arguments": [
       "-release"
-    ]
+    ],
+    "result": 0
   },
   {
     "name": "no_release_header.md",
@@ -222,84 +222,147 @@
     "error": "❗️ No change descriptions for {Yanked release without change description}{1.2.3 - 2020-02-29 [YANKED]}{Added}\n"
   },
   {
-    "result": 2,
+    "title": "validate with-filename",
+    "arguments": [
+      "-with-filename",
+      "testdata/sort_date_newer_release_first.md"
+    ],
+    "result": 0,
+    "output": "✅ testdata/sort_date_newer_release_first.md\n"
+  },
+  {
+    "title": "validate failure with-filename",
+    "arguments": [
+      "-with-filename",
+      "testdata/heading_title_empty.md"
+    ],
+    "result": 1,
+    "error": "❗️ testdata/heading_title_empty.md: Validation error: Changelog cannot stay empty\n"
+  },
+  {
+    "title": "query with-filename",
+    "arguments": [
+      "-with-filename",
+      "-query",
+      "title",
+      "testdata/sort_date_newer_release_first.md"
+    ],
+    "result": 0,
+    "output": "✅ testdata/sort_date_newer_release_first.md: Sort Date Newer Release First\n"
+  },
+  {
+    "title": "unsupported argument",
     "arguments": [
       "-unsupported"
     ],
     "input": "# Change log\n## [Unreleased]\n### Added\n- dummy",
-    "error": "flag provided but not defined: -unsupported\n\nUsage: clq { flags } <path to changelog.md>\n\nOptions are:\n  -query string\n    \tA query to extract information out of the change log\n  -release\n    \tEnable release-mode validation\n"
+    "result": 2,
+    "error": "flag provided but not defined: -unsupported\n\nUsage: clq { flags } <path to changelog.md>\n\nOptions are:\n  -query string\n    \tA query to extract information out of the change log\n  -release\n    \tEnable release-mode validation\n  -with-filename\n    \tAlways print filename headers with output lines\n"
   },
   {
-    "result": 2,
+    "title": "unsupported query attribute",
     "arguments": [
       "-query",
       "releases[0].foobar"
     ],
     "input": "# Change log\n## [Unreleased]\n### Added\n- dummy",
+    "result": 2,
     "error": "❗️ Query attribute not recognized \"foobar\" for a \"release\"\n"
   },
   {
     "name": "query_release_version.md",
-    "result": 0,
     "arguments": [
       "-query",
       "releases[0].version"
     ],
+    "result": 0,
     "output": "1.0.0\n"
   },
   {
-    "result": 0,
+    "title": "query title",
     "arguments": [
       "-query",
       "title"
     ],
     "input": "# Change log\n## [Unreleased]\n### Added\n- dummy",
+    "result": 0,
     "output": "Change log\n"
   },
   {
-    "result": 0,
+    "platform": "unix",
+    "title": "query_release_status_multiple_files",
     "arguments": [
       "-query",
       "releases[0].status",
       "testdata/released_and_yanked.md",
       "testdata/sort_date_newer_release_first.md"
     ],
+    "result": 0,
     "output": "✅ testdata/released_and_yanked.md: released\n✅ testdata/sort_date_newer_release_first.md: released\n"
   },
   {
-    "result": 0,
+    "platform": "windows",
+    "title": "query_release_status_multiple_files",
     "arguments": [
       "-query",
       "releases[0].status",
       "testdata/released_and_yanked.md",
       "testdata/sort_date_newer_release_first.md"
     ],
+    "result": 0,
     "output": "✅ testdata/released_and_yanked.md: released\n✅ testdata/sort_date_newer_release_first.md: released\n"
   },
   {
     "platform": "unix",
-    "result": 1,
+    "title": "one_of_many_file_missing",
     "arguments": [
       "testdata/this file does not exist.md",
       "testdata/sort_date_newer_release_first.md"
     ],
-    "error": "❗️ testdata/this file does not exist.md: open testdata/this file does not exist.md: no such file or directory\n"
+    "result": 1,
+    "error": "❗️ testdata/this file does not exist.md: no such file or directory\n"
   },
   {
     "platform": "windows",
-    "result": 1,
+    "title": "one_of_many_file_missing",
     "arguments": [
       "testdata/this file does not exist.md",
       "testdata/sort_date_newer_release_first.md"
     ],
-    "error": "❗️ testdata/this file does not exist.md: open testdata/this file does not exist.md: The system cannot find the file specified.\n"
+    "result": 1,
+    "error": "❗️ testdata/this file does not exist.md: The system cannot find the file specified.\n"
   },
   {
+    "platform": "unix",
+    "title": "one_of_many_file_missing_with-filename",
+    "arguments": [
+      "-with-filename",
+      "testdata/this file does not exist.md",
+      "testdata/sort_date_newer_release_first.md"
+    ],
     "result": 1,
+    "output": "✅ testdata/sort_date_newer_release_first.md\n",
+    "error": "❗️ testdata/this file does not exist.md: no such file or directory\n"
+  },
+  {
+    "platform": "windows",
+    "title": "one of many file missing with-filename",
+    "arguments": [
+      "-with-filename",
+      "testdata/this file does not exist.md",
+      "testdata/sort_date_newer_release_first.md"
+    ],
+    "result": 1,
+    "output": "✅ testdata/sort_date_newer_release_first.md\n",
+    "error": "❗️ testdata/this file does not exist.md: The system cannot find the file specified.\n"
+  },
+  {
+    "title": "muliple validation errors",
     "arguments": [
       "testdata/yanked_without_changes.md",
       "testdata/yanked_without_change_description.md"
     ],
+    "result": 1,
     "error": "❗️ testdata/yanked_without_changes.md: No change descriptions for {Yanked release without changes}{1.2.3 - 2020-02-29 [YANKED]}\n❗️ testdata/yanked_without_change_description.md: No change descriptions for {Yanked release without change description}{1.2.3 - 2020-02-29 [YANKED]}{Added}\n"
   }
 ]

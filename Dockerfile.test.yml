@@ -5,4 +5,4 @@ services:
     build: .
     volumes:
       - ./CHANGELOG.md:/home/CHANGELOG.md:ro
-    command: [ "/home/CHANGELOG.md" ]
+    command: [ "-with-filename", "/home/CHANGELOG.md" ]

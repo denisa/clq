@@ -17,16 +17,34 @@ func TestChangelogShouldSucceed(t *testing.T) {
 	executeClq(assert.New(t), "", 0, "", "", "CHANGELOG.md")
 }
 
-func TestScenarios(t *testing.T) {
-	type Scenario struct {
-		Platform  string   `json:"platform,omitempty"`
-		Name      string   `json:"name"`
-		Result    int      `json:"result"`
-		Arguments []string `json:"arguments,omitempty"`
-		Input     string   `json:"input,omitempty"`
-		Output    string   `json:"output,omitempty"`
-		Error     string   `json:"error,omitempty"`
+type Scenario struct {
+	Platform  string   `json:"platform,omitempty"`
+	Title     string   `json:"title,omitempty"`
+	Name      string   `json:"name"`
+	Result    int      `json:"result"`
+	Arguments []string `json:"arguments,omitempty"`
+	Input     string   `json:"input,omitempty"`
+	Output    string   `json:"output,omitempty"`
+	Error     string   `json:"error,omitempty"`
+}
+
+func (s Scenario) name() string {
+	var buf strings.Builder
+	if s.Title != "" {
+		buf.WriteString(s.Title)
+	} else {
+		buf.WriteString(s.Name)
 	}
+	if s.Platform != "" {
+		buf.WriteString(" (")
+		buf.WriteString(s.Platform)
+		buf.WriteString(")")
+	}
+	return buf.String()
+}
+
+func TestScenarios(t *testing.T) {
+
 	assert := assert.New(t)
 	file, err := os.Open("testdata/scenarios.json")
 	require.NoError(t, err)
@@ -43,7 +61,7 @@ func TestScenarios(t *testing.T) {
 			require.NoErrorf(t, err, "Error reading %v", file.Name())
 		}
 		for _, scenario := range scenarios {
-			t.Run(scenario.Name, func(t *testing.T) {
+			t.Run(scenario.name(), func(t *testing.T) {
 				switch scenario.Platform {
 				case "unix":
 					if os.Getuid() == -1 {
