@@ -87,24 +87,6 @@ func TestPopEmptyStackFails(t *testing.T) {
 	_, err := s.pop()
 	require.NotNil(t, err)
 }
-func TestPeekReturnsPushedContent(t *testing.T) {
-	require := require.New(t)
-
-	s := NewStack()
-	expected := newTestHeading("an item")
-	s.push(expected)
-	require.Equal(1, s.depth())
-
-	actual, _ := s.Peek()
-	requireHeadingEquals(require, expected, actual)
-	require.Equal(1, s.depth())
-}
-
-func TestPeekEmptyStackFails(t *testing.T) {
-	s := NewStack()
-	_, err := s.Peek()
-	require.NotNil(t, err)
-}
 
 func TestStackDepthGrowsAndShrink(t *testing.T) {
 	require := require.New(t)

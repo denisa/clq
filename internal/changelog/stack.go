@@ -47,14 +47,6 @@ func (s *Stack) pop() (Heading, error) {
 	return res, nil
 }
 
-func (s *Stack) Peek() (Heading, error) {
-	l := s.depth()
-	if l == 0 {
-		return nil, fmt.Errorf("Empty stack")
-	}
-	return s.s[l-1], nil
-}
-
 func (s *Stack) ResetTo(depth HeadingKind, name string) (Heading, error) {
 	if depth > HeadingKind(s.depth()) {
 		return nil, fmt.Errorf("Attempting to reset to %d for a stack of depth %d", depth, s.depth())
