@@ -52,13 +52,14 @@ func (s *Stack) ResetTo(depth HeadingKind, name string) (Heading, error) {
 		return nil, fmt.Errorf("Attempting to reset to %d for a stack of depth %d", depth, s.depth())
 	}
 
-	if h, err := NewHeading(depth, name); err != nil {
+	h, err := NewHeading(depth, name)
+	if err != nil {
 		return nil, err
-	} else {
-		s.s = s.s[:depth]
-		s.push(h)
-		return h, nil
 	}
+
+	s.s = s.s[:depth]
+	s.push(h)
+	return h, nil
 }
 
 func (s Stack) String() string {

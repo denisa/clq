@@ -40,7 +40,7 @@ func (q *changelogQuery) Select(w util.BufWriter, heading changelog.Heading) boo
 	if q.project == nil {
 		return true
 	} else {
-		w.WriteString(q.project(h))
+		_, _ = w.WriteString(q.project(h))
 		return false
 	}
 }

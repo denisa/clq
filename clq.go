@@ -61,7 +61,6 @@ func (clq *Clq) entryPoint(name string, arguments ...string) int {
 		queryEngine, err := query.NewQueryEngine(*queryString)
 		if err != nil {
 			fmt.Fprintf(clq.stderr, "❗️ %v\n", err)
-			hasError = true
 			return 2
 		}
 

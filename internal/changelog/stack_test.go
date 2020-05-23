@@ -123,14 +123,15 @@ func TestStackDepthGrowsAndShrink(t *testing.T) {
 
 func TestResetEmptyStackToZeroIsSameAsPush(t *testing.T) {
 	s := NewStack()
-	s.ResetTo(TitleHeading, "title")
+	_, err := s.ResetTo(TitleHeading, "title")
+	require.NoError(t, err)
 	require.Equal(t, "{title}", s.String())
 }
 
 func TestResetEmptyStackToALevelShouldFail(t *testing.T) {
 	s := NewStack()
 	_, err := s.ResetTo(ReleaseHeading, "[Unreleased]")
-	require.NotNil(t, err)
+	require.Error(t, err)
 }
 
 func TestResetFilledStackToZeroIsSameAsPushToEmptyStack(t *testing.T) {
@@ -148,7 +149,8 @@ func TestResetFilledStackToZeroIsSameAsPushToEmptyStack(t *testing.T) {
 	}
 	require.Equal("{title}{[Unreleased]}{Added}", s.String())
 
-	s.ResetTo(TitleHeading, "other title")
+	_, err := s.ResetTo(TitleHeading, "other title")
+	require.NoError(err)
 	require.Equal("{other title}", s.String())
 }
 
@@ -167,6 +169,7 @@ func TestResetFilledStackToOneIsSameAsTwoPushToEmptyStack(t *testing.T) {
 	}
 	require.Equal("{title}{[Unreleased]}{Added}", s.String())
 
-	s.ResetTo(ReleaseHeading, "1.2.3 - 2020-04-15 [YANKED]")
+	_, err := s.ResetTo(ReleaseHeading, "1.2.3 - 2020-04-15 [YANKED]")
+	require.NoError(err)
 	require.Equal("{title}{1.2.3 - 2020-04-15 [YANKED]}", s.String())
 }
