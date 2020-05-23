@@ -16,6 +16,8 @@ import (
 	"github.com/yuin/goldmark/util"
 )
 
+var version string
+
 type Clq struct {
 	stdin          io.Reader
 	stdout, stderr io.Writer
@@ -37,9 +39,15 @@ func (clq *Clq) entryPoint(name string, arguments ...string) int {
 	}
 	var queryString = options.String("query", "", "A query to extract information out of the change log")
 	var release = options.Bool("release", false, "Enable release-mode validation")
+	var showVersion = options.Bool("version", false, "Prints clq version")
 	options.BoolVar(&clq.verbose, "with-filename", false, "Always print filename headers with output lines")
 	if options.Parse(arguments) != nil {
 		return 2
+	}
+
+	if *showVersion {
+		fmt.Fprintf(clq.stdout, "clq %v\n", version)
+		return 0
 	}
 
 	if options.NArg() == 0 {
