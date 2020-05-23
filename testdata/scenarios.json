@@ -255,9 +255,16 @@
     "arguments": [
       "-unsupported"
     ],
-    "input": "# Change log\n## [Unreleased]\n### Added\n- dummy",
     "result": 2,
-    "error": "flag provided but not defined: -unsupported\n\nUsage: clq { flags } <path to changelog.md>\n\nOptions are:\n  -query string\n    \tA query to extract information out of the change log\n  -release\n    \tEnable release-mode validation\n  -with-filename\n    \tAlways print filename headers with output lines\n"
+    "error": "flag provided but not defined: -unsupported\n\nUsage: clq { flags } <path to changelog.md>\n\nOptions are:\n  -query string\n    \tA query to extract information out of the change log\n  -release\n    \tEnable release-mode validation\n  -version\n    \tPrints clq version\n  -with-filename\n    \tAlways print filename headers with output lines\n"
+  },
+  {
+    "title": "-version",
+    "arguments": [
+      "-version"
+    ],
+    "result": 0,
+    "output": "clq \n"
   },
   {
     "title": "unsupported query attribute",
@@ -265,7 +272,6 @@
       "-query",
       "releases[0].foobar"
     ],
-    "input": "# Change log\n## [Unreleased]\n### Added\n- dummy",
     "result": 2,
     "error": "❗️ Query attribute not recognized \"foobar\" for a \"release\"\n"
   },
