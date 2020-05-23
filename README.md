@@ -37,7 +37,7 @@ validates the complete changelog and returns the version of the most recent rele
 # Execution with Docker
 A small docker image offers a simple no-installation executable.
 
-A single changelog file can be validated with a simple `docker run clq < CHANGELOG.md`.
+A single changelog file can be validated with a simple `docker run -i denisa/clq < CHANGELOG.md`.
 
 To operate on multiple files is more complex and we recommend either multiple individual invocations, or the installation of native binaries.
 
