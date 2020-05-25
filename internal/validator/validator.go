@@ -121,7 +121,7 @@ func (r *Renderer) visitHeading(w util.BufWriter, source []byte, node ast.Node, 
 	n := node.(*ast.Heading)
 	switch n.Level {
 	case 1:
-		h, err := r.headers.ResetTo(changelog.TitleHeading, r.text.String())
+		h, err := r.headers.ResetTo(changelog.IntroductionHeading, r.text.String())
 		if err != nil {
 			return ast.WalkStop, err
 		}

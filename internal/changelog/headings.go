@@ -9,7 +9,7 @@ import (
 type HeadingKind int
 
 const (
-	TitleHeading HeadingKind = iota
+	IntroductionHeading HeadingKind = iota
 	ReleaseHeading
 	ChangeHeading
 )
@@ -23,16 +23,16 @@ func asPath(name string) string {
 	return "{" + name + "}"
 }
 
-func NewHeading(level HeadingKind, name string) (Heading, error) {
-	switch level {
-	case TitleHeading:
+func NewHeading(kind HeadingKind, name string) (Heading, error) {
+	switch kind {
+	case IntroductionHeading:
 		return newIntroduction(name)
 	case ReleaseHeading:
 		return newRelease(name)
 	case ChangeHeading:
 		return newChange(name)
 	}
-	return nil, fmt.Errorf("Unknown heading level %v", level)
+	return nil, fmt.Errorf("Unknown heading kind %v", kind)
 }
 
 type incrementKind int
@@ -57,10 +57,10 @@ func keysOf(m changeToIncrementKind) string {
 	return strings.Join(changes, ", ")
 }
 
-func keysFor(m changeToIncrementKind, level incrementKind) []string {
+func keysFor(m changeToIncrementKind, kind incrementKind) []string {
 	var result []string
 	for k, l := range m {
-		if l == level {
+		if l == kind {
 			result = append(result, k)
 		}
 	}

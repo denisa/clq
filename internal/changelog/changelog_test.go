@@ -20,7 +20,7 @@ func TestOneLevelChangelogIsDocument(t *testing.T) {
 	require := require.New(t)
 
 	s := NewChangelog()
-	s.ResetTo(TitleHeading, "title")
+	s.ResetTo(IntroductionHeading, "title")
 
 	require.True(s.Title(), "title expected")
 	require.False(s.Release(), "release not expected")
@@ -31,7 +31,7 @@ func TestTwoLevelChangelogIsRelease(t *testing.T) {
 	require := require.New(t)
 
 	s := NewChangelog()
-	s.ResetTo(TitleHeading, "title")
+	s.ResetTo(IntroductionHeading, "title")
 	s.ResetTo(ReleaseHeading, "[Unreleased]")
 
 	require.False(s.Title(), "title not expected")
@@ -44,7 +44,7 @@ func TestThreeLevelChangelogIsChange(t *testing.T) {
 	require := require.New(t)
 
 	s := NewChangelog()
-	s.ResetTo(TitleHeading, "title")
+	s.ResetTo(IntroductionHeading, "title")
 	s.ResetTo(ReleaseHeading, "[Unreleased]")
 	s.ResetTo(ChangeHeading, "Added")
 
@@ -61,7 +61,7 @@ func TestResetChangelogSkipALevelShouldFail(t *testing.T) {
 
 func TestResetChangelogToInvalidHeadingShouldFail(t *testing.T) {
 	s := NewChangelog()
-	s.ResetTo(TitleHeading, "title")
+	s.ResetTo(IntroductionHeading, "title")
 	_, err := s.ResetTo(ReleaseHeading, "Unreleased")
 	require.Error(t, err)
 }
@@ -70,12 +70,12 @@ func TestResetFilledChangelogToZeroIsSameAsPushToEmptyChangelog(t *testing.T) {
 	require := require.New(t)
 
 	s := NewChangelog()
-	s.ResetTo(TitleHeading, "title")
+	s.ResetTo(IntroductionHeading, "title")
 	s.ResetTo(ReleaseHeading, "[Unreleased]")
 	s.ResetTo(ChangeHeading, "Added")
 	require.Equal("{title}{[Unreleased]}{Added}", s.String())
 
-	_, err := s.ResetTo(TitleHeading, "other title")
+	_, err := s.ResetTo(IntroductionHeading, "other title")
 	require.NoError(err)
 	require.Equal("{other title}", s.String())
 }
@@ -84,7 +84,7 @@ func TestResetFilledChangelogToOneIsSameAsTwoPushToEmptyChangelog(t *testing.T) 
 	require := require.New(t)
 
 	s := NewChangelog()
-	s.ResetTo(TitleHeading, "title")
+	s.ResetTo(IntroductionHeading, "title")
 	s.ResetTo(ReleaseHeading, "[Unreleased]")
 	s.ResetTo(ChangeHeading, "Added")
 

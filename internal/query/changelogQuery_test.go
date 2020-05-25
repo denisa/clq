@@ -21,7 +21,7 @@ func TestQueryTitle(t *testing.T) {
 	require := require.New(t)
 
 	result, err := apply("title", []changelog.Heading{
-		newHeading(changelog.TitleHeading, "changelog"),
+		newHeading(changelog.IntroductionHeading, "changelog"),
 	})
 	require.NoError(err)
 	require.Equal("changelog", result)

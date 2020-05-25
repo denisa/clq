@@ -7,7 +7,7 @@ import (
 )
 
 func TestNewHeadingIntroduction(t *testing.T) {
-	h, _ := NewHeading(TitleHeading, "changelog")
+	h, _ := NewHeading(IntroductionHeading, "changelog")
 	requireHeadingInterface(t, "changelog", h)
 }
 
