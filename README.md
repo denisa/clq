@@ -43,8 +43,10 @@ To operate on multiple files is more complex and we recommend either multiple in
 
 # Grammar for supported Changelog
 ```
-CHANGELOG       = TITLE, [ UNRELEASED ], { RELEASED | YANKED };
-TITLE           = "#", ? inline content ?, LINE-ENDING, { ? markdown paragraph ? };
+CHANGELOG       = INTRODUCTION, RELEASES;
+INTRODUCTION    = TITLE, { ? markdown paragraph ? };
+TITLE           = "# ", ? inline content ?, LINE-ENDING;
+RELEASES        = [ UNRELEASED ], { RELEASED | YANKED };
 UNRELEASED      = UNRELEASED-HEAD, { CHANGES };
 RELEASED        = RELEASED-HEAD, { CHANGES };
 YANKED          = YANKED-HEAD, { CHANGES };

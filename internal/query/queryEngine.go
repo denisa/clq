@@ -18,7 +18,7 @@ func NewQueryEngine(query string) (*QueryEngine, error) {
 	qe := &QueryEngine{}
 	if len(query) > 0 {
 		queryElements := strings.Split(query, ".")
-		if err := qe.newChangelogQuery(queryElements[0], queryElements[1:]); err != nil {
+		if err := qe.newIntroductionQuery(queryElements[0], queryElements[1:]); err != nil {
 			return nil, err
 		}
 	}

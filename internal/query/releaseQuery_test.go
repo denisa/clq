@@ -17,7 +17,7 @@ func TestUnsupportedReleaseIndexQuery(t *testing.T) {
 	require.Error(t, err)
 }
 
-func TestQueryReleaseAgainstChangelog(t *testing.T) {
+func TestQueryReleaseAgainstIntroduction(t *testing.T) {
 	require := require.New(t)
 
 	result, err := apply("releases[1].version", []changelog.Heading{

@@ -138,7 +138,7 @@ func TestResetFilledStackToZeroIsSameAsPushToEmptyStack(t *testing.T) {
 	require := require.New(t)
 
 	s := NewStack()
-	if h, err := newChangelog("title"); err == nil {
+	if h, err := newIntroduction("title"); err == nil {
 		s.push(h)
 	}
 	if h, err := newRelease("[Unreleased]"); err == nil {
@@ -158,7 +158,7 @@ func TestResetFilledStackToOneIsSameAsTwoPushToEmptyStack(t *testing.T) {
 	require := require.New(t)
 
 	s := NewStack()
-	if h, err := newChangelog("title"); err == nil {
+	if h, err := newIntroduction("title"); err == nil {
 		s.push(h)
 	}
 	if h, err := newRelease("[Unreleased]"); err == nil {

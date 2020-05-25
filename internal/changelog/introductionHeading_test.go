@@ -4,12 +4,12 @@ import (
 	"testing"
 )
 
-func TestNewHeadingChangelog(t *testing.T) {
+func TestNewHeadingIntroduction(t *testing.T) {
 	h, _ := NewHeading(TitleHeading, "changelog")
 	requireHeadingInterface(t, "changelog", h)
 }
 
-func TestChangelog(t *testing.T) {
-	h, _ := newChangelog("changelog")
+func TestIntroduction(t *testing.T) {
+	h, _ := newIntroduction("changelog")
 	requireHeadingInterface(t, "changelog", h)
 }

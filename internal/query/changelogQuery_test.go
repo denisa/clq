@@ -7,12 +7,12 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestUnsupportedChangelogQuery(t *testing.T) {
+func TestUnsupportedIntroductionQuery(t *testing.T) {
 	_, err := NewQueryEngine("publication_date")
 	require.Error(t, err)
 }
 
-func TestUnsupportedChangelogTitleQuery(t *testing.T) {
+func TestUnsupportedIntroductionTitleQuery(t *testing.T) {
 	_, err := NewQueryEngine("title.size")
 	require.Error(t, err)
 }

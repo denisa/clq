@@ -26,7 +26,7 @@ func asPath(name string) string {
 func NewHeading(level HeadingKind, name string) (Heading, error) {
 	switch level {
 	case TitleHeading:
-		return newChangelog(name)
+		return newIntroduction(name)
 	case ReleaseHeading:
 		return newRelease(name)
 	case ChangeHeading:

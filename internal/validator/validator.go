@@ -126,10 +126,10 @@ func (r *Renderer) visitHeading(w util.BufWriter, source []byte, node ast.Node, 
 			return ast.WalkStop, err
 		}
 
-		title := h.(changelog.Changelog)
+		introduction := h.(changelog.Introduction)
 		// no validation rules defined for the title...
 
-		r.queryEngine.Apply(w, title)
+		r.queryEngine.Apply(w, introduction)
 	case 2:
 		if (r.headers.Release() || r.headers.Change()) && !r.hasChangeDescriptions {
 			if err := fmt.Errorf("No change descriptions for %v", r.headers); err != nil {
