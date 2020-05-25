@@ -73,7 +73,7 @@ type Renderer struct {
 	h1Released, h1Unreleased bool
 	changes                  changelog.ChangeMap
 	hasChangeDescriptions    bool
-	headers                  changelog.Stack
+	headers                  changelog.Changelog
 	previousRelease          changelog.Release
 }
 
@@ -81,7 +81,7 @@ func NewRenderer(opts ...Option) renderer.NodeRenderer {
 	r := &Renderer{
 		Config:  NewConfig(),
 		changes: make(changelog.ChangeMap),
-		headers: changelog.NewStack(),
+		headers: changelog.NewChangelog(),
 	}
 
 	for _, opt := range opts {
