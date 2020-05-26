@@ -12,96 +12,106 @@ import (
 type ChangeMap map[string]bool
 
 type Release struct {
-	name, label        string
-	unreleased, yanked bool
-	date               time.Time
-	version            semver.Version
+	title, label string
+	yanked       bool
+	date         time.Time
+	version      semver.Version
 }
 
 const semverPattern string = `(?P<semver>\S+?)`
 const isoDatePattern string = `(?P<date>\d\d\d\d-\d\d-\d\d)`
 
-func newRelease(s string) (Heading, error) {
-	if matched, _ := regexp.MatchString(`^\[\s*Unreleased\s*\]$`, s); matched {
-		return Release{name: s, unreleased: true}, nil
+func newRelease(title string) (Heading, error) {
+	if matched, _ := regexp.MatchString(`^\[\s*Unreleased\s*\]$`, title); matched {
+		return Release{title: title}, nil
 	}
 	{
 		releaseRE := regexp.MustCompile(`^\[\s*` + semverPattern + `\s*\]\s+-\s+` + isoDatePattern + `(?:\s+(?P<label>.+))?$`)
-		if matches := releaseRE.FindStringSubmatch(s); matches != nil {
+		if matches := releaseRE.FindStringSubmatch(title); matches != nil {
 			groups := releaseRE.SubexpNames()
 			date, err := time.Parse("2006-01-02", subexp(groups, matches, "date"))
 			if err != nil {
-				return nil, fmt.Errorf("Validation error: Illegal date (%v) for %v", err, s)
+				return nil, fmt.Errorf("Validation error: Illegal date (%v) for %v", err, title)
 			}
 			label := subexp(groups, matches, "label")
-			if matched, _ := regexp.MatchString(`[\s*YANKED\s*]`, label); matched {
-				return nil, fmt.Errorf("Validation error: the version of a [YANKED] release cannot stand between [...] for %v", s)
+			if matched, _ := regexp.MatchString(`\[\s*YANKED\s*\]`, label); matched {
+				return nil, fmt.Errorf("Validation error: the version of a [YANKED] release cannot stand between [...] for %v", title)
 			}
 			version, err := semver.Make(subexp(groups, matches, "semver"))
 			if err != nil {
-				return nil, fmt.Errorf("Validation error: Illegal version (%v) for %v", err, s)
+				return nil, fmt.Errorf("Validation error: Illegal version (%v) for %v", err, title)
 			}
-			return Release{name: s, date: date, version: version, label: label}, nil
+			return Release{title: title, date: date, version: version, label: label}, nil
 		}
 	}
 	{
 		releaseRE := regexp.MustCompile(`^` + semverPattern + `\s+-\s+` + isoDatePattern + `\s+\[\s*YANKED\s*]?$`)
-		if matches := releaseRE.FindStringSubmatch(s); matches != nil {
+		if matches := releaseRE.FindStringSubmatch(title); matches != nil {
 			groups := releaseRE.SubexpNames()
 			date, err := time.Parse("2006-01-02", subexp(groups, matches, "date"))
 			if err != nil {
-				return nil, fmt.Errorf("Validation error: Illegal date (%v) for %v", err, s)
+				return nil, fmt.Errorf("Validation error: Illegal date (%v) for %v", err, title)
 			}
 			version, err := semver.Make(subexp(groups, matches, "semver"))
 			if err != nil {
-				return nil, fmt.Errorf("Validation error: Illegal version (%v) for %v", err, s)
+				return nil, fmt.Errorf("Validation error: Illegal version (%v) for %v", err, title)
 			}
-			return Release{name: s, date: date, version: version, yanked: true}, nil
+			return Release{title: title, date: date, version: version, yanked: true}, nil
 		}
 	}
-	return nil, fmt.Errorf("Validation error: Unknown release header for %q", s)
+	return nil, fmt.Errorf("Validation error: Unknown release header for %q", title)
 }
 
-func (h Release) Name() string {
-	return h.name
+func (h Release) Title() string {
+	return h.title
 }
 
 func (h Release) String() string {
-	return asPath(h.name)
+	return asPath(h.title)
 }
 
+// Version returns the release date if this has been released, an empty string otherwise.
 func (h Release) Date() string {
-	return h.date.Format("2006-01-02")
+	if h.HasBeenReleased() {
+		return h.date.Format("2006-01-02")
+	}
+	return ""
 }
 
+// Version returns the optional label of this release.
 func (h Release) Label() string {
 	return h.label
 }
 
+// Version returns the release version if this has been released, an empty string otherwise.
 func (h Release) Version() string {
-	return h.version.String()
+	if h.HasBeenReleased() {
+		return h.version.String()
+	}
+	return ""
 }
 
+// HasBeenYanked returns true if this release is a release without pre-release or build number component.
 func (h Release) IsRelease() bool {
-	return h.HasBeenReleased() && !h.unreleased && len(h.version.Pre) == 0 && len(h.version.Build) == 0
+	return h.HasBeenReleased() && len(h.version.Pre) == 0 && len(h.version.Build) == 0
 }
 
-func (h Release) Unreleased() bool {
-	return h.unreleased
-}
-
-func (h Release) Yanked() bool {
+// HasBeenYanked returns true if this release has been yanked.
+func (h Release) HasBeenYanked() bool {
 	return h.yanked
 }
 
+// HasBeenReleased returns true if this has ever been released
 func (h Release) HasBeenReleased() bool {
-	return h.date != time.Time{}
+	return !h.date.IsZero()
 }
 
-func (h Release) HasRelease(nextRelease semver.Version) bool {
-	return h.version.EQ(nextRelease)
+// ReleaseIs returns true this release is equal to the otherRelease
+func (h Release) ReleaseIs(otherRelease semver.Version) bool {
+	return h.version.EQ(otherRelease)
 }
 
+// NextRelease computes what the next version number should be given a set of changes.
 func (h Release) NextRelease(c ChangeMap) semver.Version {
 	for _, k := range keysFor(changeKind, semverMajor) {
 		if c[k] {
@@ -123,10 +133,10 @@ func (h Release) NextRelease(c ChangeMap) semver.Version {
 
 func (h Release) SortsBefore(other Release) error {
 	if h.date.Before(other.date) {
-		return fmt.Errorf("Validation error: release %q should be older than %q", other.Name(), h.Name())
+		return fmt.Errorf("Validation error: release %q should be older than %q", other.Title(), h.Title())
 	}
 	if h.version.LTE(other.version) {
-		return fmt.Errorf("Validation error: release %q should sort before %q", other.Name(), h.Name())
+		return fmt.Errorf("Validation error: release %q should sort before %q", other.Title(), h.Title())
 	}
 	return nil
 }

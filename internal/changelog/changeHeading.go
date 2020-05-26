@@ -7,22 +7,23 @@ import (
 
 // Level 3, change groups
 type Change struct {
-	name string
+	title string
 }
 
-func newChange(s string) (Heading, error) {
+func newChange(title string) (Heading, error) {
 	for val := range changeKind {
-		if matched, _ := regexp.MatchString(`^`+val+`$`, s); matched {
-			return Change{name: s}, nil
+		if matched, _ := regexp.MatchString(`^`+val+`$`, title); matched {
+			return Change{title: title}, nil
 		}
 	}
 
-	return nil, fmt.Errorf("Validation error: Unknown change headings %q is not one of [%v]", s, keysOf(changeKind))
+	return nil, fmt.Errorf("Validation error: Unknown change headings %q is not one of [%v]", title, keysOf(changeKind))
 }
 
-func (h Change) Name() string {
-	return h.name
+func (h Change) Title() string {
+	return h.title
 }
+
 func (h Change) String() string {
-	return asPath(h.name)
+	return asPath(h.title)
 }

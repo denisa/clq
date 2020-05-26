@@ -1,3 +1,5 @@
+// The changelog package keeps track of the current state during the traversal of a changelog document.
+// Things are named according to entries in the grammar.
 package changelog
 
 import (
@@ -5,43 +7,51 @@ import (
 	"strings"
 )
 
+// Changelog is the current state of the changelog during its traversal.
 type Changelog struct {
 	s []Heading
 }
 
+// NewChangelog creates a new empty changelog.
 func NewChangelog() Changelog {
-	return Changelog{make([]Heading, 0)}
+	return Changelog{}
 }
 
-func (s *Changelog) Title() bool {
-	return len(s.s) == 1
+// Introduction returns true if we’re currently visiting the Introduction section.
+func (c *Changelog) Introduction() bool {
+	return len(c.s) == 1
 }
 
-func (s *Changelog) Release() bool {
-	return len(s.s) == 2
+// Release returns true if we’re currently visiting one of the Release sections.
+func (c *Changelog) Release() bool {
+	return len(c.s) == 2
 }
 
-func (s *Changelog) Change() bool {
-	return len(s.s) == 3
+// Change returns true if we’re currently visiting one of the Change sections.
+func (c *Changelog) Change() bool {
+	return len(c.s) == 3
 }
 
-func (s *Changelog) ResetTo(kind HeadingKind, name string) (Heading, error) {
-	if kind > HeadingKind(len(s.s)) {
-		return nil, fmt.Errorf("Attempting to roll-back a changelog at %v to %v", len(s.s), kind)
+// Section sets the state to a new section kind with the given title.
+// Section can go down one-level, for example from Release to Change, or up any number of levels.
+// Section creates and returns the section’s Heading
+func (c *Changelog) Section(kind HeadingKind, title string) (Heading, error) {
+	if kind > HeadingKind(len(c.s)) {
+		return nil, fmt.Errorf("Attempting to roll-back a changelog at %v to %v", len(c.s), kind)
 	}
 
-	h, err := NewHeading(kind, name)
+	h, err := NewHeading(kind, title)
 	if err != nil {
 		return nil, err
 	}
 
-	s.s = append(s.s[:kind], h)
+	c.s = append(c.s[:kind], h)
 	return h, nil
 }
 
-func (s Changelog) String() string {
+func (c Changelog) String() string {
 	var path strings.Builder
-	for _, heading := range s.s {
+	for _, heading := range c.s {
 		path.WriteString(heading.String())
 	}
 	return path.String()

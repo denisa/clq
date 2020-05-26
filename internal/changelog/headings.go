@@ -6,6 +6,7 @@ import (
 	"strings"
 )
 
+// HeadingKind is the type for the multiple sections.
 type HeadingKind int
 
 const (
@@ -14,8 +15,10 @@ const (
 	ChangeHeading
 )
 
+// A Heading is the interface common to every sections.
 type Heading interface {
-	Name() string
+	// The Title of the section
+	Title() string
 	String() string
 }
 
@@ -23,14 +26,15 @@ func asPath(name string) string {
 	return "{" + name + "}"
 }
 
-func NewHeading(kind HeadingKind, name string) (Heading, error) {
+// NewHeading is the factory method that, given a kind and a title, returns the appropriate Heading.
+func NewHeading(kind HeadingKind, title string) (Heading, error) {
 	switch kind {
 	case IntroductionHeading:
-		return newIntroduction(name)
+		return newIntroduction(title)
 	case ReleaseHeading:
-		return newRelease(name)
+		return newRelease(title)
 	case ChangeHeading:
-		return newChange(name)
+		return newChange(title)
 	}
 	return nil, fmt.Errorf("Unknown heading kind %v", kind)
 }

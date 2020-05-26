@@ -9,14 +9,14 @@ type Introduction struct {
 	title string
 }
 
-func newIntroduction(s string) (Heading, error) {
-	if s == "" {
+func newIntroduction(title string) (Heading, error) {
+	if title == "" {
 		return nil, fmt.Errorf("Validation error: Introduction’s title cannot stay empty")
 	}
-	return Introduction{title: s}, nil
+	return Introduction{title: title}, nil
 }
 
-func (h Introduction) Name() string {
+func (h Introduction) Title() string {
 	return h.title
 }
 

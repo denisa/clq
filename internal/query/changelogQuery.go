@@ -14,7 +14,7 @@ func (qe *QueryEngine) newIntroductionQuery(name string, queryElements []string)
 			return fmt.Errorf("no query elements allowed after title")
 		}
 		qe.queries = append(qe.queries, &changelogQuery{project: func(h changelog.Introduction) string {
-			return h.Name()
+			return h.Title()
 		}})
 		return nil
 	}

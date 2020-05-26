@@ -35,10 +35,10 @@ func (qe *QueryEngine) newReleaseQuery(name string, queryElements []string) erro
 			f = func(r changelog.Release) string { return r.Label() }
 		case "status":
 			f = func(r changelog.Release) string {
-				if r.Unreleased() {
+				if !r.HasBeenReleased() {
 					return "unreleased"
 				}
-				if r.Yanked() {
+				if r.HasBeenYanked() {
 					return "yanked"
 				}
 				return "released"
