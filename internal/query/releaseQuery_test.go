@@ -17,12 +17,12 @@ func TestUnsupportedReleaseIndexQuery(t *testing.T) {
 	require.Error(t, err)
 }
 
-func TestQueryReleaseAgainstChangelog(t *testing.T) {
+func TestQueryReleaseAgainstIntroduction(t *testing.T) {
 	require := require.New(t)
 
 	result, err := apply("releases[1].version", []changelog.Heading{
-		newHeading(changelog.TitleHeading, "changelog"),
-		newHeading(changelog.TitleHeading, "there should not be another level 1 title"),
+		newHeading(changelog.IntroductionHeading, "changelog"),
+		newHeading(changelog.IntroductionHeading, "there should not be another level 1 title"),
 	})
 	require.NoError(err)
 	require.Empty(result)
@@ -32,7 +32,7 @@ func TestQuerySecondReleaseVersion(t *testing.T) {
 	require := require.New(t)
 
 	result, err := apply("releases[1].version", []changelog.Heading{
-		newHeading(changelog.TitleHeading, "changelog"),
+		newHeading(changelog.IntroductionHeading, "changelog"),
 		newHeading(changelog.ReleaseHeading, "[1.2.3] - 2020-05-16"),
 		newHeading(changelog.ReleaseHeading, "[1.2.2] - 2020-05-15 Cabrel"),
 	})
@@ -44,7 +44,7 @@ func TestQuerySecondReleaseDate(t *testing.T) {
 	require := require.New(t)
 
 	result, err := apply("releases[0].date", []changelog.Heading{
-		newHeading(changelog.TitleHeading, "changelog"),
+		newHeading(changelog.IntroductionHeading, "changelog"),
 		newHeading(changelog.ReleaseHeading, "[1.2.3] - 2020-05-16"),
 		newHeading(changelog.ReleaseHeading, "[1.2.2] - 2020-05-15 Cabrel"),
 	})
@@ -56,7 +56,7 @@ func TestQuerySecondReleaseLabel(t *testing.T) {
 	require := require.New(t)
 
 	result, err := apply("releases[1].label", []changelog.Heading{
-		newHeading(changelog.TitleHeading, "changelog"),
+		newHeading(changelog.IntroductionHeading, "changelog"),
 		newHeading(changelog.ReleaseHeading, "[1.2.3] - 2020-05-16"),
 		newHeading(changelog.ReleaseHeading, "[1.2.2] - 2020-05-15 Cabrel"),
 	})
@@ -68,7 +68,7 @@ func TestQuerySecondReleaseStatusReleased(t *testing.T) {
 	require := require.New(t)
 
 	result, err := apply("releases[1].status", []changelog.Heading{
-		newHeading(changelog.TitleHeading, "changelog"),
+		newHeading(changelog.IntroductionHeading, "changelog"),
 		newHeading(changelog.ReleaseHeading, "[1.2.3] - 2020-05-16"),
 		newHeading(changelog.ReleaseHeading, "[1.2.2] - 2020-05-15 Cabrel"),
 	})
@@ -80,7 +80,7 @@ func TestQuerySecondReleaseStatusUnreleased(t *testing.T) {
 	require := require.New(t)
 
 	result, err := apply("releases[0].status", []changelog.Heading{
-		newHeading(changelog.TitleHeading, "changelog"),
+		newHeading(changelog.IntroductionHeading, "changelog"),
 		newHeading(changelog.ReleaseHeading, "[Unreleased]"),
 		newHeading(changelog.ReleaseHeading, "[1.2.2] - 2020-05-15 Cabrel"),
 	})
@@ -92,7 +92,7 @@ func TestQuerySecondReleaseStatusYanked(t *testing.T) {
 	require := require.New(t)
 
 	result, err := apply("releases[1].status", []changelog.Heading{
-		newHeading(changelog.TitleHeading, "changelog"),
+		newHeading(changelog.IntroductionHeading, "changelog"),
 		newHeading(changelog.ReleaseHeading, "[1.2.3] - 2020-05-16"),
 		newHeading(changelog.ReleaseHeading, "1.2.2 - 2020-05-15 [YANKED]"),
 	})
@@ -104,7 +104,7 @@ func TestQuerySecondRelease(t *testing.T) {
 	require := require.New(t)
 
 	result, err := apply("releases[1]", []changelog.Heading{
-		newHeading(changelog.TitleHeading, "changelog"),
+		newHeading(changelog.IntroductionHeading, "changelog"),
 		newHeading(changelog.ReleaseHeading, "[1.2.3] - 2020-05-16"),
 		newHeading(changelog.ReleaseHeading, "[1.2.2] - 2020-05-15 Cabrel"),
 	})

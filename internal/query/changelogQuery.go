@@ -8,13 +8,13 @@ import (
 	"github.com/yuin/goldmark/util"
 )
 
-func (qe *QueryEngine) newChangelogQuery(name string, queryElements []string) error {
+func (qe *QueryEngine) newIntroductionQuery(name string, queryElements []string) error {
 	if name == "title" {
 		if len(queryElements) > 0 {
 			return fmt.Errorf("no query elements allowed after title")
 		}
-		qe.queries = append(qe.queries, &changelogQuery{project: func(h changelog.Changelog) string {
-			return h.Name()
+		qe.queries = append(qe.queries, &changelogQuery{project: func(h changelog.Introduction) string {
+			return h.Title()
 		}})
 		return nil
 	}
@@ -29,18 +29,18 @@ func (qe *QueryEngine) newChangelogQuery(name string, queryElements []string) er
 }
 
 type changelogQuery struct {
-	project func(changelog.Changelog) string
+	project func(changelog.Introduction) string
 }
 
 func (q *changelogQuery) Select(w util.BufWriter, heading changelog.Heading) bool {
-	h, ok := heading.(changelog.Changelog)
+	h, ok := heading.(changelog.Introduction)
 	if !ok {
 		return false
 	}
 	if q.project == nil {
 		return true
 	} else {
-		w.WriteString(q.project(h))
+		_, _ = w.WriteString(q.project(h))
 		return false
 	}
 }

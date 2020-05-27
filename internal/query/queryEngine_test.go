@@ -7,8 +7,8 @@ import (
 	"github.com/denisa/clq/internal/changelog"
 )
 
-func newHeading(level changelog.HeadingKind, text string) changelog.Heading {
-	h, _ := changelog.NewHeading(level, text)
+func newHeading(kind changelog.HeadingKind, text string) changelog.Heading {
+	h, _ := changelog.NewHeading(kind, text)
 	return h
 }
 

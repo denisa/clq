@@ -49,7 +49,7 @@
   {
     "name": "heading_title_empty.md",
     "result": 1,
-    "error": "❗️ Validation error: Changelog cannot stay empty\n"
+    "error": "❗️ Validation error: Introduction’s title cannot stay empty\n"
   },
   {
     "name": "sort_date_newer_release_first.md",
@@ -237,7 +237,7 @@
       "testdata/heading_title_empty.md"
     ],
     "result": 1,
-    "error": "❗️ testdata/heading_title_empty.md: Validation error: Changelog cannot stay empty\n"
+    "error": "❗️ testdata/heading_title_empty.md: Validation error: Introduction’s title cannot stay empty\n"
   },
   {
     "title": "query with-filename",

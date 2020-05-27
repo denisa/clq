@@ -6,6 +6,7 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	"runtime"
 	"strings"
 	"testing"
 
@@ -44,7 +45,6 @@ func (s Scenario) name() string {
 }
 
 func TestScenarios(t *testing.T) {
-
 	assert := assert.New(t)
 	file, err := os.Open("testdata/scenarios.json")
 	require.NoError(t, err)
@@ -64,12 +64,12 @@ func TestScenarios(t *testing.T) {
 			t.Run(scenario.name(), func(t *testing.T) {
 				switch scenario.Platform {
 				case "unix":
-					if os.Getuid() == -1 {
+					if runtime.GOOS == "windows" {
 						t.SkipNow()
 						return
 					}
 				case "windows":
-					if os.Getuid() != -1 {
+					if runtime.GOOS != "windows" {
 						t.SkipNow()
 						return
 					}
