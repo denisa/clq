@@ -131,7 +131,10 @@ func (h Release) NextRelease(c ChangeMap) semver.Version {
 	return h.version
 }
 
-func (h Release) SortsBefore(other Release) error {
+// IsNewerThan returns an error if this release if not newer than another release.
+// A release is newer if it has the same or a more recent data and one its
+// version has been incremented.
+func (h Release) IsNewerThan(other Release) error {
 	if h.date.Before(other.date) {
 		return fmt.Errorf("Validation error: release %q should be older than %q", other.Title(), h.Title())
 	}

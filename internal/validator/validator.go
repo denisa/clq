@@ -199,7 +199,7 @@ func (r *Renderer) validateReleaseHeading(release changelog.Release) error {
 			}
 		}
 		if r.previousRelease.HasBeenReleased() {
-			if err := r.previousRelease.SortsBefore(release); err != nil {
+			if err := r.previousRelease.IsNewerThan(release); err != nil {
 				return err
 			}
 		}

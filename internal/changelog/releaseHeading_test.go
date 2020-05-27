@@ -54,7 +54,7 @@ func TestReleaseReleasedLabel(t *testing.T) {
 	require.True(r.HasBeenReleased())
 }
 
-func TestReleaseReleasedDateShouldFail(t *testing.T) {
+func TestReleaseNonIsoDateShouldFail(t *testing.T) {
 	_, err := newRelease("[1.2.3] - 2020.02.15")
 	require.Error(t, err)
 }
@@ -97,7 +97,7 @@ func TestReleaseYankedVersionShouldFail(t *testing.T) {
 	require.Error(t, err)
 }
 
-func TestReleaseEquality(t *testing.T) {
+func TestReleaseVersionEquality(t *testing.T) {
 	h, _ := newRelease("[1.2.3] - 2020-04-15")
 	r, _ := h.(Release)
 
@@ -110,6 +110,54 @@ func TestReleaseEquality(t *testing.T) {
 		v, _ := semver.Make("1.2.4")
 		require.False(r.ReleaseIs(v))
 	}
+}
+
+func TestReleaseOrdering(t *testing.T) {
+	h, _ := newRelease("[1.2.4] - 2020-04-16")
+	r1, _ := h.(Release)
+
+	h, _ = newRelease("[1.2.3] - 2020-04-15")
+	r2, _ := h.(Release)
+
+	require := require.New(t)
+	require.NoError(r1.IsNewerThan(r2))
+	require.Error(r2.IsNewerThan(r1))
+}
+
+func TestReleaseOrderingSameDay(t *testing.T) {
+	h, _ := newRelease("[1.2.4] - 2020-04-16")
+	r1, _ := h.(Release)
+
+	h, _ = newRelease("[1.2.3] - 2020-04-16")
+	r2, _ := h.(Release)
+
+	require := require.New(t)
+	require.NoError(r1.IsNewerThan(r2))
+	require.Error(r2.IsNewerThan(r1))
+}
+
+func TestReleaseOrderingSameVersionShouldFail(t *testing.T) {
+	h, _ := newRelease("[1.2.4] - 2020-04-16")
+	r1, _ := h.(Release)
+
+	h, _ = newRelease("[1.2.4] - 2020-04-15")
+	r2, _ := h.(Release)
+
+	require := require.New(t)
+	require.Error(r1.IsNewerThan(r2))
+	require.Error(r2.IsNewerThan(r1))
+}
+
+func TestReleaseOrderingMixedUp(t *testing.T) {
+	h, _ := newRelease("[1.2.4] - 2020-04-15")
+	r1, _ := h.(Release)
+	//
+	h, _ = newRelease("[1.2.3] - 2020-04-16")
+	r2, _ := h.(Release)
+
+	require := require.New(t)
+	require.Error(r2.IsNewerThan(r1))
+	require.Error(r1.IsNewerThan(r2))
 }
 
 func TestNextRelease(t *testing.T) {
