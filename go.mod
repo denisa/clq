@@ -3,7 +3,7 @@ module github.com/denisa/clq
 go 1.14
 
 require (
-	github.com/blang/semver v3.6.1+incompatible
+	github.com/blang/semver/v4 v4.0.0
 	github.com/jandelgado/gcov2lcov v1.0.2 // indirect
 	github.com/mdempsky/unconvert v0.0.0-20200228143138-95ecdbfc0b5f // indirect
 	github.com/stretchr/testify v1.5.1
