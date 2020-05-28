@@ -5,7 +5,7 @@ import (
 	"regexp"
 	"time"
 
-	"github.com/blang/semver"
+	"github.com/blang/semver/v4"
 )
 
 // Level 2, release
