@@ -24,3 +24,4 @@ Categories:
 - basic validations
 - basic queries
 - docker image
+- dependabot configuration
