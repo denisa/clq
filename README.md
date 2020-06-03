@@ -1,9 +1,9 @@
 # clq — Changelog validation and query tool
 
 [![test](https://github.com/denisa/clq/workflows/test/badge.svg)](https://github.com/denisa/clq/actions?query=workflow%3Atest+branch%3Amaster)
-[![Docker Automated build](https://img.shields.io/docker/automated/denisa/clq)](https://hub.docker.com/repository/docker/denisa/clq/builds)
-[![Coverage Status](https://coveralls.io/repos/github/denisa/clq/badge.svg?branch=master)](https://coveralls.io/github/denisa/clq?branch=master)
-![Semantic Versioning](https://img.shields.io/badge/Sematic%20Versioning-2.0.0-informational)
+[![docker build](https://img.shields.io/docker/cloud/build/denisa/clq)](https://hub.docker.com/repository/docker/denisa/clq/builds)
+[![coverage status](https://coveralls.io/repos/github/denisa/clq/badge.svg?branch=master)](https://coveralls.io/github/denisa/clq?branch=master)
+[![semantic versioning](https://img.shields.io/badge/semantic%20versioning-2.0.0-informational)](https://semver.org/spec/v2.0.0.html)
 
 # usage
 clq always validates the complete changelog, stopping at its first error. If a query is given, clq then queries the changelog and returns the query result. clq handles standard input — when no arguments are present or an argument is "-" — or any number of files.
