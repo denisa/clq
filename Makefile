@@ -10,17 +10,40 @@ cov: test
 lcov: test bin/gcov2lcov
 	@bin/gcov2lcov -infile=coverage.out -outfile=coverage.lcov
 
+DIST=dist/
+LDFLAGS=-ldflags="-w -s -extldflags '-static' -X main.version=${VERSION}"
+
+${DIST}:
+	mkdir -p ${DIST}
+
+.PHONY: build
+build: ${DIST}
+	go build -o ${DIST}clq .
+
+AMD64=darwin linux windows
+TARGET_AMD64:=$(addprefix build-,${AMD64})
+.PHONY: build-all ${TARGET_AMD64}
+build-all: ${TARGET_AMD64}
+
+${TARGET_AMD64}:build-%:
+	CGO_ENABLED=0 GOOS=$* GOARCH=amd64 go build -a ${LDFLAGS} -o ${DIST}clq-$*-amd64 .
+
 .PHONY: install
 install: test
 	go install ./...
 
-.PHONY: docker-build
-docker-build:
-	@export DOCKER_CONTENT_TRUST=1 && docker build -f Dockerfile -t denisa/clq .
+.PHONY: clean
+clean:
+		go clean -i ./...
+		rm -fr *.out *.lcov ${DIST} bin/
+
+.PHONY: build-docker
+build-docker:
+	export DOCKER_CONTENT_TRUST=1 && docker build -f Dockerfile -t denisa/clq .
 
 .PHONY: docker-test
 docker-test:
-	@docker-compose -f Dockerfile.test.yml up
+	docker-compose -f Dockerfile.test.yml up
 
 bin/gcov2lcov:
-	@env GOBIN=$$PWD/bin GO111MODULE=on go install github.com/jandelgado/gcov2lcov
+	env GOBIN=$$PWD/bin GO111MODULE=on go install github.com/jandelgado/gcov2lcov
