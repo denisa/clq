@@ -1,5 +1,6 @@
 *.test
 coverage.*
 go.sum
-bin
+bin/
+dist/
 vet: .
