@@ -1,0 +1,47 @@
+on:
+  push:
+    branches:
+      - '**'
+    tags-ignore:
+      - '*'
+  pull_request:
+name: ci
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        go-version: [1.14.x]
+        platform: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.platform }}
+    steps:
+    - uses: actions/setup-go@v2.0.3
+      with:
+        go-version: ${{ matrix.go-version }}
+    - uses: actions/checkout@v2.2.0
+    - run: make lcov
+    - name: Send coverage
+      if: matrix.platform == 'ubuntu-latest'
+      uses: coverallsapp/github-action@v1.1.1
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        path-to-lcov: coverage.lcov
+    - if: matrix.platform == 'ubuntu-latest'
+      run: make docker-test
+    - if: github.event_name == 'pull_request'
+      run: |
+        make build
+        dist/clq -release CHANGELOG.md`
+  tag:
+    if: github.event_name == 'push' && github.ref == '28'
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/setup-go@v2.0.3
+      with:
+        go-version: 1.14.x
+    - uses: actions/checkout@v2.2.0
+    - run: |
+        make build
+        release=`dist/clq -query 'releases[0].version' CHANGELOG.md`
+        git tag "v${release}" -m "Release ${release}"
+        git push origin "v${release}"
