@@ -32,9 +32,9 @@ jobs:
       name: Release validation of the CHANGELOG.md
       run: |
         make build
-        dist/clq -release CHANGELOG.md`
+        dist/clq -release CHANGELOG.md
   tag:
-    if: github.event_name == 'push' && github.ref == '28'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/28'
     runs-on: ubuntu-latest
     steps:
     - uses: actions/setup-go@v2.0.3
