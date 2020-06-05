@@ -28,7 +28,7 @@ jobs:
         path-to-lcov: coverage.lcov
     - if: matrix.platform == 'ubuntu-latest'
       run: make docker-test
-    - if: github.event_name == 'pull_request'
+    - if: matrix.platform == 'ubuntu-latest' && github.event_name == 'pull_request'
       name: Release validation of the CHANGELOG.md
       run: |
         make build
@@ -45,5 +45,7 @@ jobs:
       run: |
         make build
         release=`dist/clq -query 'releases[0].version' CHANGELOG.md`
+        git config --local user.name "github-ci"
+        git config --local user.email "github-ci@users.noreply.github.com"
         git tag "v${release}" -m "Release ${release}"
         git push origin "v${release}"
