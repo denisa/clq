@@ -29,6 +29,7 @@ jobs:
     - if: matrix.platform == 'ubuntu-latest'
       run: make docker-test
     - if: github.event_name == 'pull_request'
+      name: Release validation of the CHANGELOG.md
       run: |
         make build
         dist/clq -release CHANGELOG.md`
@@ -40,7 +41,8 @@ jobs:
       with:
         go-version: 1.14.x
     - uses: actions/checkout@v2.2.0
-    - run: |
+    - name: Apply the tag
+      run: |
         make build
         release=`dist/clq -query 'releases[0].version' CHANGELOG.md`
         git tag "v${release}" -m "Release ${release}"
