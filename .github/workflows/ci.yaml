@@ -44,7 +44,7 @@ jobs:
     - name: Apply the tag
       run: |
         make build
-        release=`dist/clq -query 'releases[0].version' CHANGELOG.md`
+        release=`dist/clq -release -query 'releases[0].version' CHANGELOG.md`
         git config --local user.name "github-ci"
         git config --local user.email "github-ci@users.noreply.github.com"
         git tag "v${release}" -m "Release ${release}"
