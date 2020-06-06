@@ -1,0 +1,87 @@
+name: ci
+on:
+  push:
+    branches:
+      - '**'
+    tags-ignore:
+      - '*'
+  pull_request:
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        go-version: [1.14.x]
+        platform: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.platform }}
+    steps:
+    - uses: actions/setup-go@v2.0.3
+      with:
+        go-version: ${{ matrix.go-version }}
+    - uses: actions/checkout@v2.2.0
+    - run: make lcov
+    - name: Send coverage
+      if: matrix.platform == 'ubuntu-latest'
+      uses: coverallsapp/github-action@v1.1.1
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        path-to-lcov: coverage.lcov
+    - if: matrix.platform == 'ubuntu-latest'
+      run: make docker-test
+    - if: matrix.platform == 'ubuntu-latest' && github.event_name == 'pull_request'
+      name: Release validation of the CHANGELOG.md
+      run: |
+        make build
+        dist/clq -release CHANGELOG.md
+  tag:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/setup-go@v2.0.3
+      with:
+        go-version: 1.14.x
+    - uses: actions/checkout@v2.2.0
+    - run: make build build-all
+    - name: Extract release information
+      run: |
+        release_version=$(dist/clq -release -query 'releases[0].version' CHANGELOG.md)
+        release_tag="v${release_version}"
+
+        release_name=$(dist/clq -release -query 'releases[0].label' CHANGELOG.md)
+        if [ -z "$release_name" ]; then
+          release_name="Release $release_version"
+        fi
+
+        echo "::set-env name=RELEASE_NAME::$release_name"
+        echo "::set-env name=RELEASE_TAG::$release_tag"
+    - uses: actions/create-release@v1.1.0
+      id: create_release
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ env.RELEASE_TAG }}
+        release_name: ${{ env.RELEASE_NAME }}
+    - uses: actions/upload-release-asset@v1.0.2
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: dist/clq-darwin-amd64
+        asset_name: clq-darwin-amd64
+        asset_content_type: application/octet-stream
+    - uses: actions/upload-release-asset@v1.0.2
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: dist/clq-linux-amd64
+        asset_name: clq-linux-amd64
+        asset_content_type: application/octet-stream
+    - uses: actions/upload-release-asset@v1.0.2
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: dist/clq-windows-amd64
+        asset_name: clq-windows-amd64
+        asset_content_type: application/octet-stream
