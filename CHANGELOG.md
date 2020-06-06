@@ -23,5 +23,5 @@ Categories:
 ### Added
 - basic validations
 - basic queries
-- docker image
+- docker image and (amd64) binaries for linux, macos and windows
 - dependabot configuration

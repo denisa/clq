@@ -41,11 +41,47 @@ jobs:
       with:
         go-version: 1.14.x
     - uses: actions/checkout@v2.2.0
-    - name: Apply the tag
+    - run: make build build-all
+    - name: Extract release information
       run: |
-        make build
-        release=`dist/clq -release -query 'releases[0].version' CHANGELOG.md`
-        git config --local user.name "github-ci"
-        git config --local user.email "github-ci@users.noreply.github.com"
-        git tag "v${release}" -m "Release ${release}"
-        git push origin "v${release}"
+        release_version=$(dist/clq -release -query 'releases[0].version' CHANGELOG.md)
+        release_tag="v${release_version}"
+
+        release_name=$(dist/clq -release -query 'releases[0].label' CHANGELOG.md)
+        if [ -z "$release_name" ]; then
+          release_name="Release $release_version"
+        fi
+
+        echo "::set-env name=RELEASE_NAME::$release_name"
+        echo "::set-env name=RELEASE_TAG::$release_tag"
+    - uses: actions/create-release@v1.1.0
+      id: create_release
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ env.RELEASE_TAG }}
+        release_name: ${{ env.RELEASE_NAME }}
+    - uses: actions/upload-release-asset@v1.0.2
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: dist/clq-darwin-amd64
+        asset_name: clq-darwin-amd64
+        asset_content_type: application/octet-stream
+    - uses: actions/upload-release-asset@v1.0.2
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: dist/clq-linux-amd64
+        asset_name: clq-linux-amd64
+        asset_content_type: application/octet-stream
+    - uses: actions/upload-release-asset@v1.0.2
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: dist/clq-windows-amd64
+        asset_name: clq-windows-amd64
+        asset_content_type: application/octet-stream
