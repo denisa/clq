@@ -19,7 +19,7 @@ Categories:
    - `Fixed` for any bug fixes.
    - `Security` in case of vulnerabilities.
 
-## [Unreleased]
+## [1.0.0] - 2020-06-05
 ### Added
 - basic validations
 - basic queries
