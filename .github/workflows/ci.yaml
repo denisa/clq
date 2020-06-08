@@ -42,7 +42,7 @@ jobs:
       with:
         go-version: 1.14.x
     - uses: actions/checkout@v2.2.0
-    - run: make build build-all
+    - run: make build
     - name: Extract release information
       run: |
         release_version=$(dist/clq -release -query 'releases[0].version' CHANGELOG.md)
@@ -55,6 +55,10 @@ jobs:
 
         echo "::set-env name=RELEASE_NAME::$release_name"
         echo "::set-env name=RELEASE_TAG::$release_tag"
+        echo "::set-env name=RELEASE_VERSION::$release_version"
+    - run: |
+        VERSION=$RELEASE_VERSION make assertVersionDefined build-all
+        test $(dist/clq-linux-amd64 -version) = "clq $RELEASE_VERSION"
     - uses: actions/create-release@v1.1.0
       id: create_release
       env:

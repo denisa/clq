@@ -10,6 +10,10 @@ cov: test
 lcov: test bin/gcov2lcov
 	@bin/gcov2lcov -infile=coverage.out -outfile=coverage.lcov
 
+.PHONY: assertVersionDefined
+assertVersionDefined:
+	test -n "${VERSION}"
+
 DIST=dist/
 LDFLAGS=-ldflags="-w -s -extldflags '-static' -X main.version=${VERSION}"
 
@@ -34,8 +38,8 @@ install: test
 
 .PHONY: clean
 clean:
-		go clean -i ./...
-		rm -fr *.out *.lcov ${DIST} bin/
+	go clean -i ./...
+	rm -fr *.out *.lcov ${DIST} bin/
 
 .PHONY: build-docker
 build-docker:

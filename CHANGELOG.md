@@ -19,6 +19,10 @@ Categories:
    - `Fixed` for any bug fixes.
    - `Security` in case of vulnerabilities.
 
+## [1.0.2] - 2020-06-08
+### Fixed
+- now set the version in the released binaries
+
 ## [1.0.1] - 2020-06-07
 ### Fixed
 - the _tag_ job will not run unless all tests are green
