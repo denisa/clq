@@ -19,6 +19,10 @@ Categories:
    - `Fixed` for any bug fixes.
    - `Security` in case of vulnerabilities.
 
+## [1.0.3] - 2020-06-08
+### Fixed
+- test that the released binaries have a version is properly quoted
+
 ## [1.0.2] - 2020-06-08
 ### Fixed
 - now set the version in the released binaries
