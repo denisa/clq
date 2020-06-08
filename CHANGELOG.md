@@ -22,6 +22,7 @@ Categories:
 ## [1.0.2] - 2020-06-08
 ### Fixed
 - now set the version in the released binaries
+- bump github.com/stretchr/testify from 1.6.0 to 1.6.1
 
 ## [1.0.1] - 2020-06-07
 ### Fixed
