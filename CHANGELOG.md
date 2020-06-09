@@ -18,7 +18,11 @@ Categories:
 - _bug-fix_ release trigger:
    - `Fixed` for any bug fixes.
    - `Security` in case of vulnerabilities.
-   
+
+## [1.1.2] - 2020-06-09
+### Fixed
+- pull-request fails when a tag exists for the CHANGELOG’s release
+
 ## [1.1.1] - 2020-06-08
 ### Fixed
 - recognize release status _prereleased_ when creating github’s release
