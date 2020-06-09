@@ -19,6 +19,10 @@ Categories:
    - `Fixed` for any bug fixes.
    - `Security` in case of vulnerabilities.
 
+## [1.1.0] - 2020-06-08
+### Changed
+- a query for a release status can now return _prereleased_
+
 ## [1.0.2] - 2020-06-08
 ### Fixed
 - now set the version in the released binaries

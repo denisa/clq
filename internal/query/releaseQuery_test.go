@@ -64,6 +64,18 @@ func TestQuerySecondReleaseLabel(t *testing.T) {
 	require.Equal("Cabrel", result)
 }
 
+func TestQuerySecondReleaseStatusPrereleased(t *testing.T) {
+	require := require.New(t)
+
+	result, err := apply("releases[1].status", []changelog.Heading{
+		newHeading(changelog.IntroductionHeading, "changelog"),
+		newHeading(changelog.ReleaseHeading, "[1.2.3] - 2020-05-16"),
+		newHeading(changelog.ReleaseHeading, "[1.2.2-rc.1] - 2020-05-15 Cabrel"),
+	})
+	require.NoError(err)
+	require.Equal("prereleased", result)
+}
+
 func TestQuerySecondReleaseStatusReleased(t *testing.T) {
 	require := require.New(t)
 
