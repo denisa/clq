@@ -1,5 +1,7 @@
 # clq — Changelog validation and query tool
 
+![version](https://img.shields.io/github/v/release/denisa/clq?include_prereleases&sort=semver)
+
 [![test](https://github.com/denisa/clq/workflows/test/badge.svg)](https://github.com/denisa/clq/actions?query=workflow%3Atest+branch%3Amaster)
 [![docker build](https://img.shields.io/docker/cloud/build/denisa/clq)](https://hub.docker.com/repository/docker/denisa/clq/builds)
 [![coverage status](https://coveralls.io/repos/github/denisa/clq/badge.svg?branch=master)](https://coveralls.io/github/denisa/clq?branch=master)
