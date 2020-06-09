@@ -41,6 +41,9 @@ func (qe *QueryEngine) newReleaseQuery(name string, queryElements []string) erro
 				if r.HasBeenYanked() {
 					return "yanked"
 				}
+				if r.IsPrerelease() {
+					return "prereleased"
+				}
 				return "released"
 			}
 		case "version":

@@ -91,7 +91,12 @@ func (h Release) Version() string {
 	return ""
 }
 
-// HasBeenYanked returns true if this release is a release without pre-release or build number component.
+// IsPrerelease returns true if this release is a pre-release without build number component.
+func (h Release) IsPrerelease() bool {
+	return h.HasBeenReleased() && len(h.version.Pre) > 0 && len(h.version.Build) == 0
+}
+
+// IsRelease returns true if this release is a release without pre-release or build number component.
 func (h Release) IsRelease() bool {
 	return h.HasBeenReleased() && len(h.version.Pre) == 0 && len(h.version.Build) == 0
 }

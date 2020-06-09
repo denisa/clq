@@ -23,8 +23,23 @@ func TestReleaseUnreleased(t *testing.T) {
 	require.Empty(r.Date())
 	require.Empty(r.Label())
 	require.False(r.IsRelease())
+	require.False(r.IsPrerelease())
 	require.False(r.HasBeenYanked())
 	require.False(r.HasBeenReleased())
+}
+
+func TestReleasePrereleasedNoLabel(t *testing.T) {
+	h, _ := newRelease("[1.2.3-rc.1] - 2020-04-15")
+	r, _ := h.(Release)
+
+	require := require.New(t)
+	require.Equal("1.2.3-rc.1", r.Version())
+	require.Equal("2020-04-15", r.Date())
+	require.Empty(r.Label())
+	require.False(r.IsRelease())
+	require.True(r.IsPrerelease())
+	require.False(r.HasBeenYanked())
+	require.True(r.HasBeenReleased())
 }
 
 func TestReleaseReleasedNoLabel(t *testing.T) {
@@ -36,9 +51,9 @@ func TestReleaseReleasedNoLabel(t *testing.T) {
 	require.Equal("2020-04-15", r.Date())
 	require.Empty(r.Label())
 	require.True(r.IsRelease())
+	require.False(r.IsPrerelease())
 	require.False(r.HasBeenYanked())
 	require.True(r.HasBeenReleased())
-
 }
 
 func TestReleaseReleasedLabel(t *testing.T) {
@@ -50,6 +65,7 @@ func TestReleaseReleasedLabel(t *testing.T) {
 	require.Equal("2020-04-15", r.Date())
 	require.Equal("Espelho", r.Label())
 	require.True(r.IsRelease())
+	require.False(r.IsPrerelease())
 	require.False(r.HasBeenYanked())
 	require.True(r.HasBeenReleased())
 }

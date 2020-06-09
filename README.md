@@ -96,7 +96,7 @@ The query expression is a sequence of _query elements_.
 
 The first query element accesses the overall _changelog_ and provides accessor for its _title_ and an array of _releases_. Returning all releases is not supported, and a _release selector_ identifies one of the releases. Currently, the release selector is the (0-based) index of the release, with the most recent entry having the 0th index. clq returns an empty result if the index is bigger than the release count.
 
-The second query element, if present, accesses fields of the release. There are accessors for the _version_, the _date_, the _label_, and the release _status_. The release status is one of _released_, _unreleased_ and _yanked_. clq returns a json structure with all the defined fields of the selected release if the second query element is missing.
+The second query element, if present, accesses fields of the release. There are accessors for the _version_, the _date_, the _label_, and the release _status_. The release status is one of _prereleased_, _released_, _unreleased_ and _yanked_. clq returns a json structure with all the defined fields of the selected release if the second query element is missing.
 
 
 # Reference:
