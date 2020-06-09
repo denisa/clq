@@ -18,6 +18,10 @@ Categories:
 - _bug-fix_ release trigger:
    - `Fixed` for any bug fixes.
    - `Security` in case of vulnerabilities.
+   
+## [1.1.1] - 2020-06-08
+### Fixed
+- recognize release status _prereleased_ when creating github’s release
 
 ## [1.1.0] - 2020-06-08
 ### Changed
