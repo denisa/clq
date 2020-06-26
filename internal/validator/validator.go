@@ -5,7 +5,6 @@ import (
 	"strings"
 
 	"github.com/denisa/clq/internal/changelog"
-	"github.com/denisa/clq/internal/query"
 	"github.com/yuin/goldmark/ast"
 	"github.com/yuin/goldmark/renderer"
 	"github.com/yuin/goldmark/util"
@@ -13,8 +12,8 @@ import (
 
 // A Config struct has configurations for the Validator renderer.
 type Config struct {
-	release     bool
-	queryEngine *query.QueryEngine
+	release  bool
+	listener changelog.Listener
 }
 
 // NewConfig returns a new Config with defaults.
@@ -27,20 +26,20 @@ type Option interface {
 	SetValidationOption(*Config)
 }
 
-type withQuery struct {
-	value query.QueryEngine
+type withListener struct {
+	value changelog.Listener
 }
 
-func (o *withQuery) SetValidationOption(c *Config) {
-	c.queryEngine = &o.value
+func (o *withListener) SetValidationOption(c *Config) {
+	c.listener = o.value
 }
 
-// WithQuery is a functional option that allow you to set the query string to
-// the renderer.
-func WithQuery(queryEngine query.QueryEngine) interface {
+// withListener is a functional option that allow you to set the changelog event
+// listener .
+func WithListener(listener changelog.Listener) interface {
 	Option
 } {
-	return &withQuery{queryEngine}
+	return &withListener{value: listener}
 }
 
 type withRelease struct {
@@ -82,8 +81,8 @@ func NewRenderer(opts ...Option) renderer.NodeRenderer {
 		opt.SetValidationOption(&r.Config)
 	}
 
-	if r.queryEngine.HasQuery() {
-		r.headers.Listener(r.queryEngine)
+	if r.listener != nil {
+		r.headers.Listener(r.listener)
 	}
 
 	return r
@@ -108,7 +107,6 @@ func (r *Renderer) visitDocument(w util.BufWriter, source []byte, node ast.Node,
 			return ast.WalkStop, fmt.Errorf("No change descriptions for %v", r.headers)
 		}
 		r.headers.Close()
-		w.WriteString(r.queryEngine.Result())
 	}
 	return ast.WalkContinue, nil
 }

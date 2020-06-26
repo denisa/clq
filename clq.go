@@ -74,13 +74,13 @@ func (clq *Clq) entryPoint(name string, arguments ...string) int {
 		reader := text.NewReader(source)
 		doc := goldmark.DefaultParser().Parse(reader)
 
+		validatorOpts := []validator.Option{validator.WithRelease(*release)}
+		if queryEngine.HasQuery() {
+			validatorOpts = append(validatorOpts, validator.WithListener(queryEngine))
+		}
 		validationEngine := renderer.NewRenderer(
 			renderer.WithNodeRenderers(
-				util.Prioritized(
-					validator.NewRenderer(
-						validator.WithQuery(*queryEngine),
-						validator.WithRelease(*release)),
-					1000)))
+				util.Prioritized(validator.NewRenderer(validatorOpts...), 1000)))
 
 		var buf bytes.Buffer
 		if err := validationEngine.Render(&buf, source, doc); err != nil {
@@ -88,7 +88,7 @@ func (clq *Clq) entryPoint(name string, arguments ...string) int {
 			hasError = true
 			continue
 		}
-		clq.output(document, buf.String())
+		clq.output(document, queryEngine.Result())
 	}
 
 	if hasError {
