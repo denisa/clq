@@ -2,50 +2,59 @@ package query
 
 import (
 	"fmt"
-	"strings"
 
 	"github.com/denisa/clq/internal/changelog"
 )
 
-func (qe *QueryEngine) newIntroductionQuery(name string, queryElements []string) error {
+func (qe *QueryEngine) newIntroductionQuery(queryElements []string) error {
 	queryMe := &changelogQuery{}
 	qe.queries = append(qe.queries, queryMe)
-	if name == "title" {
-		if len(queryElements) > 0 {
-			return fmt.Errorf("no query elements allowed after title")
+
+	elementName, elementSelector, elementIsList, elementIsRecursive, err := parseName(queryElements[0])
+	if err != nil {
+		return err
+	}
+
+	switch elementName {
+	default:
+		return fmt.Errorf("Query attribute not recognized %q for a \"introduction\"", elementName)
+	case "releases":
+		if elementIsList {
+			if err := qe.newReleaseQuery(elementSelector, elementIsRecursive, queryElements[1:]); err != nil {
+				return err
+			}
+		}
+	case "title":
+		if err := elementIsFinal(elementName, elementIsList, queryElements[1:]); err != nil {
+			return err
 		}
 		queryMe.enter = func(rc ResultCollector, h changelog.Heading) {
 			if h, ok := h.(changelog.Introduction); ok {
 				rc.set(h.Title())
 			}
 		}
-		return nil
 	}
-
-	if strings.HasPrefix(name, "releases[") && strings.HasSuffix(name, "]") {
-		if err := qe.newReleaseQuery(name[strings.Index(name, "[")+1:len(name)-1], queryElements); err != nil {
-			return err
-		}
-		return nil
-	}
-
-	return fmt.Errorf("Query attribute not recognized %q", name)
+	return nil
 }
 
 type changelogQuery struct {
 	projections
 }
 
-func (q *changelogQuery) Enter(heading changelog.Heading) (bool, Project) {
+func (q *changelogQuery) Accept(heading changelog.Heading) bool {
+	_, ok := heading.(changelog.Introduction)
+	return ok
+}
 
-	if _, ok := heading.(changelog.Introduction); !ok {
+func (q *changelogQuery) Enter(heading changelog.Heading) (bool, Project) {
+	if !q.Accept(heading) {
 		return false, nil
 	}
 	return true, q.enter
 }
 
 func (q *changelogQuery) Exit(heading changelog.Heading) (bool, Project) {
-	if _, ok := heading.(changelog.Introduction); !ok {
+	if !q.Accept(heading) {
 		return false, nil
 	}
 	return true, q.exit

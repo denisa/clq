@@ -8,12 +8,12 @@ import (
 )
 
 func TestUnsupportedIntroductionQuery(t *testing.T) {
-	_, err := NewQueryEngine("publication_date")
+	_, err := NewQueryEngine("publication_date", "json")
 	require.Error(t, err)
 }
 
 func TestUnsupportedIntroductionTitleQuery(t *testing.T) {
-	_, err := NewQueryEngine("title.size")
+	_, err := NewQueryEngine("title.size", "json")
 	require.Error(t, err)
 }
 
@@ -35,4 +35,18 @@ func TestQueryTitleAgainstRelease(t *testing.T) {
 	})
 	require.NoError(err)
 	require.Empty(result)
+}
+
+func TestUnsupportedChangelogEnter(t *testing.T) {
+	require := require.New(t)
+
+	query := &changelogQuery{}
+	require.False(query.Enter(newHeading(changelog.ReleaseHeading, "[1.2.3] - 2020-05-16")))
+}
+
+func TestUnsupportedChangelogExit(t *testing.T) {
+	require := require.New(t)
+
+	query := &changelogQuery{}
+	require.False(query.Exit(newHeading(changelog.ReleaseHeading, "[1.2.3] - 2020-05-16")))
 }

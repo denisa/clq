@@ -20,6 +20,8 @@ When processing multiple files, clq prefixes every line on standard out and stan
 Usage: clq { options } <path to changelog.md>
 
 Options are:
+  -output format
+      the format to apply to the result of a (complex) query. Supports json and md (markdown); default to json
   -query string
     	A query to extract information out of the change log
   -release

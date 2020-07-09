@@ -7,13 +7,18 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+func TestMisformedChangeItemQuerySelector(t *testing.T) {
+	_, err := NewQueryEngine("releases[2].changes[].descriptions[", "json")
+	require.Error(t, err)
+}
+
 func TestUnsupportedChangeItemQuerySelector(t *testing.T) {
-	_, err := NewQueryEngine("releases[2].changes[].descriptions[three]")
+	_, err := NewQueryEngine("releases[2].changes[].descriptions[three]", "json")
 	require.Error(t, err)
 }
 
 func TestUnsupportedChangeItemQueryAttribute(t *testing.T) {
-	_, err := NewQueryEngine("releases[2].changes[].descriptions[].fabulator")
+	_, err := NewQueryEngine("releases[2].changes[].descriptions[].fabulator", "json")
 	require.Error(t, err)
 }
 
@@ -41,4 +46,18 @@ func TestQueryChangeDescriptions(t *testing.T) {
 	})
 	require.NoError(err)
 	require.Equal("foo", result)
+}
+
+func TestUnsupportedChangeItemEnter(t *testing.T) {
+	require := require.New(t)
+
+	query := &changeItemQuery{}
+	require.False(query.Enter(newHeading(changelog.IntroductionHeading, "changelog")))
+}
+
+func TestUnsupportedChangeItemExit(t *testing.T) {
+	require := require.New(t)
+
+	query := &changeItemQuery{}
+	require.False(query.Exit(newHeading(changelog.IntroductionHeading, "changelog")))
 }

@@ -37,10 +37,12 @@ func (clq *Clq) entryPoint(name string, arguments ...string) int {
 		fmt.Fprintf(options.Output(), "\nUsage: %s { flags } <path to changelog.md>\n\nOptions are:\n", options.Name())
 		options.PrintDefaults()
 	}
+	var output = options.String("output", "json", "Output format, for complex result. One of: json|md")
 	var queryString = options.String("query", "", "A query to extract information out of the change log")
 	var release = options.Bool("release", false, "Enable release-mode validation")
 	var showVersion = options.Bool("version", false, "Prints clq version")
 	options.BoolVar(&clq.verbose, "with-filename", false, "Always print filename headers with output lines")
+
 	if options.Parse(arguments) != nil {
 		return 2
 	}
@@ -58,7 +60,7 @@ func (clq *Clq) entryPoint(name string, arguments ...string) int {
 
 	var hasError bool
 	for _, document := range clq.documents {
-		queryEngine, err := query.NewQueryEngine(*queryString)
+		queryEngine, err := query.NewQueryEngine(*queryString, *output)
 		if err != nil {
 			fmt.Fprintf(clq.stderr, "❗️ %v\n", err)
 			return 2

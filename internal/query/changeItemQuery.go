@@ -6,9 +6,9 @@ import (
 	"github.com/denisa/clq/internal/changelog"
 )
 
-func (qe *QueryEngine) newChangeItemQuery(name string, queryElements []string) error {
-	if name != "" {
-		return fmt.Errorf("Query change selector %q not yet supported", name)
+func (qe *QueryEngine) newChangeItemQuery(selector string, isRecursive bool, queryElements []string) error {
+	if selector != "" {
+		return fmt.Errorf("Query change selector %q not yet supported", selector)
 	}
 	if len(queryElements) > 0 {
 		return fmt.Errorf("Query attribute selector %v not yet supported", queryElements)
@@ -27,15 +27,20 @@ type changeItemQuery struct {
 	projections
 }
 
+func (q *changeItemQuery) Accept(heading changelog.Heading) bool {
+	_, ok := heading.(changelog.ChangeItem)
+	return ok
+}
+
 func (q *changeItemQuery) Enter(heading changelog.Heading) (bool, Project) {
-	if _, ok := heading.(changelog.ChangeItem); !ok {
+	if !q.Accept(heading) {
 		return false, nil
 	}
 	return true, q.enter
 }
 
 func (q *changeItemQuery) Exit(heading changelog.Heading) (bool, Project) {
-	if _, ok := heading.(changelog.ChangeItem); !ok {
+	if !q.Accept(heading) {
 		return false, nil
 	}
 	return true, q.exit

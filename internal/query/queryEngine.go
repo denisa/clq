@@ -1,7 +1,7 @@
 package query
 
 import (
-	"encoding/json"
+	"fmt"
 	"strings"
 
 	"github.com/denisa/clq/internal/changelog"
@@ -9,17 +9,21 @@ import (
 
 // QueryEngine tracks the evaluation of the overall query against the complete changelog.
 type QueryEngine struct {
+	output  OutputFormat
 	queries []Query
 	current int
-	results []result
 }
 
 // NewQueryEngine parses the query and contructs a new dedicated query engine.
-func NewQueryEngine(query string) (*QueryEngine, error) {
-	qe := &QueryEngine{}
+func NewQueryEngine(query string, formatName string) (*QueryEngine, error) {
+	outputFormat, err := newOutputFormat(formatName)
+	if err != nil {
+		return nil, err
+	}
+
+	qe := &QueryEngine{output: outputFormat}
 	if len(query) > 0 {
-		queryElements := strings.Split(query, ".")
-		if err := qe.newIntroductionQuery(queryElements[0], queryElements[1:]); err != nil {
+		if err := qe.newIntroductionQuery(strings.Split(query, ".")); err != nil {
 			return nil, err
 		}
 	}
@@ -28,6 +32,10 @@ func NewQueryEngine(query string) (*QueryEngine, error) {
 
 func (qe *QueryEngine) HasQuery() bool { return len(qe.queries) > 0 }
 
+func (qe *QueryEngine) Result() string {
+	return qe.output.Result()
+}
+
 // Enter lets the query engine evaluates the heading upon entering it.
 func (qe *QueryEngine) Enter(heading changelog.Heading) {
 	if qe.current == len(qe.queries) {
@@ -35,14 +43,23 @@ func (qe *QueryEngine) Enter(heading changelog.Heading) {
 		return
 	}
 
+	for cur := qe.current; ; cur-- {
+		if qe.queries[cur].Accept(heading) {
+			qe.current = cur
+			break
+		}
+		if cur == 0 {
+			return
+		}
+	}
+
 	ok, project := qe.queries[qe.current].Enter(heading)
 	if !ok {
 		return
 	}
-
 	if project != nil {
-		qe.open(heading)
-		project(qe, heading)
+		qe.output.Open(heading)
+		project(qe.output.(ResultCollector), heading)
 	}
 
 	if qe.current+1 < len(qe.queries) {
@@ -57,101 +74,58 @@ func (qe *QueryEngine) Exit(heading changelog.Heading) {
 		return
 	}
 
-	for {
-		ok, project := qe.queries[qe.current].Exit(heading)
-		if !ok {
+	for cur := qe.current; ; cur-- {
+		if qe.queries[cur].Accept(heading) {
+			qe.current = cur
+			break
+		}
+		if cur == 0 {
 			return
 		}
+	}
 
-		if project != nil {
-			qe.open(heading)
-			project(qe, heading)
-		}
-		qe.close(heading)
+	ok, project := qe.queries[qe.current].Exit(heading)
+	if ok && project != nil {
+		qe.output.Open(heading)
+		project(qe.output.(ResultCollector), heading)
+	}
 
-		if qe.current == 0 {
+	qe.output.Close(heading)
+}
+
+func parseName(element string) (name, selector string, isList, isRecursive bool, err error) {
+	openBracketIndex := strings.Index(element, "[")
+	closeBracketIndex := strings.Index(element, "]")
+	if openBracketIndex != -1 {
+		if closeBracketIndex < openBracketIndex {
+			err = fmt.Errorf("Missing closing bracket in %q", element)
 			return
 		}
-		qe.current--
-	}
-}
-
-type result struct {
-	value interface{}
-	name  string
-	kind  changelog.HeadingKind
-}
-
-func (qe *QueryEngine) Result() string {
-	if len(qe.results) == 0 {
-		return ""
-	}
-	if len(qe.results) > 1 {
-		panic("results greater than 1")
-	}
-	if result, ok := (qe.results[0].value).(string); ok {
-		return result
-	}
-
-	result, _ := (qe.results[0].value).(map[string]interface{})
-	if jsonString, err := json.Marshal(result); err != nil {
-		panic(err)
-	} else {
-		return string(jsonString)
-	}
-}
-
-func (qe *QueryEngine) open(heading changelog.Heading) {
-	if i := len(qe.results); i > 0 && qe.results[i-1].kind == heading.Kind() {
+		isList = true
+	} else if closeBracketIndex != -1 {
+		err = fmt.Errorf("Missing opening bracket in %q", element)
 		return
 	}
-	opened := result{kind: heading.Kind()}
-	qe.results = append(qe.results, opened)
-}
-
-func (qe *QueryEngine) close(heading changelog.Heading) {
-	if i := len(qe.results); i < 2 || qe.results[i-1].kind != heading.Kind() {
+	isRecursive = strings.HasSuffix(element, "/")
+	if !isList && isRecursive {
+		err = fmt.Errorf("Missing closing bracket in %q", element)
 		return
 	}
-
-	i := len(qe.results) - 1
-	newValue := qe.results[i].value
-	qe.results = qe.results[:i]
-	i--
-	if result, ok := (qe.results[i].value).(map[string]interface{}); !ok {
-		panic("WTF?")
+	if isList {
+		name = element[:openBracketIndex]
+		selector = element[openBracketIndex+1 : closeBracketIndex]
 	} else {
-		if collection, ok := result[qe.results[i].name].([]interface{}); ok {
-			result[qe.results[i].name] = append(collection, newValue)
-		} else {
-			panic("WTF?")
-		}
+		name = element
 	}
+	return
 }
 
-func (qe *QueryEngine) set(value string) {
-	qe.results[len(qe.results)-1].value = value
-}
-
-func (qe *QueryEngine) setField(name string, value string) {
-	i := len(qe.results) - 1
-	if qe.results[i].value == nil {
-		qe.results[i].value = make(map[string]interface{})
+func elementIsFinal(name string, isList bool, elements []string) error {
+	if isList {
+		return fmt.Errorf("%q is a scalar attribue", name)
 	}
-	result, _ := (qe.results[i].value).(map[string]interface{})
-	result[name] = value
-}
-
-func (qe *QueryEngine) array(name string) {
-	i := len(qe.results) - 1
-	if qe.results[i].value == nil {
-		qe.results[i].value = make(map[string]interface{})
+	if len(elements) != 0 {
+		return fmt.Errorf("No further query element allowed after %q", name)
 	}
-	result, _ := (qe.results[i].value).(map[string]interface{})
-	result[name] = make([]interface{}, 0)
-	qe.results[i].name = name
-}
-
-func selector(element string) string {
-	return element[strings.Index(element, "[")+1 : strings.Index(element, "]")]
+	return nil
 }
