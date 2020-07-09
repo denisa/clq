@@ -14,19 +14,20 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestChangelogShouldSucceed(t *testing.T) {
-	executeClq(assert.New(t), "", 0, "", "", "CHANGELOG.md")
+type Scenario struct {
+	Platform     string   `json:"platform,omitempty"`
+	Title        string   `json:"title,omitempty"`
+	Name         string   `json:"name"`
+	Result       int      `json:"result"`
+	Arguments    []string `json:"arguments,omitempty"`
+	Input        string   `json:"input,omitempty"`
+	Output       string   `json:"output,omitempty"`
+	OutputFormat string   `json:"output_format,omitempty"`
+	Error        string   `json:"error,omitempty"`
 }
 
-type Scenario struct {
-	Platform  string   `json:"platform,omitempty"`
-	Title     string   `json:"title,omitempty"`
-	Name      string   `json:"name"`
-	Result    int      `json:"result"`
-	Arguments []string `json:"arguments,omitempty"`
-	Input     string   `json:"input,omitempty"`
-	Output    string   `json:"output,omitempty"`
-	Error     string   `json:"error,omitempty"`
+func TestChangelogShouldSucceed(t *testing.T) {
+	Scenario{Arguments: []string{"CHANGELOG.md"}}.executeClq(assert.New(t))
 }
 
 func (s Scenario) name() string {
@@ -79,15 +80,12 @@ func TestScenarios(t *testing.T) {
 				}
 				delete(testFiles, scenario.Name)
 
-				var args []string
-				if scenario.Name == "" {
-					args = scenario.Arguments
-				} else if scenario.Name == "-" {
-					args = append(scenario.Arguments, scenario.Name)
-				} else {
-					args = append(scenario.Arguments, filepath.Join("testdata", scenario.Name))
+				if scenario.Name == "-" {
+					scenario.Arguments = append(scenario.Arguments, scenario.Name)
+				} else if scenario.Name != "" {
+					scenario.Arguments = append(scenario.Arguments, filepath.Join("testdata", scenario.Name))
 				}
-				executeClq(assert, scenario.Input, scenario.Result, scenario.Output, scenario.Error, args...)
+				scenario.executeClq(assert)
 			})
 		}
 	}
@@ -106,16 +104,21 @@ func TestScenarios(t *testing.T) {
 	}
 }
 
-func executeClq(assert *assert.Assertions, input string, expectedCode int, expectedOutput string, expectedErr string, arguments ...string) {
+func (scenario Scenario) executeClq(assert *assert.Assertions) {
 	var actualOutput strings.Builder
 	var actualErr strings.Builder
-	clq := &Clq{stdin: strings.NewReader(input), stdout: &actualOutput, stderr: &actualErr}
+	clq := &Clq{stdin: strings.NewReader(scenario.Input), stdout: &actualOutput, stderr: &actualErr}
 
-	var actualCode = clq.entryPoint("clq", arguments...)
+	var actualCode = clq.entryPoint("clq", scenario.Arguments...)
 
-	assert.Equal(expectedCode, actualCode)
-	assert.Equal(expectedOutput, actualOutput.String())
-	assert.Equal(expectedErr, actualErr.String())
+	assert.Equal(scenario.Result, actualCode)
+	switch scenario.OutputFormat {
+	case "json":
+		assert.JSONEq(scenario.Output, actualOutput.String())
+	default:
+		assert.Equal(scenario.Output, actualOutput.String())
+	}
+	assert.Equal(scenario.Error, actualErr.String())
 }
 
 func allTestFiles(t *testing.T) map[string]bool {

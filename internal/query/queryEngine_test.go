@@ -1,8 +1,21 @@
 package query
 
 import (
+	"testing"
+
 	"github.com/denisa/clq/internal/changelog"
+	"github.com/stretchr/testify/require"
 )
+
+func TestEmptyQueryAgainstIntroduction(t *testing.T) {
+	require := require.New(t)
+
+	result, err := apply("", []changelog.Heading{
+		newHeading(changelog.IntroductionHeading, "changelog"),
+	})
+	require.NoError(err)
+	require.Equal("", result)
+}
 
 func newHeading(kind changelog.HeadingKind, text string) changelog.Heading {
 	h, _ := changelog.NewHeading(kind, text)

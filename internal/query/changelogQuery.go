@@ -14,8 +14,10 @@ func (qe *QueryEngine) newIntroductionQuery(name string, queryElements []string)
 		if len(queryElements) > 0 {
 			return fmt.Errorf("no query elements allowed after title")
 		}
-		queryMe.enter = func(h changelog.Introduction) string {
-			return h.Title()
+		queryMe.enter = func(rc ResultCollector, h changelog.Heading) {
+			if h, ok := h.(changelog.Introduction); ok {
+				rc.set(h.Title())
+			}
 		}
 		return nil
 	}
@@ -31,30 +33,20 @@ func (qe *QueryEngine) newIntroductionQuery(name string, queryElements []string)
 }
 
 type changelogQuery struct {
-	enter func(changelog.Introduction) string
-	exit  func(changelog.Introduction) string
+	projections
 }
 
-func (q *changelogQuery) Enter(w *strings.Builder, heading changelog.Heading) bool {
-	h, ok := heading.(changelog.Introduction)
-	if !ok {
-		return false
-	}
+func (q *changelogQuery) Enter(heading changelog.Heading) (bool, Project) {
 
-	if q.enter != nil {
-		_, _ = w.WriteString(q.enter(h))
+	if _, ok := heading.(changelog.Introduction); !ok {
+		return false, nil
 	}
-	return true
+	return true, q.enter
 }
 
-func (q *changelogQuery) Exit(w *strings.Builder, heading changelog.Heading) bool {
-	h, ok := heading.(changelog.Introduction)
-	if !ok {
-		return false
+func (q *changelogQuery) Exit(heading changelog.Heading) (bool, Project) {
+	if _, ok := heading.(changelog.Introduction); !ok {
+		return false, nil
 	}
-
-	if q.exit != nil {
-		_, _ = w.WriteString(q.exit(h))
-	}
-	return true
+	return true, q.exit
 }

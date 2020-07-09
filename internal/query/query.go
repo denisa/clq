@@ -5,8 +5,6 @@
 package query
 
 import (
-	"strings"
-
 	"github.com/denisa/clq/internal/changelog"
 )
 
@@ -14,8 +12,21 @@ import (
 type Query interface {
 	// enter returns true if the given heading fulfils the query expression.
 	// enter might write to the buffer part of the query result.
-	Enter(w *strings.Builder, heading changelog.Heading) bool
+	Enter(heading changelog.Heading) (bool, Project)
 	// exit returns true if the given heading fulfils the query expression.
 	// exit might write to the buffer part of the query result.
-	Exit(w *strings.Builder, heading changelog.Heading) bool
+	Exit(heading changelog.Heading) (bool, Project)
+}
+
+type ResultCollector interface {
+	set(value string)
+	setField(name string, value string)
+	array(name string)
+}
+
+type Project func(rc ResultCollector, heading changelog.Heading)
+
+type projections struct {
+	enter Project
+	exit  Project
 }

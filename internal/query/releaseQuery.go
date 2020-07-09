@@ -1,7 +1,6 @@
 package query
 
 import (
-	"encoding/json"
 	"fmt"
 	"strconv"
 	"strings"
@@ -19,19 +18,17 @@ func (qe *QueryEngine) newReleaseQuery(name string, queryElements []string) erro
 	qe.queries = append(qe.queries, queryMe)
 
 	if len(queryElements) == 0 {
-		queryMe.enter = func(r changelog.Release) string {
-			type Release struct {
-				Version string `json:"version"`
-				Date    string `json:"date,omitempty"`
+		queryMe.enter = func(rc ResultCollector, h changelog.Heading) {
+			if h, ok := h.(changelog.Release); ok {
+				rc.setField("version", h.Version())
+				rc.setField("date", h.Date())
 			}
-			res, _ := json.Marshal(Release{Version: r.Version(), Date: r.Date()})
-			return string(res)
 		}
 		return nil
 	}
 
 	if strings.HasPrefix(queryElements[0], "changes[") && strings.HasSuffix(queryElements[0], "]") {
-		if err := qe.newChangeQuery(queryElements[0][strings.Index(queryElements[0], "[")+1:len(queryElements[0])-1], queryElements[1:]); err != nil {
+		if err := qe.newChangeQuery(selector(queryElements[0]), queryElements[1:]); err != nil {
 			return err
 		}
 		return nil
@@ -41,60 +38,64 @@ func (qe *QueryEngine) newReleaseQuery(name string, queryElements []string) erro
 	default:
 		return fmt.Errorf("Query attribute not recognized %q for a \"release\"", queryElements[0])
 	case "date":
-		queryMe.enter = func(r changelog.Release) string { return r.Date() }
+		queryMe.enter = func(rc ResultCollector, h changelog.Heading) {
+			if h, ok := h.(changelog.Release); ok {
+				rc.set(h.Date())
+			}
+		}
 	case "label":
-		queryMe.enter = func(r changelog.Release) string { return r.Label() }
+		queryMe.enter = func(rc ResultCollector, h changelog.Heading) {
+			if h, ok := h.(changelog.Release); ok {
+				rc.set(h.Label())
+			}
+		}
 	case "status":
-		queryMe.enter = func(r changelog.Release) string {
-			if !r.HasBeenReleased() {
-				return "unreleased"
+		queryMe.enter = func(rc ResultCollector, h changelog.Heading) {
+			if h, ok := h.(changelog.Release); ok {
+				if !h.HasBeenReleased() {
+					rc.set("unreleased")
+				} else if h.HasBeenYanked() {
+					rc.set("yanked")
+				} else if h.IsPrerelease() {
+					rc.set("prereleased")
+				} else {
+					rc.set("released")
+				}
 			}
-			if r.HasBeenYanked() {
-				return "yanked"
-			}
-			if r.IsPrerelease() {
-				return "prereleased"
-			}
-			return "released"
 		}
 	case "version":
-		queryMe.enter = func(r changelog.Release) string { return r.Version() }
+		queryMe.enter = func(rc ResultCollector, h changelog.Heading) {
+			if h, ok := h.(changelog.Release); ok {
+				rc.set(h.Version())
+			}
+		}
 	}
 
 	return nil
 }
 
 type releaseQuery struct {
+	projections
 	cursor int
 	index  int
-	enter  func(changelog.Release) string
-	exit   func(changelog.Release) string
 }
 
-func (q *releaseQuery) Enter(w *strings.Builder, heading changelog.Heading) bool {
-	h, ok := heading.(changelog.Release)
-	if !ok {
-		return false
+func (q *releaseQuery) Enter(heading changelog.Heading) (bool, Project) {
+	if _, ok := heading.(changelog.Release); !ok {
+		return false, nil
 	}
 	selected := q.cursor == q.index
 	q.cursor++
 
 	if !selected {
-		return false
+		return false, nil
 	}
-	if q.enter != nil {
-		_, _ = w.WriteString(q.enter(h))
-	}
-	return true
+	return true, q.enter
 }
 
-func (q *releaseQuery) Exit(w *strings.Builder, heading changelog.Heading) bool {
-	h, ok := heading.(changelog.Release)
-	if !ok {
-		return false
+func (q *releaseQuery) Exit(heading changelog.Heading) (bool, Project) {
+	if _, ok := heading.(changelog.Release); !ok {
+		return false, nil
 	}
-	if q.exit != nil {
-		_, _ = w.WriteString(q.exit(h))
-	}
-	return true
+	return true, q.exit
 }

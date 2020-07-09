@@ -297,7 +297,8 @@
     ],
     "input": "# Change log\n## [Unreleased]\n### Added\n- dummy\n## [1.0.0] - 2020-06-20\n### Removed\n- foo",
     "result": 0,
-    "output": "{\"kind\":\"Added\", \"changes\":[\"dummy\",]}\n"
+    "output_format": "json",
+    "output": "{\"title\":\"Added\", \"changes\":[\"dummy\"]}\n"
   },
   {
     "platform": "skip",
@@ -306,9 +307,10 @@
       "-query",
       "releases[1].changes[]"
     ],
-    "input": "# Change log\n## [Unreleased]\n### Added\n- dummy\n## [1.0.0] - 2020-06-20\n### Removed\n- foo",
+    "input": "# Change log\n## [Unreleased]\n### Added\n- dummy\n## [1.0.0] - 2020-06-20\n### Removed\n- foo\n- bar",
     "result": 0,
-    "output": "{\"kind\":\"Removed\", \"changes\":[\"foo\",]}"
+    "output_format": "json",
+    "output": "{\"title\":\"Removed\", \"changes\":[\"foo\",\"bar\"]}"
   },
   {
     "title": "query title",
