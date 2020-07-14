@@ -88,7 +88,7 @@ func TestQuerySecondReleaseStatusReleased(t *testing.T) {
 	require.Equal("released", result)
 }
 
-func TestQuerySecondReleaseStatusUnreleased(t *testing.T) {
+func TestQueryFirstReleaseStatusUnreleased(t *testing.T) {
 	require := require.New(t)
 
 	result, err := apply("releases[0].status", []changelog.Heading{

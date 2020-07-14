@@ -63,6 +63,9 @@ func TestScenarios(t *testing.T) {
 		for _, scenario := range scenarios {
 			t.Run(scenario.name(), func(t *testing.T) {
 				switch scenario.Platform {
+				case "skip":
+					t.SkipNow()
+					return
 				case "unix":
 					if runtime.GOOS == "windows" {
 						t.SkipNow()

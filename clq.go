@@ -109,9 +109,12 @@ func (clq *Clq) withFileName() bool {
 }
 
 func (clq *Clq) error(document string, err error) {
-	if pErr, ok := err.(*os.PathError); ok {
-		fmt.Fprintf(clq.stderr, "❗️ %v: %v\n", pErr.Path, pErr.Err.Error())
-	} else if clq.withFileName() {
+	if err, ok := err.(*os.PathError); ok {
+		fmt.Fprintf(clq.stderr, "❗️ %v: %v\n", err.Path, err.Err.Error())
+		return
+	}
+
+	if clq.withFileName() {
 		fmt.Fprintf(clq.stderr, "❗️ %v: %v\n", document, err)
 	} else {
 		fmt.Fprintf(clq.stderr, "❗️ %v\n", err)

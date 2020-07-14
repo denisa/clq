@@ -1,9 +1,6 @@
 package query
 
 import (
-	"bufio"
-	"bytes"
-
 	"github.com/denisa/clq/internal/changelog"
 )
 
@@ -18,11 +15,12 @@ func apply(query string, headings []changelog.Heading) (string, error) {
 		return "", err
 	}
 
-	var buf bytes.Buffer
-	w := bufio.NewWriter(&buf)
 	for _, h := range headings {
-		qe.Apply(w, h)
+		qe.Enter(h)
 	}
-	w.Flush()
-	return buf.String(), nil
+	for i := len(headings); i > 0; {
+		i--
+		qe.Exit(headings[i])
+	}
+	return qe.Result(), nil
 }

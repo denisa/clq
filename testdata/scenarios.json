@@ -207,6 +207,11 @@
     "error": "❗️ No change descriptions for {Change without change description}{[2.0.0] - 2020-02-29}{Fixed}\n"
   },
   {
+    "name": "change_with_empty_change_description.md",
+    "result": 1,
+    "error": "❗️ Validation error: change description cannot stay empty\n"
+  },
+  {
     "name": "change_without_release.md",
     "result": 1,
     "error": "❗️ Changes must be in a release {Change without release}\n"
@@ -283,6 +288,27 @@
     ],
     "result": 0,
     "output": "1.0.0\n"
+  },
+  {
+    "title": "query first release changes",
+    "arguments": [
+      "-query",
+      "releases[0].changes[]"
+    ],
+    "input": "# Change log\n## [Unreleased]\n### Added\n- dummy\n## [1.0.0] - 2020-06-20\n### Removed\n- foo",
+    "result": 0,
+    "output": "{\"kind\":\"Added\", \"changes\":[\"dummy\",]}\n"
+  },
+  {
+    "platform": "skip",
+    "title": "query last release changes",
+    "arguments": [
+      "-query",
+      "releases[1].changes[]"
+    ],
+    "input": "# Change log\n## [Unreleased]\n### Added\n- dummy\n## [1.0.0] - 2020-06-20\n### Removed\n- foo",
+    "result": 0,
+    "output": "{\"kind\":\"Removed\", \"changes\":[\"foo\",]}"
   },
   {
     "title": "query title",

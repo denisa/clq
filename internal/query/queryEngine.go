@@ -4,13 +4,13 @@ import (
 	"strings"
 
 	"github.com/denisa/clq/internal/changelog"
-	"github.com/yuin/goldmark/util"
 )
 
 // QueryEngine tracks the evaluation of the overall query against the complete changelog.
 type QueryEngine struct {
 	queries []Query
 	current int
+	w       strings.Builder
 }
 
 // NewQueryEngine parses the query and contructs a new dedicated query engine.
@@ -25,10 +25,35 @@ func NewQueryEngine(query string) (*QueryEngine, error) {
 	return qe, nil
 }
 
-// Apply lets the query engine evaluates the heading.
-// Apply might write the result of the query to the buffer.
-func (qe *QueryEngine) Apply(w util.BufWriter, heading changelog.Heading) {
-	if qe.current < len(qe.queries) && qe.queries[qe.current].Select(w, heading) {
-		qe.current++
+func (qe *QueryEngine) HasQuery() bool { return len(qe.queries) > 0 }
+func (qe *QueryEngine) Result() string { return qe.w.String() }
+
+// Enter lets the query engine evaluates the heading upon entering it.
+func (qe *QueryEngine) Enter(heading changelog.Heading) {
+	if qe.current == len(qe.queries) {
+		// no queries defined...
+		return
+	}
+
+	if qe.queries[qe.current].Enter(&qe.w, heading) {
+		if qe.current+1 < len(qe.queries) {
+			qe.current++
+		}
+		return
+	}
+}
+
+// Exit lets the query engine evaluates the heading upon leaving it.
+func (qe *QueryEngine) Exit(heading changelog.Heading) {
+	if qe.current == len(qe.queries) {
+		// no queries defined...
+		return
+	}
+
+	for !qe.queries[qe.current].Exit(&qe.w, heading) {
+		if qe.current == 0 {
+			return
+		}
+		qe.current--
 	}
 }
