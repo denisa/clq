@@ -7,22 +7,27 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestMisformedChangeItemQuerySelector(t *testing.T) {
+func TestChangeItemQueryMisformedSelector(t *testing.T) {
 	_, err := NewQueryEngine("releases[2].changes[].descriptions[", "json")
 	require.Error(t, err)
 }
 
-func TestUnsupportedChangeItemQuerySelector(t *testing.T) {
+func TestChangeItemQueryAsScalar(t *testing.T) {
+	_, err := NewQueryEngine("releases[2].changes[].descriptions", "json")
+	require.Error(t, err)
+}
+
+func TestChangeItemQueryUnsupportedSelector(t *testing.T) {
 	_, err := NewQueryEngine("releases[2].changes[].descriptions[three]", "json")
 	require.Error(t, err)
 }
 
-func TestUnsupportedChangeItemQueryAttribute(t *testing.T) {
+func TestChangeItemQueryUnsupportedAttribute(t *testing.T) {
 	_, err := NewQueryEngine("releases[2].changes[].descriptions[].fabulator", "json")
 	require.Error(t, err)
 }
 
-func TestQueryChangeItemAgainstRelease(t *testing.T) {
+func TestChangeItemQueryAgainstRelease(t *testing.T) {
 	require := require.New(t)
 
 	result, err := apply("releases[0].changes[].descriptions[]", []changelog.Heading{
@@ -32,10 +37,10 @@ func TestQueryChangeItemAgainstRelease(t *testing.T) {
 		newHeading(changelog.ReleaseHeading, "[1.2.2] - 2020-05-16"),
 	})
 	require.NoError(err)
-	require.Empty(result)
+	require.JSONEq("[]", result)
 }
 
-func TestQueryChangeDescriptions(t *testing.T) {
+func TestChangeQueryDescriptions(t *testing.T) {
 	require := require.New(t)
 
 	result, err := apply("releases[0].changes[].descriptions[]", []changelog.Heading{
@@ -45,19 +50,31 @@ func TestQueryChangeDescriptions(t *testing.T) {
 		newHeading(changelog.ChangeDescription, "foo"),
 	})
 	require.NoError(err)
-	require.Equal("foo", result)
+	require.Equal("[\"foo\"]", result)
 }
 
-func TestUnsupportedChangeItemEnter(t *testing.T) {
+func TestChangeItemQueryUnsupportedEnter(t *testing.T) {
 	require := require.New(t)
 
 	query := &changeItemQuery{}
 	require.False(query.Enter(newHeading(changelog.IntroductionHeading, "changelog")))
 }
 
-func TestUnsupportedChangeItemExit(t *testing.T) {
+func TestChangeItemQueryUnsupportedExit(t *testing.T) {
 	require := require.New(t)
 
 	query := &changeItemQuery{}
 	require.False(query.Exit(newHeading(changelog.IntroductionHeading, "changelog")))
+}
+
+func TestChangeItemQueryCollection(t *testing.T) {
+	require := require.New(t)
+	{
+		query := &changeItemQuery{}
+		require.False(query.isCollection())
+	}
+	{
+		query := &changeItemQuery{projections{collection: true}}
+		require.True(query.isCollection())
+	}
 }

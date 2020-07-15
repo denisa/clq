@@ -81,7 +81,15 @@ func TestParseNameRecursiveListNoSelector(t *testing.T) {
 	require.True(isRecursive)
 }
 
-func TestElementIsFinalNoerror(t *testing.T) {
+func TestElementIsCollectionInScalarContext(t *testing.T) {
+	require.Error(t, elementIsCollection("releases", false))
+}
+
+func TestElementIsCollectionNoError(t *testing.T) {
+	require.NoError(t, elementIsCollection("releases", true))
+}
+
+func TestElementIsFinalNoError(t *testing.T) {
 	require.NoError(t, elementIsFinal("title", false, []string{}))
 }
 

@@ -6,6 +6,7 @@ import (
 	"github.com/denisa/clq/internal/changelog"
 )
 
+// a jsonResultCollector produces a markdown-repesentation of the query result.
 type mdResultCollector struct {
 	result strings.Builder
 	prefix string
@@ -15,7 +16,7 @@ func (rc *mdResultCollector) Result() string {
 	return strings.TrimSuffix(rc.result.String(), "\n")
 }
 
-func (rc *mdResultCollector) Open(heading changelog.Heading) {
+func (rc *mdResultCollector) open(heading changelog.Heading) {
 	rc.prefix = lineStart(heading.Kind())
 }
 
@@ -28,7 +29,10 @@ func lineStart(heading changelog.HeadingKind) string {
 	}
 }
 
-func (rc *mdResultCollector) Close(heading changelog.Heading) {
+func (rc *mdResultCollector) close(heading changelog.Heading) {
+}
+
+func (rc *mdResultCollector) setCollection() {
 }
 
 func (rc *mdResultCollector) set(value string) {

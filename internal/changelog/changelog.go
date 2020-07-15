@@ -44,7 +44,7 @@ func (c *Changelog) active() HeadingKind {
 	return c.headings[len(c.headings)-1].Kind()
 }
 
-// Close returns true if we’re currently visiting one of the Change sections.
+// Close calls the registered Exit listeners for all the un-closed headings.
 func (c *Changelog) Close() {
 	for i := HeadingKind(len(c.headings)) - 1; i > -1; i-- {
 		for _, l := range c.listeners {

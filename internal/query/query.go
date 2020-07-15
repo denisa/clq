@@ -14,8 +14,10 @@ type Query interface {
 	Accept(heading changelog.Heading) bool
 	// enter returns true if the given heading fulfils the query expression.
 	// enter might write to the buffer part of the query result.
-	Enter(heading changelog.Heading) (bool, Project)
+	Enter(heading changelog.Heading) (bool, project)
 	// exit returns true if the given heading fulfils the query expression.
 	// exit might write to the buffer part of the query result.
-	Exit(heading changelog.Heading) (bool, Project)
+	Exit(heading changelog.Heading) (bool, project)
+	// isCollection returns true is this query produces a collection of results
+	isCollection() bool
 }

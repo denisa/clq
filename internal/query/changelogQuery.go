@@ -19,16 +19,17 @@ func (qe *QueryEngine) newIntroductionQuery(queryElements []string) error {
 	default:
 		return fmt.Errorf("Query attribute not recognized %q for a \"introduction\"", elementName)
 	case "releases":
-		if elementIsList {
-			if err := qe.newReleaseQuery(elementSelector, elementIsRecursive, queryElements[1:]); err != nil {
-				return err
-			}
+		if err := elementIsCollection(elementName, elementIsList); err != nil {
+			return err
+		}
+		if err := qe.newReleaseQuery(elementSelector, elementIsRecursive, queryElements[1:]); err != nil {
+			return err
 		}
 	case "title":
 		if err := elementIsFinal(elementName, elementIsList, queryElements[1:]); err != nil {
 			return err
 		}
-		queryMe.enter = func(rc ResultCollector, h changelog.Heading) {
+		queryMe.enter = func(rc resultCollector, h changelog.Heading) {
 			if h, ok := h.(changelog.Introduction); ok {
 				rc.set(h.Title())
 			}
@@ -41,19 +42,23 @@ type changelogQuery struct {
 	projections
 }
 
+func (q *changelogQuery) isCollection() bool {
+	return q.collection
+}
+
 func (q *changelogQuery) Accept(heading changelog.Heading) bool {
 	_, ok := heading.(changelog.Introduction)
 	return ok
 }
 
-func (q *changelogQuery) Enter(heading changelog.Heading) (bool, Project) {
+func (q *changelogQuery) Enter(heading changelog.Heading) (bool, project) {
 	if !q.Accept(heading) {
 		return false, nil
 	}
 	return true, q.enter
 }
 
-func (q *changelogQuery) Exit(heading changelog.Heading) (bool, Project) {
+func (q *changelogQuery) Exit(heading changelog.Heading) (bool, project) {
 	if !q.Accept(heading) {
 		return false, nil
 	}

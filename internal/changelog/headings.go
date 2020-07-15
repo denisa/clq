@@ -20,6 +20,7 @@ const (
 type Heading interface {
 	// The Title of the section
 	Title() string
+	// The HeadingKind of the section
 	Kind() HeadingKind
 	String() string
 }

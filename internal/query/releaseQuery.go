@@ -17,7 +17,7 @@ func (qe *QueryEngine) newReleaseQuery(selector string, isRecursive bool, queryE
 	qe.queries = append(qe.queries, queryMe)
 
 	if len(queryElements) == 0 {
-		queryMe.enter = func(rc ResultCollector, h changelog.Heading) {
+		queryMe.enter = func(rc resultCollector, h changelog.Heading) {
 			if h, ok := h.(changelog.Release); ok {
 				rc.setField("version", h.Version())
 				rc.setField("date", h.Date())
@@ -35,16 +35,17 @@ func (qe *QueryEngine) newReleaseQuery(selector string, isRecursive bool, queryE
 	default:
 		return fmt.Errorf("Query attribute not recognized %q for a \"release\"", elementName)
 	case "changes":
-		if elementIsList {
-			if err := qe.newChangeQuery(elementSelector, elementIsRecursive, queryElements[1:]); err != nil {
-				return err
-			}
+		if err := elementIsCollection(elementName, elementIsList); err != nil {
+			return err
+		}
+		if err := qe.newChangeQuery(elementSelector, elementIsRecursive, queryElements[1:]); err != nil {
+			return err
 		}
 	case "date":
 		if err := elementIsFinal(elementName, elementIsList, queryElements[1:]); err != nil {
 			return err
 		}
-		queryMe.enter = func(rc ResultCollector, h changelog.Heading) {
+		queryMe.enter = func(rc resultCollector, h changelog.Heading) {
 			if h, ok := h.(changelog.Release); ok {
 				rc.set(h.Date())
 			}
@@ -53,7 +54,7 @@ func (qe *QueryEngine) newReleaseQuery(selector string, isRecursive bool, queryE
 		if err := elementIsFinal(elementName, elementIsList, queryElements[1:]); err != nil {
 			return err
 		}
-		queryMe.enter = func(rc ResultCollector, h changelog.Heading) {
+		queryMe.enter = func(rc resultCollector, h changelog.Heading) {
 			if h, ok := h.(changelog.Release); ok {
 				rc.set(h.Label())
 			}
@@ -62,7 +63,7 @@ func (qe *QueryEngine) newReleaseQuery(selector string, isRecursive bool, queryE
 		if err := elementIsFinal(elementName, elementIsList, queryElements[1:]); err != nil {
 			return err
 		}
-		queryMe.enter = func(rc ResultCollector, h changelog.Heading) {
+		queryMe.enter = func(rc resultCollector, h changelog.Heading) {
 			if h, ok := h.(changelog.Release); ok {
 				if !h.HasBeenReleased() {
 					rc.set("unreleased")
@@ -75,11 +76,20 @@ func (qe *QueryEngine) newReleaseQuery(selector string, isRecursive bool, queryE
 				}
 			}
 		}
+	case "title":
+		if err := elementIsFinal(elementName, elementIsList, queryElements[1:]); err != nil {
+			return err
+		}
+		queryMe.enter = func(rc resultCollector, h changelog.Heading) {
+			if h, ok := h.(changelog.Release); ok {
+				rc.set(h.Title())
+			}
+		}
 	case "version":
 		if err := elementIsFinal(elementName, elementIsList, queryElements[1:]); err != nil {
 			return err
 		}
-		queryMe.enter = func(rc ResultCollector, h changelog.Heading) {
+		queryMe.enter = func(rc resultCollector, h changelog.Heading) {
 			if h, ok := h.(changelog.Release); ok {
 				rc.set(h.Version())
 			}
@@ -95,12 +105,16 @@ type releaseQuery struct {
 	index  int
 }
 
+func (q *releaseQuery) isCollection() bool {
+	return q.collection
+}
+
 func (q *releaseQuery) Accept(heading changelog.Heading) bool {
 	_, ok := heading.(changelog.Release)
 	return ok
 }
 
-func (q *releaseQuery) Enter(heading changelog.Heading) (bool, Project) {
+func (q *releaseQuery) Enter(heading changelog.Heading) (bool, project) {
 	if !q.Accept(heading) {
 		return false, nil
 	}
@@ -113,7 +127,7 @@ func (q *releaseQuery) Enter(heading changelog.Heading) (bool, Project) {
 	return true, q.enter
 }
 
-func (q *releaseQuery) Exit(heading changelog.Heading) (bool, Project) {
+func (q *releaseQuery) Exit(heading changelog.Heading) (bool, project) {
 	if !q.Accept(heading) {
 		return false, nil
 	}

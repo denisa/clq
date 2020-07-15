@@ -15,6 +15,7 @@ type QueryEngine struct {
 }
 
 // NewQueryEngine parses the query and contructs a new dedicated query engine.
+// It is not an error for the query to be empty.
 func NewQueryEngine(query string, formatName string) (*QueryEngine, error) {
 	outputFormat, err := newOutputFormat(formatName)
 	if err != nil {
@@ -26,12 +27,21 @@ func NewQueryEngine(query string, formatName string) (*QueryEngine, error) {
 		if err := qe.newIntroductionQuery(strings.Split(query, ".")); err != nil {
 			return nil, err
 		}
+		for _, q := range qe.queries {
+			if q.isCollection() {
+				outputFormat.setCollection()
+				break
+			}
+		}
 	}
 	return qe, nil
 }
 
+// HasQuery is true the QueryEngine was constructed with a non-empty query.
+// a QueryEngine with an empty query is a no-op and an be skipped.
 func (qe *QueryEngine) HasQuery() bool { return len(qe.queries) > 0 }
 
+// Result returns the result of the query evaluation.
 func (qe *QueryEngine) Result() string {
 	return qe.output.Result()
 }
@@ -58,8 +68,8 @@ func (qe *QueryEngine) Enter(heading changelog.Heading) {
 		return
 	}
 	if project != nil {
-		qe.output.Open(heading)
-		project(qe.output.(ResultCollector), heading)
+		qe.output.open(heading)
+		project(qe.output.(resultCollector), heading)
 	}
 
 	if qe.current+1 < len(qe.queries) {
@@ -86,11 +96,11 @@ func (qe *QueryEngine) Exit(heading changelog.Heading) {
 
 	ok, project := qe.queries[qe.current].Exit(heading)
 	if ok && project != nil {
-		qe.output.Open(heading)
-		project(qe.output.(ResultCollector), heading)
+		qe.output.open(heading)
+		project(qe.output.(resultCollector), heading)
 	}
 
-	qe.output.Close(heading)
+	qe.output.close(heading)
 }
 
 func parseName(element string) (name, selector string, isList, isRecursive bool, err error) {
@@ -126,6 +136,13 @@ func elementIsFinal(name string, isList bool, elements []string) error {
 	}
 	if len(elements) != 0 {
 		return fmt.Errorf("No further query element allowed after %q", name)
+	}
+	return nil
+}
+
+func elementIsCollection(name string, isList bool) error {
+	if !isList {
+		return fmt.Errorf("%q is a collection attribue", name)
 	}
 	return nil
 }

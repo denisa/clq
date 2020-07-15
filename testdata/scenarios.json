@@ -298,7 +298,7 @@
     "input": "# Change log\n## [Unreleased]\n### Added\n- waldo\n- fred\n## [1.0.0] - 2020-06-20\n### Removed\n- foo\n- bar",
     "result": 0,
     "output_format": "json",
-    "output": "{\"title\":\"Added\"}\n"
+    "output": "[{\"title\":\"Added\"}]\n"
   },
   {
     "title": "query first release changes recursive",
@@ -309,7 +309,7 @@
     "input": "# Change log\n## [Unreleased]\n### Added\n- waldo\n- fred\n## [1.0.0] - 2020-06-20\n### Removed\n- foo\n- bar",
     "result": 0,
     "output_format": "json",
-    "output": "{\"title\":\"Added\", \"changes\":[\"waldo\", \"fred\"]}\n"
+    "output": "[{\"title\":\"Added\", \"descriptions\":[\"waldo\", \"fred\"]}]\n"
   },
   {
     "title": "query last release changes",

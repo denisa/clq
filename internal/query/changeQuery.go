@@ -12,19 +12,20 @@ func (qe *QueryEngine) newChangeQuery(selector string, isRecursive bool, queryEl
 	}
 
 	queryMe := &changeQuery{}
+	queryMe.collection = true
 	qe.queries = append(qe.queries, queryMe)
 
 	if len(queryElements) == 0 {
 		if isRecursive {
 			_ = qe.newChangeItemQuery("", true, nil)
-			queryMe.enter = func(rc ResultCollector, h changelog.Heading) {
+			queryMe.enter = func(rc resultCollector, h changelog.Heading) {
 				if h, ok := h.(changelog.Change); ok {
 					rc.setField("title", h.Title())
-					rc.array("changes")
+					rc.array("descriptions")
 				}
 			}
 		} else {
-			queryMe.enter = func(rc ResultCollector, h changelog.Heading) {
+			queryMe.enter = func(rc resultCollector, h changelog.Heading) {
 				if h, ok := h.(changelog.Change); ok {
 					rc.setField("title", h.Title())
 				}
@@ -42,16 +43,17 @@ func (qe *QueryEngine) newChangeQuery(selector string, isRecursive bool, queryEl
 	default:
 		return fmt.Errorf("Query attribute not recognized %q for a \"change\"", elementName)
 	case "descriptions":
-		if elementIsList {
-			if err := qe.newChangeItemQuery(elementSelector, elementIsRecursive, queryElements[1:]); err != nil {
-				return err
-			}
+		if err := elementIsCollection(elementName, elementIsList); err != nil {
+			return err
+		}
+		if err := qe.newChangeItemQuery(elementSelector, elementIsRecursive, queryElements[1:]); err != nil {
+			return err
 		}
 	case "title":
 		if err := elementIsFinal(elementName, elementIsList, queryElements[1:]); err != nil {
 			return err
 		}
-		queryMe.enter = func(rc ResultCollector, h changelog.Heading) {
+		queryMe.enter = func(rc resultCollector, h changelog.Heading) {
 			if h, ok := h.(changelog.Change); ok {
 				rc.set(h.Title())
 			}
@@ -64,19 +66,23 @@ type changeQuery struct {
 	projections
 }
 
+func (q *changeQuery) isCollection() bool {
+	return q.collection
+}
+
 func (q *changeQuery) Accept(heading changelog.Heading) bool {
 	_, ok := heading.(changelog.Change)
 	return ok
 }
 
-func (q *changeQuery) Enter(heading changelog.Heading) (bool, Project) {
+func (q *changeQuery) Enter(heading changelog.Heading) (bool, project) {
 	if !q.Accept(heading) {
 		return false, nil
 	}
 	return true, q.enter
 }
 
-func (q *changeQuery) Exit(heading changelog.Heading) (bool, Project) {
+func (q *changeQuery) Exit(heading changelog.Heading) (bool, project) {
 	if !q.Accept(heading) {
 		return false, nil
 	}

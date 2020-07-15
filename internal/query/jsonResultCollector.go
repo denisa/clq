@@ -6,8 +6,10 @@ import (
 	"github.com/denisa/clq/internal/changelog"
 )
 
+// a jsonResultCollector produces a json-repesentation of the query result.
 type jsonResultCollector struct {
-	results []jsonResult
+	results    []jsonResult
+	collection bool
 }
 
 type jsonResult struct {
@@ -18,6 +20,9 @@ type jsonResult struct {
 
 func (rc *jsonResultCollector) Result() string {
 	if len(rc.results) == 0 {
+		if rc.collection {
+			return "[]"
+		}
 		return ""
 	}
 	if rc.results[0].value == nil {
@@ -31,40 +36,43 @@ func (rc *jsonResultCollector) Result() string {
 	return string(jsonString)
 }
 
-func (rc *jsonResultCollector) Open(heading changelog.Heading) {
+func (rc *jsonResultCollector) open(heading changelog.Heading) {
 	opened := jsonResult{kind: heading.Kind()}
 	rc.results = append(rc.results, opened)
 }
 
-func (rc *jsonResultCollector) Close(heading changelog.Heading) {
+func (rc *jsonResultCollector) close(heading changelog.Heading) {
 	i := len(rc.results) - 1
-	if i < 1 {
-		return
-	}
-	if r, ok := (rc.results[i-1].value).([]interface{}); ok {
-		r = append(r, rc.results[i].value)
-		rc.results = rc.results[:i-1]
-		collection := jsonResult{value: r}
-		rc.results = append(rc.results, collection)
-		return
-	}
-	if rc.results[i-1].kind == rc.results[i].kind {
-		r := []interface{}{rc.results[i-1].value, rc.results[i].value}
-		rc.results = rc.results[:i-1]
-		collection := jsonResult{value: r}
-		rc.results = append(rc.results, collection)
+	if i == -1 {
 		return
 	}
 
 	newValue := rc.results[i].value
+	if newValue == nil {
+		return
+	}
+
+	if i == 0 {
+		if _, ok := newValue.([]interface{}); !ok && rc.collection {
+			rc.results[0] = jsonResult{value: []interface{}{newValue}}
+		}
+		return
+	}
 	rc.results = rc.results[:i]
 	i--
 
-	if newValue != nil {
-		result, _ := (rc.results[i].value).(map[string]interface{})
-		collection, _ := result[rc.results[i].name].([]interface{})
-		result[rc.results[i].name] = append(collection, newValue)
+	if r, ok := (rc.results[i].value).([]interface{}); ok && rc.collection {
+		rc.results[i].value = append(r, newValue)
+		return
 	}
+
+	result, _ := (rc.results[i].value).(map[string]interface{})
+	collection, _ := result[rc.results[i].name].([]interface{})
+	result[rc.results[i].name] = append(collection, newValue)
+}
+
+func (rc *jsonResultCollector) setCollection() {
+	rc.collection = true
 }
 
 func (rc *jsonResultCollector) set(value string) {
