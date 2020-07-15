@@ -15,10 +15,10 @@ jobs:
         platform: [ubuntu-latest, macos-latest, windows-latest]
     runs-on: ${{ matrix.platform }}
     steps:
-    - uses: actions/setup-go@v2.0.3
+    - uses: actions/setup-go@v2.1.0
       with:
         go-version: ${{ matrix.go-version }}
-    - uses: actions/checkout@v2.2.0
+    - uses: actions/checkout@v2.3.1
     - run: make lcov
     - name: Send coverage
       if: matrix.platform == 'ubuntu-latest'
@@ -43,10 +43,10 @@ jobs:
     needs: test
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/setup-go@v2.0.3
+    - uses: actions/setup-go@v2.1.0
       with:
         go-version: 1.14.x
-    - uses: actions/checkout@v2.2.0
+    - uses: actions/checkout@v2.3.1
     - run: make build
     - name: Extract release information
       run: |
@@ -67,7 +67,7 @@ jobs:
     - run: |
         VERSION=$RELEASE_VERSION make assertVersionDefined build-all
         test "$(dist/clq-linux-amd64 -version)" = "clq $RELEASE_VERSION"
-    - uses: actions/create-release@v1.1.0
+    - uses: actions/create-release@v1.1.2
       id: create_release
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
