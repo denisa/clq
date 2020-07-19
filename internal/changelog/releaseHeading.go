@@ -12,10 +12,11 @@ import (
 type ChangeMap map[string]bool
 
 type Release struct {
-	title, label string
-	yanked       bool
-	date         time.Time
-	version      semver.Version
+	heading
+	label   string
+	yanked  bool
+	date    time.Time
+	version semver.Version
 }
 
 const semverPattern string = `(?P<semver>\S+?)`
@@ -23,7 +24,7 @@ const isoDatePattern string = `(?P<date>\d\d\d\d-\d\d-\d\d)`
 
 func newRelease(title string) (Heading, error) {
 	if matched, _ := regexp.MatchString(`^\[\s*Unreleased\s*\]$`, title); matched {
-		return Release{title: title}, nil
+		return Release{heading: heading{title: title, kind: ReleaseHeading}}, nil
 	}
 	{
 		releaseRE := regexp.MustCompile(`^\[\s*` + semverPattern + `\s*\]\s+-\s+` + isoDatePattern + `(?:\s+(?P<label>.+))?$`)
@@ -41,7 +42,7 @@ func newRelease(title string) (Heading, error) {
 			if err != nil {
 				return nil, fmt.Errorf("Validation error: Illegal version (%v) for %v", err, title)
 			}
-			return Release{title: title, date: date, version: version, label: label}, nil
+			return Release{heading: heading{title: title, kind: ReleaseHeading}, date: date, version: version, label: label}, nil
 		}
 	}
 	{
@@ -56,7 +57,7 @@ func newRelease(title string) (Heading, error) {
 			if err != nil {
 				return nil, fmt.Errorf("Validation error: Illegal version (%v) for %v", err, title)
 			}
-			return Release{title: title, date: date, version: version, yanked: true}, nil
+			return Release{heading: heading{title: title, kind: ReleaseHeading}, date: date, version: version, yanked: true}, nil
 		}
 	}
 	return nil, fmt.Errorf("Validation error: Unknown release header for %q", title)
@@ -64,6 +65,10 @@ func newRelease(title string) (Heading, error) {
 
 func (h Release) Title() string {
 	return h.title
+}
+
+func (h Release) Kind() HeadingKind {
+	return h.kind
 }
 
 func (h Release) String() string {

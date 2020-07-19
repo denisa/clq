@@ -5,7 +5,6 @@ import (
 	"strings"
 
 	"github.com/denisa/clq/internal/changelog"
-	"github.com/denisa/clq/internal/query"
 	"github.com/yuin/goldmark/ast"
 	"github.com/yuin/goldmark/renderer"
 	"github.com/yuin/goldmark/util"
@@ -13,8 +12,8 @@ import (
 
 // A Config struct has configurations for the Validator renderer.
 type Config struct {
-	release     bool
-	queryEngine query.QueryEngine
+	release  bool
+	listener changelog.Listener
 }
 
 // NewConfig returns a new Config with defaults.
@@ -27,20 +26,20 @@ type Option interface {
 	SetValidationOption(*Config)
 }
 
-type withQuery struct {
-	value query.QueryEngine
+type withListener struct {
+	value changelog.Listener
 }
 
-func (o *withQuery) SetValidationOption(c *Config) {
-	c.queryEngine = o.value
+func (o *withListener) SetValidationOption(c *Config) {
+	c.listener = o.value
 }
 
-// WithQuery is a functional option that allow you to set the query string to
-// the renderer.
-func WithQuery(queryEngine query.QueryEngine) interface {
+// withListener is a functional option that allow you to set the changelog event
+// listener .
+func WithListener(listener changelog.Listener) interface {
 	Option
 } {
-	return &withQuery{queryEngine}
+	return &withListener{value: listener}
 }
 
 type withRelease struct {
@@ -81,6 +80,11 @@ func NewRenderer(opts ...Option) renderer.NodeRenderer {
 	for _, opt := range opts {
 		opt.SetValidationOption(&r.Config)
 	}
+
+	if r.listener != nil {
+		r.headers.Listener(r.listener)
+	}
+
 	return r
 }
 
@@ -102,6 +106,7 @@ func (r *Renderer) visitDocument(w util.BufWriter, source []byte, node ast.Node,
 		if (r.headers.Release() || r.headers.Change()) && !r.hasChangeDescriptions {
 			return ast.WalkStop, fmt.Errorf("No change descriptions for %v", r.headers)
 		}
+		r.headers.Close()
 	}
 	return ast.WalkContinue, nil
 }
@@ -115,15 +120,11 @@ func (r *Renderer) visitHeading(w util.BufWriter, source []byte, node ast.Node, 
 	n := node.(*ast.Heading)
 	switch n.Level {
 	case 1:
-		h, err := r.headers.Section(changelog.IntroductionHeading, r.text.String())
+		_, err := r.headers.Section(changelog.IntroductionHeading, r.text.String())
 		if err != nil {
 			return ast.WalkStop, err
 		}
-
-		introduction := h.(changelog.Introduction)
 		// no validation rules defined for the title...
-
-		r.queryEngine.Apply(w, introduction)
 	case 2:
 		if (r.headers.Release() || r.headers.Change()) && !r.hasChangeDescriptions {
 			if err := fmt.Errorf("No change descriptions for %v", r.headers); err != nil {
@@ -155,28 +156,25 @@ func (r *Renderer) visitHeading(w util.BufWriter, source []byte, node ast.Node, 
 			r.hasChangeDescriptions = false
 			r.changes = make(changelog.ChangeMap)
 			r.previousRelease = release
-
-			r.queryEngine.Apply(w, release)
 		}
 	case 3:
 		if r.headers.Introduction() {
 			return ast.WalkStop, fmt.Errorf("Changes must be in a release %v", r.headers)
-		} else if r.headers.Change() && !r.hasChangeDescriptions {
-			return ast.WalkStop, fmt.Errorf("No change descriptions for %v", r.headers)
-		} else {
-			h, err := r.headers.Section(changelog.ChangeHeading, r.text.String())
-			if err != nil {
-				return ast.WalkStop, err
-			}
-
-			change := h.(changelog.Change)
-			if err := r.validateChangeHeading(change); err != nil {
-				return ast.WalkStop, err
-			}
-			r.hasChangeDescriptions = false
-
-			r.queryEngine.Apply(w, change)
 		}
+		if r.headers.Change() && !r.hasChangeDescriptions {
+			return ast.WalkStop, fmt.Errorf("No change descriptions for %v", r.headers)
+		}
+
+		h, err := r.headers.Section(changelog.ChangeHeading, r.text.String())
+		if err != nil {
+			return ast.WalkStop, err
+		}
+
+		change := h.(changelog.Change)
+		if err := r.validateChangeHeading(change); err != nil {
+			return ast.WalkStop, err
+		}
+		r.hasChangeDescriptions = false
 	}
 	return ast.WalkContinue, nil
 }
@@ -220,7 +218,15 @@ func (r *Renderer) visitList(w util.BufWriter, source []byte, node ast.Node, ent
 }
 
 func (r *Renderer) visitListItem(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
+	if entering {
+		r.text.Reset()
+		return ast.WalkContinue, nil
+	}
 	if r.headers.Change() {
+		_, err := r.headers.Section(changelog.ChangeDescription, r.text.String())
+		if err != nil {
+			return ast.WalkStop, err
+		}
 		r.hasChangeDescriptions = true
 	}
 	return ast.WalkContinue, nil

@@ -7,17 +7,17 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestUnsupportedIntroductionQuery(t *testing.T) {
-	_, err := NewQueryEngine("publication_date")
+func TestChangelogQueryUnsupportedAttribue(t *testing.T) {
+	_, err := NewQueryEngine("publication_date", "json")
 	require.Error(t, err)
 }
 
-func TestUnsupportedIntroductionTitleQuery(t *testing.T) {
-	_, err := NewQueryEngine("title.size")
+func TestChangelogQueryUnsupportedTitle(t *testing.T) {
+	_, err := NewQueryEngine("title.size", "json")
 	require.Error(t, err)
 }
 
-func TestQueryTitle(t *testing.T) {
+func TestChangelogQueryTitle(t *testing.T) {
 	require := require.New(t)
 
 	result, err := apply("title", []changelog.Heading{
@@ -27,7 +27,7 @@ func TestQueryTitle(t *testing.T) {
 	require.Equal("changelog", result)
 }
 
-func TestQueryTitleAgainstRelease(t *testing.T) {
+func TestChangelogQueryTitleAgainstRelease(t *testing.T) {
 	require := require.New(t)
 
 	result, err := apply("title", []changelog.Heading{
@@ -35,4 +35,30 @@ func TestQueryTitleAgainstRelease(t *testing.T) {
 	})
 	require.NoError(err)
 	require.Empty(result)
+}
+
+func TestChangelogQueryUnsupportedEnter(t *testing.T) {
+	require := require.New(t)
+
+	query := &changelogQuery{}
+	require.False(query.Enter(newHeading(changelog.ReleaseHeading, "[1.2.3] - 2020-05-16")))
+}
+
+func TestChangelogQueryUnsupportedExit(t *testing.T) {
+	require := require.New(t)
+
+	query := &changelogQuery{}
+	require.False(query.Exit(newHeading(changelog.ReleaseHeading, "[1.2.3] - 2020-05-16")))
+}
+
+func TestChangelogQueryCollection(t *testing.T) {
+	require := require.New(t)
+	{
+		query := &changelogQuery{}
+		require.False(query.isCollection())
+	}
+	{
+		query := &changelogQuery{projections{collection: true}}
+		require.True(query.isCollection())
+	}
 }

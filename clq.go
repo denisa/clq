@@ -37,10 +37,12 @@ func (clq *Clq) entryPoint(name string, arguments ...string) int {
 		fmt.Fprintf(options.Output(), "\nUsage: %s { flags } <path to changelog.md>\n\nOptions are:\n", options.Name())
 		options.PrintDefaults()
 	}
+	var output = options.String("output", "json", "Output format, for complex result. One of: json|md")
 	var queryString = options.String("query", "", "A query to extract information out of the change log")
 	var release = options.Bool("release", false, "Enable release-mode validation")
 	var showVersion = options.Bool("version", false, "Prints clq version")
 	options.BoolVar(&clq.verbose, "with-filename", false, "Always print filename headers with output lines")
+
 	if options.Parse(arguments) != nil {
 		return 2
 	}
@@ -58,7 +60,7 @@ func (clq *Clq) entryPoint(name string, arguments ...string) int {
 
 	var hasError bool
 	for _, document := range clq.documents {
-		queryEngine, err := query.NewQueryEngine(*queryString)
+		queryEngine, err := query.NewQueryEngine(*queryString, *output)
 		if err != nil {
 			fmt.Fprintf(clq.stderr, "❗️ %v\n", err)
 			return 2
@@ -74,13 +76,13 @@ func (clq *Clq) entryPoint(name string, arguments ...string) int {
 		reader := text.NewReader(source)
 		doc := goldmark.DefaultParser().Parse(reader)
 
+		validatorOpts := []validator.Option{validator.WithRelease(*release)}
+		if queryEngine.HasQuery() {
+			validatorOpts = append(validatorOpts, validator.WithListener(queryEngine))
+		}
 		validationEngine := renderer.NewRenderer(
 			renderer.WithNodeRenderers(
-				util.Prioritized(
-					validator.NewRenderer(
-						validator.WithQuery(*queryEngine),
-						validator.WithRelease(*release)),
-					1000)))
+				util.Prioritized(validator.NewRenderer(validatorOpts...), 1000)))
 
 		var buf bytes.Buffer
 		if err := validationEngine.Render(&buf, source, doc); err != nil {
@@ -88,7 +90,7 @@ func (clq *Clq) entryPoint(name string, arguments ...string) int {
 			hasError = true
 			continue
 		}
-		clq.output(document, buf.String())
+		clq.output(document, queryEngine.Result())
 	}
 
 	if hasError {
@@ -109,9 +111,12 @@ func (clq *Clq) withFileName() bool {
 }
 
 func (clq *Clq) error(document string, err error) {
-	if pErr, ok := err.(*os.PathError); ok {
-		fmt.Fprintf(clq.stderr, "❗️ %v: %v\n", pErr.Path, pErr.Err.Error())
-	} else if clq.withFileName() {
+	if err, ok := err.(*os.PathError); ok {
+		fmt.Fprintf(clq.stderr, "❗️ %v: %v\n", err.Path, err.Err.Error())
+		return
+	}
+
+	if clq.withFileName() {
 		fmt.Fprintf(clq.stderr, "❗️ %v: %v\n", document, err)
 	} else {
 		fmt.Fprintf(clq.stderr, "❗️ %v\n", err)

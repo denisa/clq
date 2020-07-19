@@ -19,6 +19,17 @@ Categories:
    - `Fixed` for any bug fixes.
    - `Security` in case of vulnerabilities.
 
+## [1.2.0] - 2020-07-14
+### Changed
+- option '-output md' will format the result of a query as markdown.
+  There is an implied '-output json' if left unspecified.
+- query can return multiple results
+
+### Fixed
+- Bump actions/checkout from v2.2.0 to v2.3.1
+- Bump actions/create-release from v1.1.0 to v1.1.2
+- Bump actions/setup-go from v2.0.3 to v2.1.0
+
 ## [1.1.2] - 2020-06-09
 ### Fixed
 - pull-request fails when a tag exists for the CHANGELOG’s release

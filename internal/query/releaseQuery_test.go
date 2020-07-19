@@ -7,17 +7,57 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestUnsupportedReleaseQuery(t *testing.T) {
-	_, err := NewQueryEngine("releases[3].publication_date")
+func TestReleaseQueryMisformedSelector(t *testing.T) {
+	_, err := NewQueryEngine("releases[", "json")
 	require.Error(t, err)
 }
 
-func TestUnsupportedReleaseIndexQuery(t *testing.T) {
-	_, err := NewQueryEngine("releases[three].date")
+func TestReleaseQueryUnsupportedSelector(t *testing.T) {
+	_, err := NewQueryEngine("releases[three]", "json")
 	require.Error(t, err)
 }
 
-func TestQueryReleaseAgainstIntroduction(t *testing.T) {
+func TestReleaseQueryAsScalar(t *testing.T) {
+	_, err := NewQueryEngine("releases", "json")
+	require.Error(t, err)
+}
+
+func TestReleaseQueryUnsupportedAttribute(t *testing.T) {
+	_, err := NewQueryEngine("releases[3].publication_date", "json")
+	require.Error(t, err)
+}
+
+func TestReleaseQueryUnsupportedTitle(t *testing.T) {
+	_, err := NewQueryEngine("releases[2].title.size", "json")
+	require.Error(t, err)
+}
+
+func TestReleaseQueryUnsupportedDate(t *testing.T) {
+	_, err := NewQueryEngine("releases[2].date.size", "json")
+	require.Error(t, err)
+}
+
+func TestReleaseQueryUnsupportedLabel(t *testing.T) {
+	_, err := NewQueryEngine("releases[2].label.size", "json")
+	require.Error(t, err)
+}
+
+func TestReleaseQueryUnsupportedStatus(t *testing.T) {
+	_, err := NewQueryEngine("releases[2].status.size", "json")
+	require.Error(t, err)
+}
+
+func TestReleaseQueryUnsupportedVersion(t *testing.T) {
+	_, err := NewQueryEngine("releases[2].version.size", "json")
+	require.Error(t, err)
+}
+
+func TestReleaseQueryUnsupportedIndex(t *testing.T) {
+	_, err := NewQueryEngine("releases[three].date", "json")
+	require.Error(t, err)
+}
+
+func TestReleaseQueryAgainstIntroduction(t *testing.T) {
 	require := require.New(t)
 
 	result, err := apply("releases[1].version", []changelog.Heading{
@@ -28,7 +68,7 @@ func TestQueryReleaseAgainstIntroduction(t *testing.T) {
 	require.Empty(result)
 }
 
-func TestQuerySecondReleaseVersion(t *testing.T) {
+func TestReleaseQuerySecondReleaseVersion(t *testing.T) {
 	require := require.New(t)
 
 	result, err := apply("releases[1].version", []changelog.Heading{
@@ -40,7 +80,7 @@ func TestQuerySecondReleaseVersion(t *testing.T) {
 	require.Equal("1.2.2", result)
 }
 
-func TestQuerySecondReleaseDate(t *testing.T) {
+func TestReleaseQuerySecondReleaseDate(t *testing.T) {
 	require := require.New(t)
 
 	result, err := apply("releases[0].date", []changelog.Heading{
@@ -52,7 +92,7 @@ func TestQuerySecondReleaseDate(t *testing.T) {
 	require.Equal("2020-05-16", result)
 }
 
-func TestQuerySecondReleaseLabel(t *testing.T) {
+func TestReleaseQuerySecondReleaseLabel(t *testing.T) {
 	require := require.New(t)
 
 	result, err := apply("releases[1].label", []changelog.Heading{
@@ -64,7 +104,7 @@ func TestQuerySecondReleaseLabel(t *testing.T) {
 	require.Equal("Cabrel", result)
 }
 
-func TestQuerySecondReleaseStatusPrereleased(t *testing.T) {
+func TestReleaseQuerySecondReleaseStatusPrereleased(t *testing.T) {
 	require := require.New(t)
 
 	result, err := apply("releases[1].status", []changelog.Heading{
@@ -76,7 +116,7 @@ func TestQuerySecondReleaseStatusPrereleased(t *testing.T) {
 	require.Equal("prereleased", result)
 }
 
-func TestQuerySecondReleaseStatusReleased(t *testing.T) {
+func TestReleaseQuerySecondReleaseStatusReleased(t *testing.T) {
 	require := require.New(t)
 
 	result, err := apply("releases[1].status", []changelog.Heading{
@@ -88,7 +128,7 @@ func TestQuerySecondReleaseStatusReleased(t *testing.T) {
 	require.Equal("released", result)
 }
 
-func TestQuerySecondReleaseStatusUnreleased(t *testing.T) {
+func TestReleaseQueryFirstReleaseStatusUnreleased(t *testing.T) {
 	require := require.New(t)
 
 	result, err := apply("releases[0].status", []changelog.Heading{
@@ -100,7 +140,19 @@ func TestQuerySecondReleaseStatusUnreleased(t *testing.T) {
 	require.Equal("unreleased", result)
 }
 
-func TestQuerySecondReleaseStatusYanked(t *testing.T) {
+func TestReleaseQueryFirstReleaseDateUnreleased(t *testing.T) {
+	require := require.New(t)
+
+	result, err := apply("releases[0].date", []changelog.Heading{
+		newHeading(changelog.IntroductionHeading, "changelog"),
+		newHeading(changelog.ReleaseHeading, "[Unreleased]"),
+		newHeading(changelog.ReleaseHeading, "[1.2.2] - 2020-05-15 Cabrel"),
+	})
+	require.NoError(err)
+	require.Equal("", result)
+}
+
+func TestReleaseQuerySecondReleaseStatusYanked(t *testing.T) {
 	require := require.New(t)
 
 	result, err := apply("releases[1].status", []changelog.Heading{
@@ -112,7 +164,19 @@ func TestQuerySecondReleaseStatusYanked(t *testing.T) {
 	require.Equal("yanked", result)
 }
 
-func TestQuerySecondRelease(t *testing.T) {
+func TestReleaseQuerySecondReleaseTitle(t *testing.T) {
+	require := require.New(t)
+
+	result, err := apply("releases[1].title", []changelog.Heading{
+		newHeading(changelog.IntroductionHeading, "changelog"),
+		newHeading(changelog.ReleaseHeading, "[1.2.3] - 2020-05-16"),
+		newHeading(changelog.ReleaseHeading, "1.2.2 - 2020-05-15 [YANKED]"),
+	})
+	require.NoError(err)
+	require.Equal("1.2.2 - 2020-05-15 [YANKED]", result)
+}
+
+func TestReleaseQuerySecondRelease(t *testing.T) {
 	require := require.New(t)
 
 	result, err := apply("releases[1]", []changelog.Heading{
@@ -122,4 +186,31 @@ func TestQuerySecondRelease(t *testing.T) {
 	})
 	require.NoError(err)
 	require.JSONEq("{\"version\":\"1.2.2\", \"date\":\"2020-05-15\"}", result)
+}
+
+func TestReleaseQueryUnsupportedEnter(t *testing.T) {
+	require := require.New(t)
+
+	query := &releaseQuery{}
+	require.False(query.Enter(newHeading(changelog.IntroductionHeading, "changelog")))
+}
+
+func TestReleaseQueryUnsupportedRExit(t *testing.T) {
+	require := require.New(t)
+
+	query := &releaseQuery{}
+	require.False(query.Exit(newHeading(changelog.IntroductionHeading, "changelog")))
+}
+
+func TestReleaseQueryCollection(t *testing.T) {
+	require := require.New(t)
+	{
+		query := &releaseQuery{}
+		require.False(query.isCollection())
+	}
+	{
+		query := &releaseQuery{}
+		query.collection = true
+		require.True(query.isCollection())
+	}
 }

@@ -1,28 +1,131 @@
 package query
 
 import (
-	"bufio"
-	"bytes"
+	"testing"
 
 	"github.com/denisa/clq/internal/changelog"
+	"github.com/stretchr/testify/require"
 )
 
+func TestUnsupportedOutputFormat(t *testing.T) {
+	_, err := NewQueryEngine("title", "yaml")
+	require.Error(t, err)
+}
+
+func TestEmptyQueryAgainstIntroduction(t *testing.T) {
+	require := require.New(t)
+
+	result, err := apply("", []changelog.Heading{
+		newHeading(changelog.IntroductionHeading, "changelog"),
+	})
+	require.NoError(err)
+	require.Equal("", result)
+}
+
+func TestParseNameFormatError(t *testing.T) {
+	{
+		_, _, _, _, err := parseName("changes[")
+		require.Error(t, err)
+	}
+	{
+		_, _, _, _, err := parseName("changes]")
+		require.Error(t, err)
+	}
+	{
+		_, _, _, _, err := parseName("changes][")
+		require.Error(t, err)
+	}
+	{
+		_, _, _, _, err := parseName("changes/")
+		require.Error(t, err)
+	}
+}
+
+func TestParseNameNotRecursiveList(t *testing.T) {
+	require := require.New(t)
+	name, selector, isList, isRecursive, err := parseName("title")
+	require.NoError(err)
+	require.Equal("title", name)
+	require.Equal("", selector)
+	require.False(isList)
+	require.False(isRecursive)
+}
+
+func TestParseNameListNoSelector(t *testing.T) {
+	require := require.New(t)
+	name, selector, isList, isRecursive, err := parseName("changes[]")
+	require.NoError(err)
+	require.Equal("changes", name)
+	require.Equal("", selector)
+	require.True(isList)
+	require.False(isRecursive)
+}
+
+func TestParseNameListWithSelector(t *testing.T) {
+	require := require.New(t)
+	name, selector, isList, isRecursive, err := parseName("changes[2]")
+	require.NoError(err)
+	require.Equal("changes", name)
+	require.Equal("2", selector)
+	require.True(isList)
+	require.False(isRecursive)
+}
+
+func TestParseNameRecursiveListNoSelector(t *testing.T) {
+	require := require.New(t)
+	name, selector, isList, isRecursive, err := parseName("changes[]/")
+	require.NoError(err)
+	require.Equal("changes", name)
+	require.Equal("", selector)
+	require.True(isList)
+	require.True(isRecursive)
+}
+
+func TestElementIsCollectionInScalarContext(t *testing.T) {
+	require.Error(t, elementIsCollection("releases", false))
+}
+
+func TestElementIsCollectionNoError(t *testing.T) {
+	require.NoError(t, elementIsCollection("releases", true))
+}
+
+func TestElementIsFinalNoError(t *testing.T) {
+	require.NoError(t, elementIsFinal("title", false, []string{}))
+}
+
+func TestElementIsFinalListInScalarContext(t *testing.T) {
+	require.Error(t, elementIsFinal("title", true, []string{}))
+}
+
+func TestElementIsFinalMoreelementsInScalarContext(t *testing.T) {
+	require.Error(t, elementIsFinal("title", false, []string{"kind"}))
+}
+
 func newHeading(kind changelog.HeadingKind, text string) changelog.Heading {
-	h, _ := changelog.NewHeading(kind, text)
+	h, err := changelog.NewHeading(kind, text)
+	if err != nil {
+		panic(err)
+	}
 	return h
 }
 
 func apply(query string, headings []changelog.Heading) (string, error) {
-	qe, err := NewQueryEngine(query)
+	qe, err := NewQueryEngine(query, "json")
 	if err != nil {
 		return "", err
 	}
 
-	var buf bytes.Buffer
-	w := bufio.NewWriter(&buf)
+	var stack []changelog.Heading
 	for _, h := range headings {
-		qe.Apply(w, h)
+		i := len(stack) - 1
+		for ; i >= 0 && stack[i].Kind() >= h.Kind(); i-- {
+			qe.Exit(stack[i])
+		}
+		stack = append(stack[:i+1], h)
+		qe.Enter(h)
 	}
-	w.Flush()
-	return buf.String(), nil
+	for i := len(stack) - 1; i >= 0; i-- {
+		qe.Exit(stack[i])
+	}
+	return qe.Result(), nil
 }

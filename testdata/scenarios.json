@@ -207,6 +207,11 @@
     "error": "❗️ No change descriptions for {Change without change description}{[2.0.0] - 2020-02-29}{Fixed}\n"
   },
   {
+    "name": "change_with_empty_change_description.md",
+    "result": 1,
+    "error": "❗️ Validation error: change description cannot stay empty\n"
+  },
+  {
     "name": "change_without_release.md",
     "result": 1,
     "error": "❗️ Changes must be in a release {Change without release}\n"
@@ -256,7 +261,7 @@
       "-unsupported"
     ],
     "result": 2,
-    "error": "flag provided but not defined: -unsupported\n\nUsage: clq { flags } <path to changelog.md>\n\nOptions are:\n  -query string\n    \tA query to extract information out of the change log\n  -release\n    \tEnable release-mode validation\n  -version\n    \tPrints clq version\n  -with-filename\n    \tAlways print filename headers with output lines\n"
+    "error": "flag provided but not defined: -unsupported\n\nUsage: clq { flags } <path to changelog.md>\n\nOptions are:\n  -output string\n    \tOutput format, for complex result. One of: json|md (default \"json\")\n  -query string\n    \tA query to extract information out of the change log\n  -release\n    \tEnable release-mode validation\n  -version\n    \tPrints clq version\n  -with-filename\n    \tAlways print filename headers with output lines\n"
   },
   {
     "title": "-version",
@@ -283,6 +288,50 @@
     ],
     "result": 0,
     "output": "1.0.0\n"
+  },
+  {
+    "title": "query first release changes",
+    "arguments": [
+      "-query",
+      "releases[0].changes[]"
+    ],
+    "input": "# Change log\n## [Unreleased]\n### Added\n- waldo\n- fred\n## [1.0.0] - 2020-06-20\n### Removed\n- foo\n- bar",
+    "result": 0,
+    "output_format": "json",
+    "output": "[{\"title\":\"Added\"}]\n"
+  },
+  {
+    "title": "query first release changes recursive",
+    "arguments": [
+      "-query",
+      "releases[0].changes[]/"
+    ],
+    "input": "# Change log\n## [Unreleased]\n### Added\n- waldo\n- fred\n## [1.0.0] - 2020-06-20\n### Removed\n- foo\n- bar",
+    "result": 0,
+    "output_format": "json",
+    "output": "[{\"title\":\"Added\", \"descriptions\":[\"waldo\", \"fred\"]}]\n"
+  },
+  {
+    "title": "query last release changes",
+    "arguments": [
+      "-output",
+      "md",
+      "-query",
+      "releases[1].changes[]/"
+    ],
+    "input": "# Change log\n## [Unreleased]\n### Added\n- waldo\n- fred\n## [1.0.0] - 2020-06-20\n### Removed\n- foo\n- bar",
+    "result": 0,
+    "output": "### Removed\n- foo\n- bar\n"
+  },
+  {
+    "title": "query all changes",
+    "arguments": [
+      "-query",
+      "releases[0].changes[]"
+    ],
+    "input": "# Change log\n## [Unreleased]\n### Added\n- waldo\n- fred\n### Removed\n- foo\n- bar",
+    "result": 0,
+    "output": "[{\"title\":\"Added\"},{\"title\":\"Removed\"}]\n"
   },
   {
     "title": "query title",

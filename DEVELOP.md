@@ -15,3 +15,6 @@ A succesful push to master builds and publishes the _latest_ docker image on Doc
 The push of a tag `v.*` triggers both a GitHub Action and a Docker Hub build.
 The GitHub Action attaches binaries for unix, macos, and windows to the GitHub release.
 The Docker Hub builds and publishes a docker image on dockerhub with the tagged version.
+
+## Local Build
+Run `make` to perform all the tests.

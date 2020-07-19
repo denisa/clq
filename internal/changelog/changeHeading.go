@@ -7,13 +7,13 @@ import (
 
 // Level 3, change groups
 type Change struct {
-	title string
+	heading
 }
 
 func newChange(title string) (Heading, error) {
 	for val := range changeKind {
 		if matched, _ := regexp.MatchString(`^`+val+`$`, title); matched {
-			return Change{title: title}, nil
+			return Change{heading{title: title, kind: ChangeHeading}}, nil
 		}
 	}
 
@@ -22,6 +22,10 @@ func newChange(title string) (Heading, error) {
 
 func (h Change) Title() string {
 	return h.title
+}
+
+func (h Change) Kind() HeadingKind {
+	return h.kind
 }
 
 func (h Change) String() string {

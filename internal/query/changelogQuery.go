@@ -2,45 +2,65 @@ package query
 
 import (
 	"fmt"
-	"strings"
 
 	"github.com/denisa/clq/internal/changelog"
-	"github.com/yuin/goldmark/util"
 )
 
-func (qe *QueryEngine) newIntroductionQuery(name string, queryElements []string) error {
-	if name == "title" {
-		if len(queryElements) > 0 {
-			return fmt.Errorf("no query elements allowed after title")
-		}
-		qe.queries = append(qe.queries, &changelogQuery{project: func(h changelog.Introduction) string {
-			return h.Title()
-		}})
-		return nil
+func (qe *QueryEngine) newIntroductionQuery(queryElements []string) error {
+	queryMe := &changelogQuery{}
+	qe.queries = append(qe.queries, queryMe)
+
+	elementName, elementSelector, elementIsList, elementIsRecursive, err := parseName(queryElements[0])
+	if err != nil {
+		return err
 	}
-	if strings.HasPrefix(name, "releases[") && strings.HasSuffix(name, "]") {
-		qe.queries = append(qe.queries, &changelogQuery{})
-		if err := qe.newReleaseQuery(name[strings.Index(name, "[")+1:len(name)-1], queryElements); err != nil {
+
+	switch elementName {
+	default:
+		return fmt.Errorf("Query attribute not recognized %q for a \"introduction\"", elementName)
+	case "releases":
+		if err := elementIsCollection(elementName, elementIsList); err != nil {
 			return err
 		}
-		return nil
+		if err := qe.newReleaseQuery(elementSelector, elementIsRecursive, queryElements[1:]); err != nil {
+			return err
+		}
+	case "title":
+		if err := elementIsFinal(elementName, elementIsList, queryElements[1:]); err != nil {
+			return err
+		}
+		queryMe.enter = func(rc resultCollector, h changelog.Heading) {
+			if h, ok := h.(changelog.Introduction); ok {
+				rc.set(h.Title())
+			}
+		}
 	}
-	return fmt.Errorf("Query attribute not recognized %q", name)
+	return nil
 }
 
 type changelogQuery struct {
-	project func(changelog.Introduction) string
+	projections
 }
 
-func (q *changelogQuery) Select(w util.BufWriter, heading changelog.Heading) bool {
-	h, ok := heading.(changelog.Introduction)
-	if !ok {
-		return false
+func (q *changelogQuery) isCollection() bool {
+	return q.collection
+}
+
+func (q *changelogQuery) Accept(heading changelog.Heading) bool {
+	_, ok := heading.(changelog.Introduction)
+	return ok
+}
+
+func (q *changelogQuery) Enter(heading changelog.Heading) (bool, project) {
+	if !q.Accept(heading) {
+		return false, nil
 	}
-	if q.project == nil {
-		return true
-	} else {
-		_, _ = w.WriteString(q.project(h))
-		return false
+	return true, q.enter
+}
+
+func (q *changelogQuery) Exit(heading changelog.Heading) (bool, project) {
+	if !q.Accept(heading) {
+		return false, nil
 	}
+	return true, q.exit
 }

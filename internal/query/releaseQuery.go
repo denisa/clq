@@ -1,76 +1,135 @@
 package query
 
 import (
-	"encoding/json"
 	"fmt"
 	"strconv"
 
 	"github.com/denisa/clq/internal/changelog"
-	"github.com/yuin/goldmark/util"
 )
 
-func (qe *QueryEngine) newReleaseQuery(name string, queryElements []string) error {
-	i, err := strconv.Atoi(name)
+func (qe *QueryEngine) newReleaseQuery(selector string, isRecursive bool, queryElements []string) error {
+	i, err := strconv.Atoi(selector)
 	if err != nil {
-		return fmt.Errorf("Query release selector %q parsing error: %v", name, err)
+		return fmt.Errorf("Query release selector %q parsing error: %v", selector, err)
 	}
 
-	var f func(changelog.Release) string
+	queryMe := &releaseQuery{index: i}
+	qe.queries = append(qe.queries, queryMe)
+
 	if len(queryElements) == 0 {
-		f = func(r changelog.Release) string {
-			type Release struct {
-				Version string `json:"version"`
-				Date    string `json:"date,omitempty"`
+		queryMe.enter = func(rc resultCollector, h changelog.Heading) {
+			if h, ok := h.(changelog.Release); ok {
+				rc.setField("version", h.Version())
+				rc.setField("date", h.Date())
 			}
-			res, _ := json.Marshal(Release{Version: r.Version(), Date: r.Date()})
-			return string(res)
 		}
-	} else {
-		switch queryElements[0] {
-		default:
-			return fmt.Errorf("Query attribute not recognized %q for a \"release\"", queryElements[0])
-		case "date":
-			f = func(r changelog.Release) string { return r.Date() }
-		case "label":
-			f = func(r changelog.Release) string { return r.Label() }
-		case "status":
-			f = func(r changelog.Release) string {
-				if !r.HasBeenReleased() {
-					return "unreleased"
-				}
-				if r.HasBeenYanked() {
-					return "yanked"
-				}
-				if r.IsPrerelease() {
-					return "prereleased"
-				}
-				return "released"
+		return nil
+	}
+
+	elementName, elementSelector, elementIsList, elementIsRecursive, err := parseName(queryElements[0])
+	if err != nil {
+		return err
+	}
+
+	switch elementName {
+	default:
+		return fmt.Errorf("Query attribute not recognized %q for a \"release\"", elementName)
+	case "changes":
+		if err := elementIsCollection(elementName, elementIsList); err != nil {
+			return err
+		}
+		if err := qe.newChangeQuery(elementSelector, elementIsRecursive, queryElements[1:]); err != nil {
+			return err
+		}
+	case "date":
+		if err := elementIsFinal(elementName, elementIsList, queryElements[1:]); err != nil {
+			return err
+		}
+		queryMe.enter = func(rc resultCollector, h changelog.Heading) {
+			if h, ok := h.(changelog.Release); ok {
+				rc.set(h.Date())
 			}
-		case "version":
-			f = func(r changelog.Release) string { return r.Version() }
+		}
+	case "label":
+		if err := elementIsFinal(elementName, elementIsList, queryElements[1:]); err != nil {
+			return err
+		}
+		queryMe.enter = func(rc resultCollector, h changelog.Heading) {
+			if h, ok := h.(changelog.Release); ok {
+				rc.set(h.Label())
+			}
+		}
+	case "status":
+		if err := elementIsFinal(elementName, elementIsList, queryElements[1:]); err != nil {
+			return err
+		}
+		queryMe.enter = func(rc resultCollector, h changelog.Heading) {
+			if h, ok := h.(changelog.Release); ok {
+				if !h.HasBeenReleased() {
+					rc.set("unreleased")
+				} else if h.HasBeenYanked() {
+					rc.set("yanked")
+				} else if h.IsPrerelease() {
+					rc.set("prereleased")
+				} else {
+					rc.set("released")
+				}
+			}
+		}
+	case "title":
+		if err := elementIsFinal(elementName, elementIsList, queryElements[1:]); err != nil {
+			return err
+		}
+		queryMe.enter = func(rc resultCollector, h changelog.Heading) {
+			if h, ok := h.(changelog.Release); ok {
+				rc.set(h.Title())
+			}
+		}
+	case "version":
+		if err := elementIsFinal(elementName, elementIsList, queryElements[1:]); err != nil {
+			return err
+		}
+		queryMe.enter = func(rc resultCollector, h changelog.Heading) {
+			if h, ok := h.(changelog.Release); ok {
+				rc.set(h.Version())
+			}
 		}
 	}
 
-	qe.queries = append(qe.queries, &releaseQuery{index: i, project: f})
 	return nil
 }
 
 type releaseQuery struct {
-	cursor  int
-	index   int
-	project func(changelog.Release) string
+	projections
+	cursor int
+	index  int
 }
 
-func (q *releaseQuery) Select(w util.BufWriter, heading changelog.Heading) bool {
-	h, ok := heading.(changelog.Release)
-	if !ok {
-		return false
+func (q *releaseQuery) isCollection() bool {
+	return q.collection
+}
+
+func (q *releaseQuery) Accept(heading changelog.Heading) bool {
+	_, ok := heading.(changelog.Release)
+	return ok
+}
+
+func (q *releaseQuery) Enter(heading changelog.Heading) (bool, project) {
+	if !q.Accept(heading) {
+		return false, nil
 	}
 	selected := q.cursor == q.index
 	q.cursor++
 
-	if selected && q.project != nil {
-		_, _ = w.WriteString(q.project(h))
+	if !selected {
+		return false, nil
 	}
-	return selected && q.project == nil
+	return true, q.enter
+}
+
+func (q *releaseQuery) Exit(heading changelog.Heading) (bool, project) {
+	if !q.Accept(heading) {
+		return false, nil
+	}
+	return true, q.exit
 }
