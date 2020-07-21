@@ -18,3 +18,6 @@ The Docker Hub builds and publishes a docker image on dockerhub with the tagged 
 
 ## Local Build
 Run `make` to perform all the tests.
+
+## Architecture
+![Class diagram](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/denisa/clq/master/docs/class_diagram.puml)

@@ -82,7 +82,7 @@ func (clq *Clq) entryPoint(name string, arguments ...string) int {
 		}
 		validationEngine := renderer.NewRenderer(
 			renderer.WithNodeRenderers(
-				util.Prioritized(validator.NewRenderer(validatorOpts...), 1000)))
+				util.Prioritized(validator.NewValidator(validatorOpts...), 1000)))
 
 		var buf bytes.Buffer
 		if err := validationEngine.Render(&buf, source, doc); err != nil {

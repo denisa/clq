@@ -19,6 +19,10 @@ Categories:
    - `Fixed` for any bug fixes.
    - `Security` in case of vulnerabilities.
 
+## [Unreleased]
+### Fixed
+- add class diagram
+
 ## [1.2.0] - 2020-07-14
 ### Changed
 - option '-output md' will format the result of a query as markdown.
