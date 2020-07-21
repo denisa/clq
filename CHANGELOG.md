@@ -19,11 +19,12 @@ Categories:
    - `Fixed` for any bug fixes.
    - `Security` in case of vulnerabilities.
 
-## [Unreleased]
+## [1.2.1] - 2020-07-21
 ### Fixed
 - add class diagram
+- use CHANGELOG.md to fill in GitHub release information
 
-## [1.2.0] - 2020-07-14
+## [1.2.0] - 2020-07-19
 ### Changed
 - option '-output md' will format the result of a query as markdown.
   There is an implied '-output json' if left unspecified.
