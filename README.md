@@ -138,7 +138,7 @@ For the sample changelog
   releases can be indexed, starting at 0, to access a single release.
 - _title_ the title of the changelog
 ### release
-- _changes[]_ all the changes for that releases.  
+- _changes[]_ all the changes for that release.  
   changes cannot be indexed.
 - _date_ the release date, blank if it has not yet been released
 - _label_ the optional release label
