@@ -19,6 +19,10 @@ Categories:
    - `Fixed` for any bug fixes.
    - `Security` in case of vulnerabilities.
 
+## [1.3.0] - 2020-07-23
+### Changed
+- provide a new alpine-based docker image for use as a parent image by the clq-action
+
 ## [1.2.1] - 2020-07-21
 ### Fixed
 - add class diagram

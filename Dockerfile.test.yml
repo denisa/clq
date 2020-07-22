@@ -1,8 +1,0 @@
-version: '3'
-
-services:
-  sut:
-    build: .
-    volumes:
-      - ./CHANGELOG.md:/home/CHANGELOG.md:ro
-    command: [ "-with-filename", "/home/CHANGELOG.md" ]
