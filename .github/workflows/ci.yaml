@@ -35,7 +35,7 @@ jobs:
         release_version=$(dist/clq -release -query 'releases[0].version' CHANGELOG.md)
         release_tag="v${release_version}"
         if git ls-remote --exit-code --tags origin "refs/tags/$release_tag" >/dev/null 2>&1; then
-          echo "tag $release_tag exists"
+          echo "::error ::tag $release_tag exists"
           exit 1
         fi
   tag:
