@@ -1,0 +1,31 @@
+@startuml
+"github.com/yuin/goldmark/renderer.NodeValidator" <|-- validator.Validator
+validator.Validator *-- changelog.Changelog
+changelog.Changelog "1" *-- "*" changelog.Heading
+changelog.Changelog "1" *-- "*" changelog.Listener
+changelog.Heading <|.. changelog.changeHeading
+changelog.Heading <|.. changelog.changeItem
+changelog.Heading <|.. changelog.introductionHeading
+changelog.Heading <|.. changelog.releaseHeading
+changelog.Listener <|.. query.QueryEngine
+interface changelog.Heading
+interface changelog.Listener
+query.QueryEngine *-- query.OutputFormat
+query.QueryEngine "1" *-- "*" query.Query
+query.Query <|.. query.changelogQuery
+query.Query <|.. query.releaseQuery
+query.Query <|.. query.changeQuery
+query.Query <|.. query.changeItemQuery
+query.projections <|-- query.changelogQuery
+query.projections <|-- query.releaseQuery
+query.projections <|-- query.changeQuery
+query.projections <|-- query.changeItemQuery
+query.OutputFormat <|.. query.jsonResultCollector
+query.OutputFormat <|.. query.mdResultCollector
+query.resultCollector <|.. query.jsonResultCollector
+query.resultCollector <|.. query.mdResultCollector
+interface query.OutputFormat
+abstract query.projections
+interface query.Query
+interface query.resultCollector
+@enduml

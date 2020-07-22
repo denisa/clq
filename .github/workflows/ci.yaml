@@ -60,6 +60,9 @@ jobs:
 
         release_status=$(dist/clq -release -query 'releases[0].status' CHANGELOG.md)
 
+        release_changes=$(dist/clq -release -output md -query 'releases[0].changes[]/' CHANGELOG.md)
+
+        echo "::set-env name=RELEASE_CHANGES::${release_changes//$'\n'/'%0A'}"
         echo "::set-env name=RELEASE_NAME::$release_name"
         echo "::set-env name=RELEASE_STATUS::$release_status"
         echo "::set-env name=RELEASE_TAG::$release_tag"
@@ -75,6 +78,7 @@ jobs:
         tag_name: ${{ env.RELEASE_TAG }}
         release_name: ${{ env.RELEASE_NAME }}
         prerelease: ${{ env.RELEASE_STATUS == 'prereleased' }}
+        body: ${{ env.RELEASE_CHANGES }}
     - uses: actions/upload-release-asset@v1.0.2
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

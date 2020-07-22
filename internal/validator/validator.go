@@ -10,7 +10,7 @@ import (
 	"github.com/yuin/goldmark/util"
 )
 
-// A Config struct has configurations for the Validator renderer.
+// A Config struct has configurations for the Validator.
 type Config struct {
 	release  bool
 	listener changelog.Listener
@@ -21,7 +21,7 @@ func NewConfig() Config {
 	return Config{}
 }
 
-// An Option interface sets options for Validator based renderers.
+// An Option interface sets options for the Validator.
 type Option interface {
 	SetValidationOption(*Config)
 }
@@ -35,7 +35,7 @@ func (o *withListener) SetValidationOption(c *Config) {
 }
 
 // withListener is a functional option that allow you to set the changelog event
-// listener .
+// listener.
 func WithListener(listener changelog.Listener) interface {
 	Option
 } {
@@ -51,16 +51,16 @@ func (o *withRelease) SetValidationOption(c *Config) {
 }
 
 // WithRelease is a functional option that allow you to set the release mode to
-// the renderer.
+// the Validator.
 func WithRelease(release bool) interface {
 	Option
 } {
 	return &withRelease{release}
 }
 
-// A Renderer struct is an implementation of renderer.NodeRenderer that validates
+// A Validator struct is an implementation of renderer.NodeRenderer that validates
 // a changelog.
-type Renderer struct {
+type Validator struct {
 	Config
 	text                     strings.Builder
 	h1Released, h1Unreleased bool
@@ -70,8 +70,8 @@ type Renderer struct {
 	previousRelease          changelog.Release
 }
 
-func NewRenderer(opts ...Option) renderer.NodeRenderer {
-	r := &Renderer{
+func NewValidator(opts ...Option) renderer.NodeRenderer {
+	r := &Validator{
 		Config:  NewConfig(),
 		changes: make(changelog.ChangeMap),
 		headers: changelog.NewChangelog(),
@@ -88,7 +88,7 @@ func NewRenderer(opts ...Option) renderer.NodeRenderer {
 	return r
 }
 
-func (r *Renderer) RegisterFuncs(reg renderer.NodeRendererFuncRegisterer) {
+func (r *Validator) RegisterFuncs(reg renderer.NodeRendererFuncRegisterer) {
 	reg.Register(ast.KindDocument, r.visitDocument)
 	reg.Register(ast.KindHeading, r.visitHeading)
 	reg.Register(ast.KindList, r.visitList)
@@ -98,7 +98,7 @@ func (r *Renderer) RegisterFuncs(reg renderer.NodeRendererFuncRegisterer) {
 	reg.Register(ast.KindText, r.visitText)
 }
 
-func (r *Renderer) visitDocument(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
+func (r *Validator) visitDocument(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
 	if !entering {
 		if !r.h1Released && !r.h1Unreleased {
 			return ast.WalkStop, fmt.Errorf("Validation error: No release defined in changelog")
@@ -111,7 +111,7 @@ func (r *Renderer) visitDocument(w util.BufWriter, source []byte, node ast.Node,
 	return ast.WalkContinue, nil
 }
 
-func (r *Renderer) visitHeading(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
+func (r *Validator) visitHeading(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
 	if entering {
 		r.text.Reset()
 		return ast.WalkContinue, nil
@@ -179,7 +179,7 @@ func (r *Renderer) visitHeading(w util.BufWriter, source []byte, node ast.Node, 
 	return ast.WalkContinue, nil
 }
 
-func (r *Renderer) validateReleaseHeading(release changelog.Release) error {
+func (r *Validator) validateReleaseHeading(release changelog.Release) error {
 	if !release.HasBeenReleased() {
 		if r.release {
 			return fmt.Errorf("Validation error: \"[Unreleased]\" not supported in release mode %v", r.headers)
@@ -205,7 +205,7 @@ func (r *Renderer) validateReleaseHeading(release changelog.Release) error {
 	return nil
 }
 
-func (r *Renderer) validateChangeHeading(change changelog.Change) error {
+func (r *Validator) validateChangeHeading(change changelog.Change) error {
 	if r.changes[change.Title()] {
 		return fmt.Errorf("Validation error: Multiple headings %q not supported %v", change.Title(), r.headers)
 	}
@@ -213,11 +213,11 @@ func (r *Renderer) validateChangeHeading(change changelog.Change) error {
 	return nil
 }
 
-func (r *Renderer) visitList(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
+func (r *Validator) visitList(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
 	return ast.WalkContinue, nil
 }
 
-func (r *Renderer) visitListItem(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
+func (r *Validator) visitListItem(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
 	if entering {
 		r.text.Reset()
 		return ast.WalkContinue, nil
@@ -232,14 +232,14 @@ func (r *Renderer) visitListItem(w util.BufWriter, source []byte, node ast.Node,
 	return ast.WalkContinue, nil
 }
 
-func (r *Renderer) visitImage(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
+func (r *Validator) visitImage(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
 	if entering {
 		return ast.WalkSkipChildren, nil
 	}
 	return ast.WalkContinue, nil
 }
 
-func (r *Renderer) visitText(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
+func (r *Validator) visitText(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
 	if entering {
 		n := node.(*ast.Text)
 		segment := n.Segment
