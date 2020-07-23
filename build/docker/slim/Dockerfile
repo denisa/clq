@@ -1,4 +1,4 @@
-FROM golang:1.14-alpine AS builder
+FROM golang:1.14-alpine3.12 AS builder
 
 ARG DOCKER_TAG=latest
 
@@ -27,6 +27,6 @@ COPY --from=builder /usr/share/zoneinfo /usr/share/zoneinfo
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 COPY --from=builder /etc/passwd /etc/passwd
 COPY --from=builder /etc/group /etc/group
-COPY --from=builder /go/bin/clq /go/bin/clq
+COPY --from=builder /go/bin/clq /usr/bin/clq
 USER appuser:appuser
-ENTRYPOINT ["/go/bin/clq"]
+ENTRYPOINT ["/usr/bin/clq"]
