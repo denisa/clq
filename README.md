@@ -17,18 +17,19 @@ clq writes validation error to standard error.
 
 When processing multiple files, clq prefixes every line on standard out and standard error with the file name.
 
-    Usage: clq { options } <path to changelog.md>
+```
+Usage: clq { options } <path to changelog.md>
 
-    Options are:
-      -output format
-          the format to apply to the result of a (complex) query. Supports json and md (markdown); default to json
-      -query string
-        	A query to extract information out of the change log
-      -release
-        	Enable release-mode validation
-      -with-filename
-        	Always print filename headers with output lines
-
+Options are:
+  -output format
+      the format to apply to the result of a (complex) query. Supports json and md (markdown); default to json
+  -query string
+    	A query to extract information out of the change log
+  -release
+    	Enable release-mode validation
+  -with-filename
+    	Always print filename headers with output lines
+```
 Example:
 
 - `clq CHANGELOG.md`  
@@ -38,13 +39,19 @@ Example:
 - `clq -query releases[0].version CHANGELOG.md`  
     validates the complete changelog and returns the version of the most recent release.
 
-# Execution with Docker
+## Execution with Docker
 
-A small docker image offers a simple no-installation executable.
+A small minimal docker image offers a simple no-installation executable.
 
 A single changelog file can be validated with a simple `docker run -i denisa/clq < CHANGELOG.md`.
 
 To operate on multiple files is more complex and we recommend either multiple individual invocations, or the installation of native binaries.
+
+The project also generates a 2nd docker image whose label ends wih `-alpine`, for example: `1.2.3-alpine`. This image, larger, is for use  by the [clq-action](https://github.com/denisa/clq-action).
+
+## GitHub action
+
+[clq-action](https://github.com/denisa/clq-action) documents how to integrate clq in a GitHub workflow.
 
 # Grammar for supported Changelog
 ```
@@ -72,26 +79,36 @@ DIGIT           = "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9";
 ```
 Note:
 - The most recent version comes first.
+- The only deviation from the official spec is the optional LABEL on a release entry. 
+The label is conveneient for teams that want to highlight individual releases by naming
+them. Such might be the case for releases cut, for example, for a quarterly demo:
+`## [1.5.2] - 2019.10.02 Espelho` 
 
 # Validation
 
-clq validates that the changelog file conforms to the grammar. It further validates that the releases are sorted chronologically from most recent to oldest, that the versions numbers are properly decreasing and that the version change between any two versions is justified by the change kinds present, according to folowing rules:
+clq supports two validation modes, _feature_ and _release_. The _feature_ mode is best used for feature branches:
+development work is in progress and the only requirement is for the changelog to be valid but not necessarily current.
+On the opposite, the _release_ mode applies to release branches and, therefore, pull-requests.
+
+By default, clq operates in the _feature_ mode. In that mode, clq validates that the changelog file conforms to the grammar. It further validates that the releases are sorted chronologically from most recent to oldest, that the versions numbers are properly decreasing and that the version change between any two versions is justified by the change kinds present, according to following rules:
 
 - _major_ release trigger:
     - `Added` for new features.
     - `Removed` for now removed features.
 - _minor_ release trigger:
     - `Changed` for changes in existing functionality.
-    -  `Deprecated` for soon-to-be removed features.
+    - `Deprecated` for soon-to-be removed features.
 - _bug-fix_ release trigger:
     - `Fixed` for any bug fixes.
     - `Security` in case of vulnerabilities.
 
 clq is generally lenient with the spaces, accepting them between square brackets for example.
 
+When the _release_ mode is activated (with the `-release` option), clq further validates that the first entry in the changelog is an actual release entry. 
+
 _Note_ that pre-releases might or might not be supported at this time.  
 ![P’têt ben… P’têt pas… J’peux pas dire…](https://lestribulationsdunfrancophoneenfrancophonie.files.wordpress.com/2017/02/http-www-etaletaculture-frwp-contentuploads201512une-reponse-de-normands.jpg?w=317&h=269)  
-(Astérix & Obélix, _Le tour de Gaule_, 1953)
+(Astérix & Obélix, _Le tour de Gaule d’Astérix_, 1953)
 
 # Query Expression Language
 
@@ -109,7 +126,7 @@ DIGIT            = "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9";
 ```
 A _simple_ query returns the value of a single field. It is not formatted.
 
-A _complex_ query returns all the values of the selected object. The object is formatted accoring to the value of `-output` option. If the query ends with a "/", it also returns the values child elements. If the selector is missing, the query returns a collection of objects.
+A _complex_ query returns all the values of the selected object. The object is formatted according to the value of the `-output` option. If the query ends with a "/", it also returns the child elements. If the selector is missing, the query returns a collection of objects.
 
 For the sample changelog
 ```
