@@ -1,7 +1,5 @@
 # changelog
 
-
-
 [![Keep a Changelog](https://img.shields.io/badge/Keep%20a%20Changelog-1.0.0-informational)](https://keepachangelog.com/en/1.0.0/)
 [![Semantic Versioning](https://img.shields.io/badge/Sematic%20Versioning-2.0.0-informational)](https://semver.org/spec/v2.0.0.html)
 ![clq validated](https://img.shields.io/badge/clq-validated-success)
@@ -18,6 +16,13 @@ Categories:
 - _bug-fix_ release trigger:
    - `Fixed` for any bug fixes.
    - `Security` in case of vulnerabilities.
+
+## [1.3.1] - 2020-07-28
+### Fixed
+- Create codeql-analysis.yml
+- Bump actions/setup-go from v2.1.0 to v2.1.1
+- Bump github.com/yuin/goldmark from 1.1.32 to 1.2.0
+
 
 ## [1.3.0] - 2020-07-23
 ### Changed
