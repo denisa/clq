@@ -20,6 +20,7 @@ Categories:
 ## [1.3.2] - 2020-08-04
 ### Fixed
 - dependabot was not re-configured for the re-organized Dockerfiles
+- Bump github.com/yuin/goldmark from 1.2.0 to 1.2.1
 
 ## [1.3.1] - 2020-07-28
 ### Fixed
