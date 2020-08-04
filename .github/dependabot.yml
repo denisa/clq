@@ -11,11 +11,11 @@ updates:
       interval: "weekly"
 
   - package-ecosystem: "docker"
-    directory: "/docker/alpine"
+    directory: "/build/docker/alpine"
     schedule:
       interval: "weekly"
 
   - package-ecosystem: "docker"
-    directory: "/docker/slim"
+    directory: "/build/docker/slim"
     schedule:
       interval: "weekly"
