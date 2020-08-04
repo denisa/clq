@@ -17,12 +17,16 @@ Categories:
    - `Fixed` for any bug fixes.
    - `Security` in case of vulnerabilities.
 
+## [1.3.2] - 2020-08-04
+### Fixed
+- dependabot was not re-configured for the re-organized Dockerfiles
+- Bump github.com/yuin/goldmark from 1.2.0 to 1.2.1
+
 ## [1.3.1] - 2020-07-28
 ### Fixed
 - Create codeql-analysis.yml
 - Bump actions/setup-go from v2.1.0 to v2.1.1
 - Bump github.com/yuin/goldmark from 1.1.32 to 1.2.0
-
 
 ## [1.3.0] - 2020-07-23
 ### Changed
