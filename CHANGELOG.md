@@ -17,6 +17,10 @@ Categories:
    - `Fixed` for any bug fixes.
    - `Security` in case of vulnerabilities.
 
+## [1.3.4] - 2020-08-17
+### Fixed
+- Update actions/checkout requirement to v2.3.2
+
 ## [1.3.3] - 2020-08-04
 ### Fixed
 - dependabot was not re-configured for the re-organized Dockerfiles
