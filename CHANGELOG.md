@@ -17,6 +17,13 @@ Categories:
    - `Fixed` for any bug fixes.
    - `Security` in case of vulnerabilities.
 
+## [1.3.4] - 2020-08-17
+### Fixed
+- Bump golang to 1.15
+- Update actions/checkout requirement to v2.3.2
+- Bump actions/create-release from v1.1.2 to v1.1.3
+- Bump actions/setup-go from v2.1.1 to v2.1.2
+
 ## [1.3.3] - 2020-08-04
 ### Fixed
 - dependabot was not re-configured for the re-organized Dockerfiles
