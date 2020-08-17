@@ -6,18 +6,19 @@ on:
     tags-ignore:
       - '*'
   pull_request:
+env:
+  GO: 1.15.x
 jobs:
   test:
     strategy:
       fail-fast: false
       matrix:
-        go-version: [1.14.x]
         platform: [ubuntu-latest, macos-latest, windows-latest]
     runs-on: ${{ matrix.platform }}
     steps:
     - uses: actions/setup-go@v2.1.2
       with:
-        go-version: ${{ matrix.go-version }}
+        go-version: ${{ env.GO }}
     - uses: actions/checkout@v2.3.2
     - run: make lcov
     - name: Send coverage
@@ -45,7 +46,7 @@ jobs:
     steps:
     - uses: actions/setup-go@v2.1.2
       with:
-        go-version: 1.14.x
+        go-version: ${{ env.GO }}
     - uses: actions/checkout@v2.3.2
     - run: make build
     - name: Extract release information

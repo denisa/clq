@@ -19,6 +19,7 @@ Categories:
 
 ## [1.3.4] - 2020-08-17
 ### Fixed
+- Bump golang to 1.15
 - Update actions/checkout requirement to v2.3.2
 - Bump actions/create-release from v1.1.2 to v1.1.3
 - Bump actions/setup-go from v2.1.1 to v2.1.2
