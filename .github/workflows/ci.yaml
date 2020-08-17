@@ -15,7 +15,7 @@ jobs:
         platform: [ubuntu-latest, macos-latest, windows-latest]
     runs-on: ${{ matrix.platform }}
     steps:
-    - uses: actions/setup-go@v2.1.1
+    - uses: actions/setup-go@v2.1.2
       with:
         go-version: ${{ matrix.go-version }}
     - uses: actions/checkout@v2.3.2
@@ -43,7 +43,7 @@ jobs:
     needs: test
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/setup-go@v2.1.1
+    - uses: actions/setup-go@v2.1.2
       with:
         go-version: 1.14.x
     - uses: actions/checkout@v2.3.2
