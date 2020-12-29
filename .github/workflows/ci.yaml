@@ -50,6 +50,7 @@ jobs:
     - uses: actions/checkout@v2.3.4
     - run: make build
     - name: Extract release information
+      id: release_information
       run: |
         release_version=$(dist/clq -release -query 'releases[0].version' CHANGELOG.md)
         release_tag="v${release_version}"
@@ -63,23 +64,24 @@ jobs:
 
         release_changes=$(dist/clq -release -output md -query 'releases[0].changes[]/' CHANGELOG.md)
 
-        echo "::set-env name=RELEASE_CHANGES::${release_changes//$'\n'/'%0A'}"
-        echo "::set-env name=RELEASE_NAME::$release_name"
-        echo "::set-env name=RELEASE_STATUS::$release_status"
-        echo "::set-env name=RELEASE_TAG::$release_tag"
-        echo "::set-env name=RELEASE_VERSION::$release_version"
+        echo "::set-output name=changes::${release_changes//$'\n'/'%0A'}"
+        echo "::set-output name=name::$release_name"
+        echo "::set-output name=status::$release_status"
+        echo "::set-output name=tag::$release_tag"
+        echo "::set-output name=version::$release_version"
     - run: |
-        VERSION=$RELEASE_VERSION make assertVersionDefined build-all
-        test "$(dist/clq-linux-amd64 -version)" = "clq $RELEASE_VERSION"
+        release_version=${{ steps.release_information.outputs.version }}
+        VERSION=$release_version make assertVersionDefined build-all
+        test "$(dist/clq-linux-amd64 -version)" = "clq $release_version"
     - uses: actions/create-release@v1.1.4
       id: create_release
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        tag_name: ${{ env.RELEASE_TAG }}
-        release_name: ${{ env.RELEASE_NAME }}
-        prerelease: ${{ env.RELEASE_STATUS == 'prereleased' }}
-        body: ${{ env.RELEASE_CHANGES }}
+        tag_name: ${{ steps.release_information.outputs.tag }}
+        release_name: ${{ steps.release_information.outputs.name }}
+        prerelease: ${{ steps.release_information.outputs.status == 'prereleased' }}
+        body: ${{ steps.release_information.outputs.changes }}
     - uses: actions/upload-release-asset@v1.0.2
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
