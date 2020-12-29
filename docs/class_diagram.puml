@@ -1,6 +1,7 @@
 @startuml
 "github.com/yuin/goldmark/renderer.NodeValidator" <|-- validator.Validator
 validator.Validator *-- changelog.Changelog
+changelog.Changelog "1" *-- "1" changelog.ChangeKind
 changelog.Changelog "1" *-- "*" changelog.Heading
 changelog.Changelog "1" *-- "*" changelog.Listener
 changelog.Heading <|.. changelog.changeHeading

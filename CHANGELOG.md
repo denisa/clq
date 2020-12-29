@@ -17,6 +17,10 @@ Categories:
    - `Fixed` for any bug fixes.
    - `Security` in case of vulnerabilities.
 
+## [1.4.0] - 2021-01-01
+### Changed
+- can read the mapping from categories to change from a json file
+
 ## [1.3.5] - 2020-12-28
 ### Fixed
 - Bump github.com/yuin/goldmark from 1.2.1 to 1.3.1
@@ -26,7 +30,6 @@ Categories:
 - Bump actions/setup-go from v2.1.2 to v2.1.3
 - Bump coverallsapp/github-action from v1.1.1 to v1.1.
 - workflow converted from set-env to set-output
-
 
 ## [1.3.4] - 2020-08-17
 ### Fixed

@@ -8,6 +8,7 @@ import (
 	"io/ioutil"
 	"os"
 
+	"github.com/denisa/clq/internal/changelog"
 	"github.com/denisa/clq/internal/query"
 	"github.com/denisa/clq/internal/validator"
 	"github.com/yuin/goldmark"
@@ -37,6 +38,7 @@ func (clq *Clq) entryPoint(name string, arguments ...string) int {
 		fmt.Fprintf(options.Output(), "\nUsage: %s { flags } <path to changelog.md>\n\nOptions are:\n", options.Name())
 		options.PrintDefaults()
 	}
+	var changeMap = options.String("changeMap", "", "Name of a file defining the mapping from change kind to semantic version change")
 	var output = options.String("output", "json", "Output format, for complex result. One of: json|md")
 	var queryString = options.String("query", "", "A query to extract information out of the change log")
 	var release = options.Bool("release", false, "Enable release-mode validation")
@@ -62,10 +64,14 @@ func (clq *Clq) entryPoint(name string, arguments ...string) int {
 	for _, document := range clq.documents {
 		queryEngine, err := query.NewQueryEngine(*queryString, *output)
 		if err != nil {
-			fmt.Fprintf(clq.stderr, "❗️ %v\n", err)
+			clq.error("", err)
 			return 2
 		}
-
+		changeKind, err := changelog.NewChangeKind(*changeMap)
+		if err != nil {
+			clq.error("", err)
+			return 2
+		}
 		source, err := clq.readInput(document)
 		if err != nil {
 			clq.error(document, err)
@@ -76,7 +82,7 @@ func (clq *Clq) entryPoint(name string, arguments ...string) int {
 		reader := text.NewReader(source)
 		doc := goldmark.DefaultParser().Parse(reader)
 
-		validatorOpts := []validator.Option{validator.WithRelease(*release)}
+		validatorOpts := []validator.Option{validator.WithRelease(*release), validator.WithChangeKind(changeKind)}
 		if queryEngine.HasQuery() {
 			validatorOpts = append(validatorOpts, validator.WithListener(queryEngine))
 		}
@@ -116,7 +122,7 @@ func (clq *Clq) error(document string, err error) {
 		return
 	}
 
-	if clq.withFileName() {
+	if clq.withFileName() && document != "" {
 		fmt.Fprintf(clq.stderr, "❗️ %v: %v\n", document, err)
 	} else {
 		fmt.Fprintf(clq.stderr, "❗️ %v\n", err)

@@ -16,7 +16,7 @@ func TestChange(t *testing.T) {
 	requireHeadingInterface(t, "Security", h)
 }
 
-func TestUnknownChangeShouldFail(t *testing.T) {
-	_, err := newChange("No-op")
+func TestEmptyChangeShouldFail(t *testing.T) {
+	_, err := newChange("")
 	require.Error(t, err)
 }
