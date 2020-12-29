@@ -12,8 +12,9 @@ import (
 
 // A Config struct has configurations for the Validator.
 type Config struct {
-	release  bool
-	listener changelog.Listener
+	release    bool
+	listener   changelog.Listener
+	changeKind *changelog.ChangeKind
 }
 
 // NewConfig returns a new Config with defaults.
@@ -26,6 +27,24 @@ type Option interface {
 	SetValidationOption(*Config)
 }
 
+// ------------- ChangeKind -------------
+type withChangeKind struct {
+	value *changelog.ChangeKind
+}
+
+func (o *withChangeKind) SetValidationOption(c *Config) {
+	c.changeKind = o.value
+}
+
+// withChangeKind is a functional option that allow you to set the changelog event
+// listener.
+func WithChangeKind(changeKind *changelog.ChangeKind) interface {
+	Option
+} {
+	return &withChangeKind{value: changeKind}
+}
+
+// ------------- Listener -------------
 type withListener struct {
 	value changelog.Listener
 }
@@ -42,6 +61,7 @@ func WithListener(listener changelog.Listener) interface {
 	return &withListener{value: listener}
 }
 
+// ------------- Release -------------
 type withRelease struct {
 	value bool
 }
@@ -142,7 +162,7 @@ func (r *Validator) visitHeading(w util.BufWriter, source []byte, node ast.Node,
 			}
 
 			if r.previousRelease.IsRelease() && release.IsRelease() {
-				nextRelease := release.NextRelease(r.changes)
+				nextRelease := release.NextRelease(r.changeKind.IncrementFor(r.changes))
 				if !r.previousRelease.ReleaseIs(nextRelease) {
 					return ast.WalkStop, fmt.Errorf("Release %q should have version %v", r.previousRelease.Title(), nextRelease)
 				}
@@ -206,6 +226,9 @@ func (r *Validator) validateReleaseHeading(release changelog.Release) error {
 }
 
 func (r *Validator) validateChangeHeading(change changelog.Change) error {
+	if err := r.changeKind.IsSupported(change.Title()); err != nil {
+		return err
+	}
 	if r.changes[change.Title()] {
 		return fmt.Errorf("Validation error: Multiple headings %q not supported %v", change.Title(), r.headers)
 	}

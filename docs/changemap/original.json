@@ -1,0 +1,26 @@
+[
+  {
+    "name": "Added",
+    "increment": "major"
+  },
+  {
+    "name": "Changed",
+    "increment": "minor"
+  },
+  {
+    "name": "Deprecated",
+    "increment": "minor"
+  },
+  {
+    "name": "Fixed",
+    "increment": "patch"
+  },
+  {
+    "name": "Removed",
+    "increment": "major"
+  },
+  {
+    "name": "Security",
+    "increment": "patch"
+  }
+]

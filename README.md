@@ -21,8 +21,10 @@ When processing multiple files, clq prefixes every line on standard out and stan
 Usage: clq { options } <path to changelog.md>
 
 Options are:
+  -changeMap name
+      name of a file defining the mapping from change kind to semantic version change
   -output format
-      the format to apply to the result of a (complex) query. Supports json and md (markdown); default to json
+      the format to apply to the result of a (complex) query. Supports json and md (markdown); defaults to json
   -query string
     	A query to extract information out of the change log
   -release
@@ -90,8 +92,9 @@ clq supports two validation modes, _feature_ and _release_. The _feature_ mode i
 development work is in progress and the only requirement is for the changelog to be valid but not necessarily current.
 On the opposite, the _release_ mode applies to release branches and, therefore, pull-requests.
 
-By default, clq operates in the _feature_ mode. In that mode, clq validates that the changelog file conforms to the grammar. It further validates that the releases are sorted chronologically from most recent to oldest, that the versions numbers are properly decreasing and that the version change between any two versions is justified by the change kinds present, according to following rules:
+By default, clq operates in the _feature_ mode. In that mode, clq validates that the changelog file conforms to the grammar. It further validates that the releases are sorted chronologically from most recent to oldest, that the versions numbers are properly decreasing and that the version change between any two versions is justified by the change kinds present, according to a mapping from the type of change to the type of version change.
 
+By default, the rules are:
 - _major_ release trigger:
     - `Added` for new features.
     - `Removed` for now removed features.
@@ -101,6 +104,19 @@ By default, clq operates in the _feature_ mode. In that mode, clq validates that
 - _bug-fix_ release trigger:
     - `Fixed` for any bug fixes.
     - `Security` in case of vulnerabilities.
+
+The `changeMap` option lets these rules be customized with a simple json file. In this example,
+an *Added* section only triggers a minor version change:
+```json
+[
+  {"name":"Added", "increment":"minor"},
+  {"name":"Changed", "increment":"minor"},
+  {"name":"Deprecated", "increment":"minor"},
+  {"name":"Fixed", "increment":"patch"},
+  {"name":"Removed", "increment":"major"},
+  {"name":"Security", "increment":"patch"}
+]
+```
 
 clq is generally lenient with the spaces, accepting them between square brackets for example.
 

@@ -3,13 +3,23 @@ package changelog
 import (
 	"fmt"
 	"regexp"
+	"strings"
 	"time"
 
 	"github.com/blang/semver/v4"
+	semverConstants "github.com/denisa/clq/internal/semver"
 )
 
 // Level 2, release
 type ChangeMap map[string]bool
+
+func (c ChangeMap) String() string {
+	var changes []string
+	for k, _ := range c {
+		changes = append(changes, k)
+	}
+	return strings.Join(changes, ", ")
+}
 
 type Release struct {
 	heading
@@ -122,21 +132,14 @@ func (h Release) ReleaseIs(otherRelease semver.Version) bool {
 }
 
 // NextRelease computes what the next version number should be given a set of changes.
-func (h Release) NextRelease(c ChangeMap) semver.Version {
-	for _, k := range keysFor(changeKind, semverMajor) {
-		if c[k] {
-			return semver.Version{Major: h.version.Major + 1, Minor: 0, Patch: 0}
-		}
-	}
-	for _, k := range keysFor(changeKind, semverMinor) {
-		if c[k] {
-			return semver.Version{Major: h.version.Major, Minor: h.version.Minor + 1, Patch: 0}
-		}
-	}
-	for _, k := range keysFor(changeKind, semverPatch) {
-		if c[k] {
-			return semver.Version{Major: h.version.Major, Minor: h.version.Minor, Patch: h.version.Patch + 1}
-		}
+func (h Release) NextRelease(semverIdentifier semverConstants.Identifier) semver.Version {
+	switch semverIdentifier {
+	case semverConstants.Major:
+		return semver.Version{Major: h.version.Major + 1, Minor: 0, Patch: 0}
+	case semverConstants.Minor:
+		return semver.Version{Major: h.version.Major, Minor: h.version.Minor + 1, Patch: 0}
+	case semverConstants.Patch:
+		return semver.Version{Major: h.version.Major, Minor: h.version.Minor, Patch: h.version.Patch + 1}
 	}
 	return h.version
 }
