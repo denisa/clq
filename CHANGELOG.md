@@ -22,6 +22,10 @@ Categories:
 - Bump github.com/yuin/goldmark from 1.2.1 to 1.3.1
 - Bumps golang base image from 1.15.0-alpine3.12 to 1.15.6-alpine3.12
 - Bump actions/checkout from v2.3.2 to v2.3.4
+- Bump actions/create-release from v1.1.3 to v1.1.4
+- Bump actions/setup-go from v2.1.2 to v2.1.3
+- Bump coverallsapp/github-action from v1.1.1 to v1.1.
+- workflow converted from set-env to set-output
 
 
 ## [1.3.4] - 2020-08-17
