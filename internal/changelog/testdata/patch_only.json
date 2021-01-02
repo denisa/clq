@@ -1,0 +1,10 @@
+[
+  {
+    "name": "Fixed",
+    "increment": "patch"
+  },
+  {
+    "name": "Security",
+    "increment": "patch"
+  }
+]

@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/blang/semver/v4"
+	semverConstants "github.com/denisa/clq/internal/semver"
 	"github.com/stretchr/testify/require"
 )
 
@@ -178,18 +179,19 @@ func TestReleaseOrderingMixedUp(t *testing.T) {
 
 func TestNextRelease(t *testing.T) {
 	testcases := []struct {
-		changeMap ChangeMap
-		expected  semver.Version
+		semverIdentifier semverConstants.Identifier
+		expected         semver.Version
 	}{
-		{ChangeMap{"Added": true}, semver.Version{Major: 1, Minor: 0, Patch: 0}},
-		{ChangeMap{"Changed": true}, semver.Version{Major: 0, Minor: 1, Patch: 0}},
-		{ChangeMap{"Fixed": true}, semver.Version{Major: 0, Minor: 0, Patch: 1}},
-		{ChangeMap{}, semver.Version{}},
+		{semverConstants.Major, semver.Version{Major: 1, Minor: 0, Patch: 0}},
+		{semverConstants.Minor, semver.Version{Major: 0, Minor: 1, Patch: 0}},
+		{semverConstants.Patch, semver.Version{Major: 0, Minor: 0, Patch: 1}},
+		{semverConstants.Prerelease, semver.Version{}},
+		{semverConstants.Build, semver.Version{}},
 	}
 	for _, testcase := range testcases {
 		t.Run(testcase.expected.String(), func(t *testing.T) {
 			r := &Release{}
-			require.Equal(t, testcase.expected, r.NextRelease(testcase.changeMap))
+			require.Equal(t, testcase.expected, r.NextRelease(testcase.semverIdentifier))
 		})
 	}
 }

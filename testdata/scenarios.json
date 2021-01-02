@@ -12,9 +12,14 @@
     "error": "❗️ testdata\\this file does not exist.md: The system cannot find the file specified.\n"
   },
   {
+    "name": "heading_change_empty_heading.md",
+    "result": 1,
+    "error": "❗️ Validation error: change cannot stay empty\n"
+  },
+  {
     "name": "heading_change_unknown_heading.md",
     "result": 1,
-    "error": "❗️ Validation error: Unknown change headings \"Corrected\" is not one of [Added, Removed, Changed, Deprecated, Fixed, Security]\n"
+    "error": "❗️ Validation error: Unknown change headings \"Corrected\" is not one of [Added, Changed, Deprecated, Fixed, Removed, Security]\n"
   },
   {
     "name": "heading_release_not_recognized.md",
@@ -227,7 +232,38 @@
     "error": "❗️ No change descriptions for {Yanked release without change description}{1.2.3 - 2020-02-29 [YANKED]}{Added}\n"
   },
   {
-    "title": "validate with-filename",
+    "title": "cli changeMap original",
+    "arguments": [
+      "-changeMap",
+      "docs/changemap/original.json",
+      "testdata/sort_date_newer_release_first.md"
+    ],
+    "result": 0
+  },
+  {
+    "platform": "unix",
+    "title": "cli changeMap unknown",
+    "arguments": [
+      "-changeMap",
+      "undefined.json",
+      "testdata/sort_date_newer_release_first.md"
+    ],
+    "result": 2,
+    "error": "❗️ undefined.json: no such file or directory\n"
+  },
+  {
+    "platform": "windows",
+    "title": "cli changeMap unknown",
+    "arguments": [
+      "-changeMap",
+      "undefined.json",
+      "testdata/sort_date_newer_release_first.md"
+    ],
+    "result": 2,
+    "error": "❗️ undefined.json: The system cannot find the file specified.\n"
+  },
+  {
+    "title": "cli validate with-filename",
     "arguments": [
       "-with-filename",
       "testdata/sort_date_newer_release_first.md"
@@ -236,7 +272,7 @@
     "output": "✅ testdata/sort_date_newer_release_first.md\n"
   },
   {
-    "title": "validate failure with-filename",
+    "title": "cli validate failure with-filename",
     "arguments": [
       "-with-filename",
       "testdata/heading_title_empty.md"
@@ -245,7 +281,7 @@
     "error": "❗️ testdata/heading_title_empty.md: Validation error: Introduction’s title cannot stay empty\n"
   },
   {
-    "title": "query with-filename",
+    "title": "cli query with-filename",
     "arguments": [
       "-with-filename",
       "-query",
@@ -256,15 +292,15 @@
     "output": "✅ testdata/sort_date_newer_release_first.md: Sort Date Newer Release First\n"
   },
   {
-    "title": "unsupported argument",
+    "title": "cli unsupported argument",
     "arguments": [
       "-unsupported"
     ],
     "result": 2,
-    "error": "flag provided but not defined: -unsupported\n\nUsage: clq { flags } <path to changelog.md>\n\nOptions are:\n  -output string\n    \tOutput format, for complex result. One of: json|md (default \"json\")\n  -query string\n    \tA query to extract information out of the change log\n  -release\n    \tEnable release-mode validation\n  -version\n    \tPrints clq version\n  -with-filename\n    \tAlways print filename headers with output lines\n"
+    "error": "flag provided but not defined: -unsupported\n\nUsage: clq { flags } <path to changelog.md>\n\nOptions are:\n  -changeMap string\n    \tName of a file defining the mapping from change kind to semantic version change\n  -output string\n    \tOutput format, for complex result. One of: json|md (default \"json\")\n  -query string\n    \tA query to extract information out of the change log\n  -release\n    \tEnable release-mode validation\n  -version\n    \tPrints clq version\n  -with-filename\n    \tAlways print filename headers with output lines\n"
   },
   {
-    "title": "-version",
+    "title": "cli -version",
     "arguments": [
       "-version"
     ],

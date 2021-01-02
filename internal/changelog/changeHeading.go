@@ -1,9 +1,6 @@
 package changelog
 
-import (
-	"fmt"
-	"regexp"
-)
+import "fmt"
 
 // Level 3, change groups
 type Change struct {
@@ -11,13 +8,10 @@ type Change struct {
 }
 
 func newChange(title string) (Heading, error) {
-	for val := range changeKind {
-		if matched, _ := regexp.MatchString(`^`+val+`$`, title); matched {
-			return Change{heading{title: title, kind: ChangeHeading}}, nil
-		}
+	if title == "" {
+		return nil, fmt.Errorf("Validation error: change cannot stay empty")
 	}
-
-	return nil, fmt.Errorf("Validation error: Unknown change headings %q is not one of [%v]", title, keysOf(changeKind))
+	return Change{heading{title: title, kind: ChangeHeading}}, nil
 }
 
 func (h Change) Title() string {
