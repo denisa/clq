@@ -58,4 +58,4 @@ ${TARGET_DOCKER_TEST}:docker-test-%:
 	docker-compose --file build/docker/$*/Dockerfile.test.yml up
 
 bin/gcov2lcov:
-	env GOBIN=$$PWD/bin GO111MODULE=on go install github.com/jandelgado/gcov2lcov
+	env GOBIN=$$PWD/bin go install github.com/jandelgado/gcov2lcov

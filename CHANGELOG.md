@@ -17,9 +17,10 @@ Categories:
    - `Fixed` for any bug fixes.
    - `Security` in case of vulnerabilities.
 
-## [1.4.1] - 2021-08-08
-### Fixed
+## [1.5.0] - 2021-08-08
+### Changed
 - Bumps alpine from 3.12 to 3.14.0
+- Bumps golang from 1.15 to 1.16
 
 
 ## [1.4.0] - 2021-01-01

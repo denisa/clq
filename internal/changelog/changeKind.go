@@ -3,7 +3,7 @@ package changelog
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"os"
 	"sort"
 	"strings"
 
@@ -23,7 +23,7 @@ func NewChangeKind(fileName string) (*ChangeKind, error) {
 		return newChangeKind(), nil
 	}
 
-	file, e := ioutil.ReadFile(fileName)
+	file, e := os.ReadFile(fileName)
 	if e != nil {
 		return nil, e
 	}

@@ -5,7 +5,6 @@ import (
 	"flag"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"os"
 
 	"github.com/denisa/clq/internal/changelog"
@@ -107,9 +106,9 @@ func (clq *Clq) entryPoint(name string, arguments ...string) int {
 
 func (clq *Clq) readInput(input string) ([]byte, error) {
 	if input == "-" {
-		return ioutil.ReadAll(clq.stdin)
+		return io.ReadAll(clq.stdin)
 	}
-	return ioutil.ReadFile(input)
+	return os.ReadFile(input)
 }
 
 func (clq *Clq) withFileName() bool {
