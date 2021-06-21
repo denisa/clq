@@ -17,6 +17,11 @@ Categories:
    - `Fixed` for any bug fixes.
    - `Security` in case of vulnerabilities.
 
+## [1.4.1] - 2021-08-08
+### Fixed
+- Bumps alpine from 3.12 to 3.14.0
+
+
 ## [1.4.0] - 2021-01-01
 ### Changed
 - can read the mapping from categories to change from a json file
