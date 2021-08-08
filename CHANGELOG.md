@@ -22,6 +22,7 @@ Categories:
 - Bumps alpine from 3.12 to 3.14.0
 - Bumps golang from 1.15 to 1.16
 - Bump github.com/stretchr/testify from 1.6.1 to 1.7.0
+- Bump github.com/yuin/goldmark from 1.3.1 to 1.4.0
 
 
 ## [1.4.0] - 2021-01-01
