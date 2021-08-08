@@ -187,4 +187,4 @@ For the sample changelog
 
 -   <https://keepachangelog.com/en/1.0.0/>
 -   <https://semver.org>
--   <https://spec.commonmark.org/0.29/>
+-   <https://spec.commonmark.org/0.30/>
