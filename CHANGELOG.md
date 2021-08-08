@@ -23,7 +23,7 @@ Categories:
 - Bumps golang from 1.15 to 1.16
 - Bump github.com/stretchr/testify from 1.6.1 to 1.7.0
 - Bump github.com/yuin/goldmark from 1.3.1 to 1.4.0
-
+- Bump coverallsapp/github-action from 1.1.2 to 1.1.3
 
 ## [1.4.0] - 2021-01-01
 ### Changed
