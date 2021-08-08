@@ -4,6 +4,7 @@ go 1.15
 
 require (
 	github.com/blang/semver/v4 v4.0.0
+	github.com/jandelgado/gcov2lcov v1.0.5 // indirect
 	github.com/kr/pretty v0.1.0 // indirect
 	github.com/stretchr/testify v1.6.1
 	github.com/yuin/goldmark v1.3.1
