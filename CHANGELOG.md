@@ -17,6 +17,10 @@ Categories:
    - `Fixed` for any bug fixes.
    - `Security` in case of vulnerabilities.
 
+## [1.4.1] - 2021-11-28
+### Fixed
+- DockerHub is not available anymore
+
 ## [1.4.0] - 2021-01-01
 ### Changed
 - can read the mapping from categories to change from a json file

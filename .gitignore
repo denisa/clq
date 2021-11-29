@@ -1,6 +1,6 @@
 *.test
 coverage.*
-go.sum
 bin/
 dist/
 vet: .
+/*.bbprojectd/
