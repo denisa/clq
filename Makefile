@@ -12,8 +12,9 @@ lcov: test bin/gcov2lcov
 
 .PHONY: assertVersionDefined
 assertVersionDefined:
-	test -n "${VERSION}"
+	test -n "${VERSION}" -a "${VERSION}" != "latest"
 
+VERSION ?= latest
 DIST=dist/
 LDFLAGS=-ldflags="-w -s -extldflags '-static' -X main.version=${VERSION}"
 
@@ -48,11 +49,17 @@ docker-build: ${TARGET_DOCKER_BUILD}
 	docker tag denisa/clq:slim denisa/clq:latest
 
 ${TARGET_DOCKER_BUILD}:docker-build-%:
-	export DOCKER_CONTENT_TRUST=1 && docker build --file build/docker/$*/Dockerfile -t denisa/clq:$* .
+	export DOCKER_CONTENT_TRUST=1 && docker build --build-arg DOCKER_TAG=${VERSION} --file build/docker/$*/Dockerfile -t denisa/clq:$* .
 
 TARGET_DOCKER_TEST:=$(addprefix docker-test-,${DOCKER})
 .PHONY: docker-test ${TARGET_DOCKER_TEST}
 docker-test: ${TARGET_DOCKER_TEST}
+
+.PHONY: docker-push
+docker-push:
+	docker tag denisa/clq:slim denisa/clq:${VERSION}
+	docker tag denisa/clq:alpine denisa/clq:${VERSION}-alpine
+	docker push denisa/clq:latest denisa/clq:${VERSION} denisa/clq:${VERSION}-alpine
 
 ${TARGET_DOCKER_TEST}:docker-test-%:
 	docker-compose --file build/docker/$*/Dockerfile.test.yml up
