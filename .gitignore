@@ -4,3 +4,4 @@ go.sum
 bin/
 dist/
 vet: .
+/*.bbprojectd/
