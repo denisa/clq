@@ -59,7 +59,9 @@ docker-test: ${TARGET_DOCKER_TEST}
 docker-push:
 	docker tag denisa/clq:slim denisa/clq:${VERSION}
 	docker tag denisa/clq:alpine denisa/clq:${VERSION}-alpine
-	docker push denisa/clq:latest denisa/clq:${VERSION} denisa/clq:${VERSION}-alpine
+	docker push denisa/clq:latest
+	docker push denisa/clq:${VERSION}
+	docker push denisa/clq:${VERSION}-alpine
 
 ${TARGET_DOCKER_TEST}:docker-test-%:
 	docker-compose --file build/docker/$*/Dockerfile.test.yml up
