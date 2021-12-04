@@ -17,6 +17,10 @@ Categories:
    - `Fixed` for any bug fixes.
    - `Security` in case of vulnerabilities.
 
+## [1.4.2] - 2021-12-04
+### Fixed
+- Bump actions/setup-go from 2.1.3 to 2.1.4
+
 ## [1.4.1] - 2021-11-28
 ### Fixed
 - DockerHub is not available anymore
