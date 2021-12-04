@@ -20,6 +20,7 @@ Categories:
 ## [1.4.2] - 2021-12-04
 ### Fixed
 - Bump actions/setup-go from 2.1.3 to 2.1.4
+- Bump alpine from 3.12 to 3.15.0 in /build/docker/alpine
 
 ## [1.4.1] - 2021-11-28
 ### Fixed
