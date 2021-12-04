@@ -7,7 +7,7 @@ on:
       - '*'
   pull_request:
 env:
-  GO: 1.15.x
+  GO: 1.16.x
 jobs:
   test-os:
     strategy:
