@@ -22,10 +22,12 @@ Categories:
 - Upgrade to go 1.16
 - Bump golang in /build/docker/slim
 - Bump golang in /build/docker/alpine
+
 ### Fixed
 - Bump actions/setup-go from 2.1.3 to 2.1.4
 - Bump alpine from 3.12 to 3.15.0 in /build/docker/alpine
 - Bump actions/checkout from 2.3.4 to 2.4.0
+- Bump github.com/stretchr/testify from 1.6.1 to 1.7.0
 
 ## [1.4.1] - 2021-11-28
 ### Fixed
