@@ -3,9 +3,7 @@
 ### Continuous Integration
 Push to master, push to any other branches and pull-requests trigger a GitHub Action.
 All these actions validate that the project conforms to our
-quality standards: all tests pass and code coverage is sufficient.
-
-Pull-requests also trigger a test build on Docker Hub. This builds and tests the docker image.
+quality standards: all tests pass, the docker images build and code coverage is sufficient.
 
 A succesful push to master tags the commit and creates a GitHub release.
 
@@ -17,6 +15,7 @@ as well as builds and publishes a docker image on dockerhub with the tagged vers
 
 ## Local Build
 Run `make` to perform all the tests.
+Run `make docker-test` to build and test the docker images.
 
 ## Architecture
 ![Class diagram](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/denisa/clq/master/docs/class_diagram.puml)

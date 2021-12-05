@@ -49,11 +49,14 @@ docker-build: ${TARGET_DOCKER_BUILD}
 	docker tag denisa/clq:slim denisa/clq:latest
 
 ${TARGET_DOCKER_BUILD}:docker-build-%:
-	export DOCKER_CONTENT_TRUST=1 && docker build --build-arg DOCKER_TAG=${VERSION} --file build/docker/$*/Dockerfile -t denisa/clq:$* .
+	docker build --build-arg DOCKER_TAG=${VERSION} --file build/docker/$*/Dockerfile -t denisa/clq:$* .
 
 TARGET_DOCKER_TEST:=$(addprefix docker-test-,${DOCKER})
 .PHONY: docker-test ${TARGET_DOCKER_TEST}
 docker-test: ${TARGET_DOCKER_TEST}
+
+${TARGET_DOCKER_TEST}:docker-test-%:docker-build-%
+	docker-compose --file build/docker/$*/Dockerfile.test.yml up
 
 .PHONY: docker-push
 docker-push:
@@ -62,9 +65,6 @@ docker-push:
 	docker push denisa/clq:latest
 	docker push denisa/clq:${VERSION}
 	docker push denisa/clq:${VERSION}-alpine
-
-${TARGET_DOCKER_TEST}:docker-test-%:
-	docker-compose --file build/docker/$*/Dockerfile.test.yml up
 
 bin/gcov2lcov:
 	env GOBIN=$$PWD/bin GO111MODULE=on go install github.com/jandelgado/gcov2lcov
