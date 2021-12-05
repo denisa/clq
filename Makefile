@@ -49,7 +49,7 @@ docker-build: ${TARGET_DOCKER_BUILD}
 	docker tag denisa/clq:slim denisa/clq:latest
 
 ${TARGET_DOCKER_BUILD}:docker-build-%:
-	export DOCKER_CONTENT_TRUST=1 && docker build --build-arg DOCKER_TAG=${VERSION} --file build/docker/$*/Dockerfile -t denisa/clq:$* .
+	docker build --build-arg DOCKER_TAG=${VERSION} --file build/docker/$*/Dockerfile -t denisa/clq:$* .
 
 TARGET_DOCKER_TEST:=$(addprefix docker-test-,${DOCKER})
 .PHONY: docker-test ${TARGET_DOCKER_TEST}

@@ -23,6 +23,7 @@ Categories:
 - Bump golang in /build/docker/slim
 - Bump golang in /build/docker/alpine
 - Bump github.com/yuin/goldmark from 1.3.1 to 1.4.4
+- Stop using Docker Content Trust (the golang images aren’t signed)
 
 ### Fixed
 - Bump actions/setup-go from 2.1.3 to 2.1.4
