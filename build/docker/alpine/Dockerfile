@@ -1,4 +1,4 @@
-FROM golang:1.15.6-alpine3.12 AS builder
+FROM golang:1.16.5-alpine3.12 AS builder
 
 ARG DOCKER_TAG=latest
 
@@ -11,6 +11,6 @@ RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build \
       -ldflags="-X main.version=${DOCKER_TAG} -w -s -extldflags '-static'" -a \
       -o /go/bin/clq .
 
-FROM alpine:3.12
+FROM alpine:3.15.0
 COPY --from=builder /go/bin/clq /usr/bin/clq
 ENTRYPOINT ["/usr/bin/clq"]
