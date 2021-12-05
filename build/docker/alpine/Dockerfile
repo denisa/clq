@@ -1,4 +1,4 @@
-FROM golang:1.16.5-alpine3.12 AS builder
+FROM golang:1.16.11-alpine3.15 AS builder
 
 ARG DOCKER_TAG=latest
 
