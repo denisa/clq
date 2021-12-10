@@ -17,11 +17,17 @@ Categories:
    - `Fixed` for any bug fixes.
    - `Security` in case of vulnerabilities.
 
+## [1.6.0] - 2021-12-09
+### Changed
+- Upgrade to go 1.17
+- Bump golang in /build/docker/alpine
+- Bump golang in /build/docker/slim
+
 ## [1.5.0] - 2021-12-04
 ### Changed
 - Upgrade to go 1.16
-- Bump golang in /build/docker/slim
 - Bump golang in /build/docker/alpine
+- Bump golang in /build/docker/slim
 - Bump github.com/yuin/goldmark from 1.3.1 to 1.4.4
 - Stop using Docker Content Trust (the golang images aren’t signed)
 
