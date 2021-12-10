@@ -17,6 +17,10 @@ Categories:
    - `Fixed` for any bug fixes.
    - `Security` in case of vulnerabilities.
 
+## [1.6.0] - 2021-12-09
+### Changed
+- Upgrade to go 1.17
+
 ## [1.5.0] - 2021-12-04
 ### Changed
 - Upgrade to go 1.16
