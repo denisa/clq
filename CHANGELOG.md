@@ -21,6 +21,7 @@ Categories:
 ### Changed
 - Upgrade to go 1.17
 - Bump golang in /build/docker/alpine
+- Bump golang in /build/docker/slim
 
 ## [1.5.0] - 2021-12-04
 ### Changed
