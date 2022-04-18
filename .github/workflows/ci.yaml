@@ -19,7 +19,7 @@ jobs:
     - uses: actions/setup-go@v3.0.0
       with:
         go-version: ${{ env.GO }}
-    - uses: actions/checkout@v2.4.0
+    - uses: actions/checkout@v3.0.1
     - run: make test
   test-ubuntu:
     runs-on: ubuntu-latest
@@ -27,7 +27,7 @@ jobs:
     - uses: actions/setup-go@v3.0.0
       with:
         go-version: ${{ env.GO }}
-    - uses: actions/checkout@v2.4.0
+    - uses: actions/checkout@v3.0.1
     - run: make lcov
     - name: Send coverage
       uses: coverallsapp/github-action@1.1.3
@@ -39,7 +39,7 @@ jobs:
     steps:
     - id: buildx
       uses: docker/setup-buildx-action@v1
-    - uses: actions/checkout@v2.4.0
+    - uses: actions/checkout@v3.0.1
     - run: make docker-test
   test-version:
     if: (github.event_name == 'pull_request') || (github.event_name == 'push' && github.ref == 'refs/heads/master')
@@ -48,7 +48,7 @@ jobs:
     - uses: actions/setup-go@v3.0.0
       with:
         go-version: ${{ env.GO }}
-    - uses: actions/checkout@v2.4.0
+    - uses: actions/checkout@v3.0.1
     - name: Release validation of the CHANGELOG.md
       run: |
         make build
@@ -81,7 +81,7 @@ jobs:
       with:
         username: ${{ secrets.DOCKER_HUB_USERNAME }}
         password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
-    - uses: actions/checkout@v2.4.0
+    - uses: actions/checkout@v3.0.1
     - run: make build
     - name: Extract release information
       id: release_information
