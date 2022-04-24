@@ -23,6 +23,7 @@ Categories:
 - Bump github.com/stretchr/testify from 1.7.0 to 1.7.1
 - Bump actions/setup-go from 2.1.4 to 3.0.0
 - Bump actions/checkout from 2.4.0 to 3.0.1
+- Bump golang from 1.17.4 to 1.18.1
 
 ## [1.6.0] - 2021-12-09
 ### Changed
