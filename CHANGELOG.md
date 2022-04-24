@@ -17,6 +17,10 @@ Categories:
    - `Fixed` for any bug fixes.
    - `Security` in case of vulnerabilities.
 
+## [1.6.1] - 2022-04-23
+### Fixed
+- Bump github.com/yuin/goldmark from 1.4.4 to 1.4.11
+
 ## [1.6.0] - 2021-12-09
 ### Changed
 - Upgrade to go 1.17
