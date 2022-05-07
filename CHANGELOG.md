@@ -17,6 +17,11 @@ Categories:
    - `Fixed` for any bug fixes.
    - `Security` in case of vulnerabilities.
 
+## [1.6.2] - 2022-05-07
+### Fixed
+- When clq disagrees with the version change, it now shows the correct version
+  and the change kind responsible for it.
+
 ## [1.6.1] - 2022-04-23
 ### Fixed
 - Bump github.com/yuin/goldmark from 1.4.4 to 1.4.11

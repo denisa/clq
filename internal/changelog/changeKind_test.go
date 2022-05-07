@@ -25,18 +25,20 @@ func TestIsSupportedNoValue(t *testing.T) {
 func TestIncrementFor(t *testing.T) {
 	testcases := []struct {
 		changeMap ChangeMap
-		expected  semver.Identifier
+		expectedIncrement  semver.Identifier
+		expectedTrigger   string
 	}{
-		{ChangeMap{"Added": true}, semver.Major},
-		{ChangeMap{"Changed": true}, semver.Minor},
-		{ChangeMap{"Fixed": true}, semver.Patch},
-		{ChangeMap{"Unknown": true}, semver.Build},
-		{ChangeMap{}, semver.Build},
+		{ChangeMap{"Added": true}, semver.Major, "Added"},
+		{ChangeMap{"Changed": true}, semver.Minor, "Changed"},
+		{ChangeMap{"Fixed": true}, semver.Patch, "Fixed"},
+		{ChangeMap{"Unknown": true}, semver.Build, ""},
+		{ChangeMap{}, semver.Build, ""},
 	}
 	for _, testcase := range testcases {
 		t.Run(testcase.changeMap.String(), func(t *testing.T) {
-			r := newChangeKind()
-			require.Equal(t, testcase.expected, r.IncrementFor(testcase.changeMap))
+			increment, trigger := newChangeKind().IncrementFor(testcase.changeMap)
+			require.Equal(t, testcase.expectedIncrement, increment)
+			require.Equal(t, testcase.expectedTrigger, trigger)
 		})
 	}
 }
