@@ -24,6 +24,7 @@ Categories:
 - Bump actions/checkout from 3.0.1 to 3.0.2
 - Bump github.com/yuin/goldmark from 1.4.11 to 1.4.12
 - Bump github/codeql-action from 1 to 2
+- Bump alpine from 3.15.0 to 3.15.4 in /build/docker/alpine
 
 ## [1.6.1] - 2022-04-23
 ### Fixed
