@@ -21,6 +21,7 @@ Categories:
 ### Fixed
 - When clq disagrees with the version change, it now shows the correct version
   and the change kind responsible for it.
+- Bump actions/checkout from 3.0.1 to 3.0.2
 
 ## [1.6.1] - 2022-04-23
 ### Fixed
