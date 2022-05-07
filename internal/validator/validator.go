@@ -162,9 +162,10 @@ func (r *Validator) visitHeading(w util.BufWriter, source []byte, node ast.Node,
 			}
 
 			if r.previousRelease.IsRelease() && release.IsRelease() {
-				nextRelease := release.NextRelease(r.changeKind.IncrementFor(r.changes))
+			  increment, trigger := r.changeKind.IncrementFor(r.changes)
+				nextRelease := release.NextRelease(increment)
 				if !r.previousRelease.ReleaseIs(nextRelease) {
-					return ast.WalkStop, fmt.Errorf("Release %q should have version %v", r.previousRelease.Title(), nextRelease)
+					return ast.WalkStop, fmt.Errorf("Release %q should have version %v because of %q", r.previousRelease.Title(), nextRelease, trigger)
 				}
 			}
 

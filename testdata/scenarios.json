@@ -12,6 +12,10 @@
     "error": "❗️ testdata\\this file does not exist.md: The system cannot find the file specified.\n"
   },
   {
+    "name": "heading_all.md",
+    "result": 0
+  },
+  {
     "name": "heading_change_empty_heading.md",
     "result": 1,
     "error": "❗️ Validation error: change cannot stay empty\n"
@@ -94,7 +98,7 @@
   {
     "name": "sort_version_increment_major_wrong.md",
     "result": 1,
-    "error": "❗️ Release \"[2.0.0] - 2020-02-29\" should have version 1.3.0\n"
+    "error": "❗️ Release \"[2.0.0] - 2020-02-29\" should have version 1.3.0 because of \"Changed\"\n"
   },
   {
     "name": "sort_version_increment_major.md",
@@ -107,7 +111,7 @@
   {
     "name": "sort_version_increment_minor_wrong.md",
     "result": 1,
-    "error": "❗️ Release \"[1.3.0] - 2020-02-29\" should have version 2.0.0\n"
+    "error": "❗️ Release \"[1.3.0] - 2020-02-29\" should have version 2.0.0 because of \"Added\"\n"
   },
   {
     "name": "sort_version_increment_patch.md",
@@ -116,7 +120,7 @@
   {
     "name": "sort_version_increment_patch_wrong.md",
     "result": 1,
-    "error": "❗️ Release \"[1.2.3] - 2020-02-29\" should have version 2.0.0\n"
+    "error": "❗️ Release \"[1.2.3] - 2020-02-29\" should have version 2.0.0 because of \"Added\"\n"
   },
   {
     "name": "sort_version_older_yanked_first.md",
@@ -236,7 +240,7 @@
     "arguments": [
       "-changeMap",
       "docs/changemap/original.json",
-      "testdata/sort_date_newer_release_first.md"
+      "testdata/heading_all.md"
     ],
     "result": 0
   },
@@ -448,7 +452,7 @@
     "error": "❗️ testdata/this file does not exist.md: The system cannot find the file specified.\n"
   },
   {
-    "title": "muliple validation errors",
+    "title": "multiple validation errors",
     "arguments": [
       "testdata/yanked_without_changes.md",
       "testdata/yanked_without_change_description.md"

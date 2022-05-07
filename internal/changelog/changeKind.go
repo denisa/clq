@@ -47,15 +47,17 @@ func (m ChangeKind) IsSupported(title string) error {
 	return fmt.Errorf("Validation error: Unknown change headings %q is not one of [%v]", title, m.keysOf())
 }
 
-// Returns the increment kind to apply for a set of chnage kinds.
-func (m ChangeKind) IncrementFor(c ChangeMap) semver.Identifier {
+// Returns the increment kind to apply for a set of change kinds and the reason for it.
+func (m ChangeKind) IncrementFor(c ChangeMap) (semver.Identifier, string) {
 	increment := semver.Build
+	trigger := ""
 	for k := range c {
 		if val, ok := m.changes[k]; ok && val < increment {
 			increment = val
+			trigger = k
 		}
 	}
-	return increment
+	return increment, trigger
 }
 
 func (m ChangeKind) add(name string, increment semver.Identifier) {

@@ -100,7 +100,7 @@ func TestScenarios(t *testing.T) {
 				buf.Write(val)
 			}
 		}
-		require.Failf(t, "Unused test files: %v", buf.String())
+		require.Failf(t, "Unused test files", "%v", buf.String())
 	}
 }
 
