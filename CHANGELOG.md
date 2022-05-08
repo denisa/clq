@@ -17,6 +17,10 @@ Categories:
    - `Fixed` for any bug fixes.
    - `Security` in case of vulnerabilities.
 
+## [1.6.3] - 2022-05-08
+### Fixed
+- rename github branch to `main`
+
 ## [1.6.2] - 2022-05-07
 ### Fixed
 - When clq disagrees with the version change, it now shows the correct version
