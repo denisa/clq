@@ -3,9 +3,9 @@
 [![version](https://img.shields.io/github/v/release/denisa/clq?include_prereleases&sort=semver)](https://github.com/denisa/clq/releases)
 [![semantic versioning](https://img.shields.io/badge/semantic%20versioning-2.0.0-informational)](https://semver.org/spec/v2.0.0.html)
 
-[![test](https://github.com/denisa/clq/workflows/test/badge.svg)](https://github.com/denisa/clq/actions?query=workflow%3Atest+branch%3Amaster)
+[![test](https://github.com/denisa/clq/workflows/test/badge.svg)](https://github.com/denisa/clq/actions?query=workflow%3Atest+branch%3Amain)
 [![docker build](https://img.shields.io/docker/cloud/build/denisa/clq)](https://hub.docker.com/repository/docker/denisa/clq/builds)
-[![coverage status](https://coveralls.io/repos/github/denisa/clq/badge.svg?branch=master)](https://coveralls.io/github/denisa/clq?branch=master)
+[![coverage status](https://coveralls.io/repos/github/denisa/clq/badge.svg?branch=main)](https://coveralls.io/github/denisa/clq?branch=main)
 
 # usage
 
@@ -37,7 +37,7 @@ Example:
 - `clq CHANGELOG.md`  
     validates the file.
 - `clq -release CHANGELOG.md`  
-    validates the file and further enforces that the most recent release is neither _[Unreleased]_ nor has been _[YANKED]_. This validation is recommended before cutting a release or merging to master.
+    validates the file and further enforces that the most recent release is neither _[Unreleased]_ nor has been _[YANKED]_. This validation is recommended before cutting a release or merging to main.
 - `clq -query releases[0].version CHANGELOG.md`  
     validates the complete changelog and returns the version of the most recent release.
 
