@@ -20,6 +20,7 @@ Categories:
 ## [1.6.4] - 2022-05-15
 ### Fixed
 - Bump docker/login-action from 1 to 2
+- Bump docker/setup-buildx-action from 1 to 2
 
 ## [1.6.3] - 2022-05-08
 ### Fixed
