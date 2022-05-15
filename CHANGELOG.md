@@ -6,16 +6,23 @@
 
 Keep the newest entry at top, format date according to ISO 8601: `YYYY-MM-DD`.
 
-Categories:
+Categories, defined in [changemap.json](.github/clq/changemap.json)):
 - _major_ release trigger:
-   - `Added` for new features.
+   - `Changed` for changes in existing functionality.
    - `Removed` for now removed features.
 - _minor_ release trigger:
-   - `Changed` for changes in existing functionality.
+   - `Added` for new features.
    - `Deprecated` for soon-to-be removed features.
 - _bug-fix_ release trigger:
    - `Fixed` for any bug fixes.
    - `Security` in case of vulnerabilities.
+
+## [1.6.4] - 2022-05-15
+### Fixed
+- Bump docker/login-action from 1 to 2
+- Bump docker/setup-buildx-action from 1 to 2
+- Use a custom changemap in which Changes implies change to existing functionality, hence 
+  a major version bump.
 
 ## [1.6.3] - 2022-05-08
 ### Fixed
@@ -39,13 +46,13 @@ Categories:
 - Bump golang from 1.17.4 to 1.18.1
 
 ## [1.6.0] - 2021-12-09
-### Changed
+### Added
 - Upgrade to go 1.17
 - Bump golang in /build/docker/alpine
 - Bump golang in /build/docker/slim
 
 ## [1.5.0] - 2021-12-04
-### Changed
+### Added
 - Upgrade to go 1.16
 - Bump golang in /build/docker/alpine
 - Bump golang in /build/docker/slim
@@ -63,7 +70,7 @@ Categories:
 - DockerHub is not available anymore
 
 ## [1.4.0] - 2021-01-01
-### Changed
+### Added
 - can read the mapping from categories to change from a json file
 
 ## [1.3.5] - 2020-12-28
@@ -98,7 +105,7 @@ Categories:
 - Bump github.com/yuin/goldmark from 1.1.32 to 1.2.0
 
 ## [1.3.0] - 2020-07-23
-### Changed
+### Added
 - provide a new alpine-based docker image for use as a parent image by the clq-action
 
 ## [1.2.1] - 2020-07-21
@@ -107,7 +114,7 @@ Categories:
 - use CHANGELOG.md to fill in GitHub release information
 
 ## [1.2.0] - 2020-07-19
-### Changed
+### Added
 - option '-output md' will format the result of a query as markdown.
   There is an implied '-output json' if left unspecified.
 - query can return multiple results
@@ -127,7 +134,7 @@ Categories:
 - include latest version in readme
 
 ## [1.1.0] - 2020-06-08
-### Changed
+### Added
 - a query for a release status can now return _prereleased_
 
 ## [1.0.2] - 2020-06-08
