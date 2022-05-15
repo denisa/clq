@@ -17,6 +17,10 @@ Categories:
    - `Fixed` for any bug fixes.
    - `Security` in case of vulnerabilities.
 
+## [1.6.4] - 2022-05-15
+### Fixed
+- Bump docker/login-action from 1 to 2
+
 ## [1.6.3] - 2022-05-08
 ### Fixed
 - rename github branch to `main`
