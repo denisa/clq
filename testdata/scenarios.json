@@ -236,6 +236,15 @@
     "error": "❗️ No change descriptions for {Yanked release without change description}{1.2.3 - 2020-02-29 [YANKED]}{Added}\n"
   },
   {
+    "title": "cli CHANGELOG.md",
+    "arguments": [
+      "-changeMap",
+      ".github/clq/changemap.json",
+      "CHANGELOG.md"
+    ],
+    "result": 0
+  },
+  {
     "title": "cli changeMap original",
     "arguments": [
       "-changeMap",

@@ -26,10 +26,6 @@ type Scenario struct {
 	Error        string   `json:"error,omitempty"`
 }
 
-func TestChangelogShouldSucceed(t *testing.T) {
-	Scenario{Arguments: []string{"CHANGELOG.md"}}.executeClq(assert.New(t))
-}
-
 func (s Scenario) name() string {
 	var buf strings.Builder
 	if s.Title != "" {
