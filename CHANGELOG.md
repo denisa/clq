@@ -19,6 +19,8 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
 
 ## [1.6.4] - 2022-05-15
 ### Fixed
+- Uses denisa/semantic-tag-helper@v1
+- Uses ncipollo/release-action
 - Bump docker/login-action from 1 to 2
 - Bump docker/setup-buildx-action from 1 to 2
 - Use a custom changemap in which Changes implies change to existing functionality, hence 
