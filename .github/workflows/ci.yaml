@@ -16,7 +16,7 @@ jobs:
         platform: [macos-latest, windows-latest]
     runs-on: ${{ matrix.platform }}
     steps:
-    - uses: actions/setup-go@v3.0.0
+    - uses: actions/setup-go@v3.1.0
       with:
         go-version: ${{ env.GO }}
     - uses: actions/checkout@v3.0.2
@@ -24,7 +24,7 @@ jobs:
   test-ubuntu:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/setup-go@v3.0.0
+    - uses: actions/setup-go@v3.1.0
       with:
         go-version: ${{ env.GO }}
     - uses: actions/checkout@v3.0.2
@@ -45,7 +45,7 @@ jobs:
     if: (github.event_name == 'pull_request') || (github.event_name == 'push' && github.ref == 'refs/heads/main')
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/setup-go@v3.0.0
+    - uses: actions/setup-go@v3.1.0
       with:
         go-version: ${{ env.GO }}
     - uses: actions/checkout@v3.0.2
@@ -73,7 +73,7 @@ jobs:
       name: dockerhub
       url: https://hub.docker.com/repository/docker/denisa/clq
     steps:
-    - uses: actions/setup-go@v3.0.0
+    - uses: actions/setup-go@v3.1.0
       with:
         go-version: ${{ env.GO }}
     - uses: docker/setup-buildx-action@v2
