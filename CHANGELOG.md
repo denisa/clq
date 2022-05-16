@@ -23,6 +23,7 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
 - Uses ncipollo/release-action
 - Bump docker/login-action from 1 to 2
 - Bump docker/setup-buildx-action from 1 to 2
+- Bump actions/setup-go from 3.0.0 to 3.1.0
 - Use a custom changemap in which Changes implies change to existing functionality, hence 
   a major version bump.
 
