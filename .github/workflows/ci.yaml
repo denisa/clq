@@ -53,7 +53,7 @@ jobs:
       id: clq-extract
       run: |
         make build
-        release_version=$(dist/clq -changemap .github/clq/changemap.json -release -query 'releases[0].version' CHANGELOG.md)
+        release_version=$(dist/clq -changeMap .github/clq/changemap.json -release -query 'releases[0].version' CHANGELOG.md)
         echo "::set-output name=tag::v${release_version}"
     - uses: denisa/semantic-tag-helper@v1
       with:
@@ -87,16 +87,16 @@ jobs:
     - name: Extract release information
       id: clq-extract
       run: |
-        release_version=$(dist/clq -changemap .github/clq/changemap.json -release -query 'releases[0].version' CHANGELOG.md)
+        release_version=$(dist/clq -changeMap .github/clq/changemap.json -release -query 'releases[0].version' CHANGELOG.md)
 
-        release_name=$(dist/clq -changemap .github/clq/changemap.json -release -query 'releases[0].label' CHANGELOG.md)
+        release_name=$(dist/clq -changeMap .github/clq/changemap.json -release -query 'releases[0].label' CHANGELOG.md)
         if [ -z "$release_name" ]; then
           release_name="Release $release_version"
         fi
 
-        release_status=$(dist/clq -changemap .github/clq/changemap.json -release -query 'releases[0].status' CHANGELOG.md)
+        release_status=$(dist/clq -changeMap .github/clq/changemap.json -release -query 'releases[0].status' CHANGELOG.md)
 
-        release_changes=$(dist/clq -changemap .github/clq/changemap.json -release -output md -query 'releases[0].changes[]/' CHANGELOG.md)
+        release_changes=$(dist/clq -changeMap .github/clq/changemap.json -release -output md -query 'releases[0].changes[]/' CHANGELOG.md)
 
         echo "::set-output name=changes::${release_changes//$'\n'/'%0A'}"
         echo "::set-output name=name::$release_name"
@@ -106,7 +106,7 @@ jobs:
     - run: |
         release_version=${{ steps.clq-extract.outputs.version }}
         VERSION=$release_version make assertVersionDefined build-all
-        test "$(dist/clq-linux-amd64 -changemap .github/clq/changemap.json -version)" = "clq $release_version"
+        test "$(dist/clq-linux-amd64 -changeMap .github/clq/changemap.json -version)" = "clq $release_version"
         VERSION=$release_version make assertVersionDefined docker-build docker-push
     - uses: denisa/semantic-tag-helper@v1
       with:
