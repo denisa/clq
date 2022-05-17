@@ -55,7 +55,7 @@ jobs:
         make build
         release_version=$(dist/clq -changeMap .github/clq/changemap.json -release -query 'releases[0].version' CHANGELOG.md)
         echo "::set-output name=tag::v${release_version}"
-    - uses: denisa/semantic-tag-helper@v1
+    - uses: denisa/semantic-tag-helper@dna/4
       with:
         mode: test
         tag: ${{ steps.clq-extract.outputs.tag }}
@@ -108,7 +108,7 @@ jobs:
         VERSION=$release_version make assertVersionDefined build-all
         test "$(dist/clq-linux-amd64 -changeMap .github/clq/changemap.json -version)" = "clq $release_version"
         VERSION=$release_version make assertVersionDefined docker-build docker-push
-    - uses: denisa/semantic-tag-helper@v1
+    - uses: denisa/semantic-tag-helper@dna/4
       with:
         mode: set
         tag: ${{ steps.clq-extract.outputs.tag }}
