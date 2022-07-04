@@ -17,6 +17,10 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
    - `Fixed` for any bug fixes.
    - `Security` in case of vulnerabilities.
 
+## [1.6.5] - 2022-08-27
+### Fixed
+- Bump github.com/stretchr/testify from 1.7.1 to 1.8.0
+
 ## [1.6.4] - 2022-05-15
 ### Fixed
 - Uses denisa/semantic-tag-helper@v1
