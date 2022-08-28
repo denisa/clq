@@ -27,3 +27,8 @@ Run `make docker-test` to build and test the docker images.
 - `.github/workflows/ci.yaml`
 - base images in `build/docker/alpine/Dockerfile`,  `build/docker/slim/Dockerfile`
 Finally, run `make clean lcov`.
+
+### Updating Dependencies
+When merging a Dependabot change of depdency, run `make clean test lcov` to 
+ensure that _all_ dependencies have been preserved. Dependabot tends to suppress
+tools, for example `gcov2lcov`, dependencies.
