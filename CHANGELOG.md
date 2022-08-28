@@ -20,6 +20,7 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
 ## [1.6.5] - 2022-08-27
 ### Fixed
 - Bump github.com/stretchr/testify from 1.7.1 to 1.8.0
+- Bump github.com/yuin/goldmark from 1.4.12 to 1.4.13
 
 ## [1.6.4] - 2022-05-15
 ### Fixed
