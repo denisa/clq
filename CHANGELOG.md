@@ -21,6 +21,7 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
 ### Fixed
 - Bump github.com/stretchr/testify from 1.7.1 to 1.8.0
 - Bump github.com/yuin/goldmark from 1.4.12 to 1.4.13
+- Bump actions/setup-go from 3.1.0 to 3.2.1
 
 ## [1.6.4] - 2022-05-15
 ### Fixed
