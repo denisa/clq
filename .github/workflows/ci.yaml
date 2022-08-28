@@ -113,33 +113,11 @@ jobs:
         mode: set
         tag: ${{ steps.clq-extract.outputs.tag }}
     - uses: ncipollo/release-action@v1.10.0
+      id: create_release
       with:
         tag: ${{ steps.clq-extract.outputs.tag }}
         prerelease: ${{ steps.clq-extract.outputs.status == 'prereleased' }}
         name: ${{ steps.clq-extract.outputs.name }}
         body: ${{ steps.clq-extract.outputs.changes }}
-    - uses: actions/create-release@v1.1.4
-      id: create_release
-      with:
-        tag_name: ${{ steps.clq-extract.outputs.tag }}
-        release_name: ${{ steps.clq-extract.outputs.name }}
-        prerelease: ${{ steps.clq-extract.outputs.status == 'prereleased' }}
-        body: ${{ steps.clq-extract.outputs.changes }}
-    - uses: actions/upload-release-asset@v1.0.2
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: dist/clq-darwin-amd64
-        asset_name: clq-darwin-amd64
-        asset_content_type: application/octet-stream
-    - uses: actions/upload-release-asset@v1.0.2
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: dist/clq-linux-amd64
-        asset_name: clq-linux-amd64
-        asset_content_type: application/octet-stream
-    - uses: actions/upload-release-asset@v1.0.2
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: dist/clq-windows-amd64
-        asset_name: clq-windows-amd64
-        asset_content_type: application/octet-stream
+        artifactContentType: application/octet-stream
+        artifacts: "dist/*"

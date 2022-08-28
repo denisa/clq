@@ -26,12 +26,17 @@ build: ${DIST}
 	go build -o ${DIST}clq .
 
 AMD64=darwin linux windows
-TARGET_AMD64:=$(addprefix build-,${AMD64})
-.PHONY: build-all ${TARGET_AMD64}
-build-all: ${TARGET_AMD64}
+TARGET_AMD64:=$(addprefix build-amd64-,${AMD64})
+ARM64=darwin linux
+TARGET_ARM64:=$(addprefix build-arm64-,${ARM64})
+.PHONY: build-all ${TARGET_AMD64} ${TARGET_ARM64}
+build-all: ${TARGET_AMD64} ${TARGET_ARM64}
 
-${TARGET_AMD64}:build-%:
+${TARGET_AMD64}:build-amd64-%:
 	CGO_ENABLED=0 GOOS=$* GOARCH=amd64 go build -a ${LDFLAGS} -o ${DIST}clq-$*-amd64 .
+
+${TARGET_ARM64}:build-arm64-%:
+	CGO_ENABLED=0 GOOS=$* GOARCH=arm64 go build -a ${LDFLAGS} -o ${DIST}clq-$*-arm64 .
 
 .PHONY: install
 install: test
