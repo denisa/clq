@@ -23,6 +23,7 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
 - Bump github.com/yuin/goldmark from 1.4.12 to 1.4.13
 - Bump actions/setup-go from 3.1.0 to 3.2.1
 - Bump alpine from 3.15.4 to 3.16.2 in /build/docker/alpine
+- Bump golang from 1.18.2 to 1.19.0
 
 ## [1.6.4] - 2022-05-15
 ### Fixed
