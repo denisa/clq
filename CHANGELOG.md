@@ -17,7 +17,11 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
    - `Fixed` for any bug fixes.
    - `Security` in case of vulnerabilities.
 
-## [1.6.7] - 2022-08-29
+## [1.7.0] - 2022-08-29
+### Added
+- The docker images now support both `linux/amd64` and `linux/arm64`.
+- Uses `docker/build-push-action`, remove docker-push target from the Makefile
+
 ### Fixed
 - The make target `docker-test` now fails if the tested image produce an error
 

@@ -62,14 +62,5 @@ docker-test: ${TARGET_DOCKER_TEST}
 
 ${TARGET_DOCKER_TEST}:docker-test-%:docker-build-%
 
-.PHONY: docker-push
-docker-push:
-	docker tag denisa/clq:slim denisa/clq:${VERSION}
-	docker tag denisa/clq:alpine denisa/clq:${VERSION}-alpine
-	docker push denisa/clq:latest
-	docker push denisa/clq:${VERSION}
-	docker push denisa/clq:${VERSION}-alpine
-	docker-compose --file build/docker/$*/Dockerfile.test.yml up --exit-code-from sut
-
 bin/gcov2lcov:
 	env GOBIN=$$PWD/bin GO111MODULE=on go install github.com/jandelgado/gcov2lcov
