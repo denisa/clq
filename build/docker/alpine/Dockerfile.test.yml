@@ -4,5 +4,6 @@ services:
   sut:
     image: denisa/clq:alpine
     volumes:
+      - ../../../.github/clq/changemap.json:/home/changemap.json:ro
       - ../../../CHANGELOG.md:/home/CHANGELOG.md:ro
-    command: [ "-with-filename", "/home/CHANGELOG.md" ]
+    command: [ "-changeMap", "/home/changemap.json", "-with-filename", "/home/CHANGELOG.md" ]
