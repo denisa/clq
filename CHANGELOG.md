@@ -24,6 +24,8 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
 
 ### Fixed
 - The make target `docker-test` now fails if the tested image produce an error
+- The version of clq build and used by CI to extract the version information was being
+  erroneously published to the release; stop doing that.
 
 ## [1.6.6] - 2022-08-27
 ### Fixed
