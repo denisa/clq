@@ -120,7 +120,7 @@ jobs:
         platforms: linux/amd64,linux/arm64
         push: true
         tags: |
-          ${{ steps.clq-extract.outputs.version }}-alpine
+          denisa/clq:${{ steps.clq-extract.outputs.version }}-alpine
     - uses: docker/build-push-action@v3
       with:
         builder: ${{ steps.buildx.outputs.name }}
@@ -131,9 +131,9 @@ jobs:
         platforms: linux/amd64,linux/arm64
         push: true
         tags: |
-          ${{ steps.clq-extract.outputs.version }}
-          ${{ steps.clq-extract.outputs.version }}-slim
-          latest
+          denisa/clq:${{ steps.clq-extract.outputs.version }}
+          denisa/clq:${{ steps.clq-extract.outputs.version }}-slim
+          denisa/clq:latest
     - uses: denisa/semantic-tag-helper@v1
       with:
         mode: set
