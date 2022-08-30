@@ -17,13 +17,17 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
    - `Fixed` for any bug fixes.
    - `Security` in case of vulnerabilities.
 
+## [1.6.7] - 2022-08-29
+### Fixed
+- The make target `docker-test` now fails if the tested image produce an error
+
 ## [1.6.6] - 2022-08-27
 ### Fixed
-- release job was failing to upload artifacts because workflows had both ncipollo/release-action and actions/create-release
+- release job was failing to upload artifacts because workflows had both
+  ncipollo/release-action and actions/create-release
 - retire actions/upload-release-asset and let ncipollo/release-action upload artifacts
-- produce arm64 binares for darwin and linux
+- produce arm64 binaries for darwin and linux
 - Bumps actions/setup-go from 3.2.1 to 3.3.0
-
 
 ## [1.6.5] - 2022-08-27
 ### Fixed
