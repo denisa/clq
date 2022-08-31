@@ -1,7 +1,8 @@
 # clq — Changelog validation and query tool
 
+![GitHub Release Date](https://img.shields.io/github/release-date/denisa/clq?color=blue)
 [![version](https://img.shields.io/github/v/release/denisa/clq?include_prereleases&sort=semver)](https://github.com/denisa/clq/releases)
-[![semantic versioning](https://img.shields.io/badge/semantic%20versioning-2.0.0-informational)](https://semver.org/spec/v2.0.0.html)
+[![Docker Image Version](https://img.shields.io/docker/v/denisa/clq?label=docker%20tag&sort=semver)](https://hub.docker.com/repository/docker/denisa/clq)
 
 [![test](https://github.com/denisa/clq/workflows/test/badge.svg)](https://github.com/denisa/clq/actions?query=workflow%3Atest+branch%3Amain)
 [![docker build](https://img.shields.io/docker/cloud/build/denisa/clq)](https://hub.docker.com/repository/docker/denisa/clq/builds)
@@ -43,7 +44,8 @@ Example:
 
 ## Execution with Docker
 
-A small minimal docker image offers a simple no-installation executable.
+A small minimal docker image offers a simple no-installation executable. This image’s label is the release version,
+with a secondary label ending in `-slim`, for example: `1.2.3-slim`.
 
 A single changelog file can be validated with a simple `docker run -i denisa/clq < CHANGELOG.md`.
 
@@ -82,7 +84,7 @@ DIGIT           = "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9";
 Note:
 - The most recent version comes first.
 - The only deviation from the official spec is the optional LABEL on a release entry. 
-The label is conveneient for teams that want to highlight individual releases by naming
+The label is convenient for teams that want to highlight individual releases by naming
 them. Such might be the case for releases cut, for example, for a quarterly demo:
 `## [1.5.2] - 2019.10.02 Espelho` 
 
@@ -151,6 +153,7 @@ For the sample changelog
 ### Added
 - waldo
 - fred
+
 ## [1.0.0] - 2020-06-20
 ### Removed
 - foo

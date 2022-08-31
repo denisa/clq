@@ -11,7 +11,7 @@ A succesful push to main tags the commit and creates a GitHub release.
 A succesful push to main builds and publishes the _latest_ docker image on Docker Hub.
 
 The GitHub Action attaches binaries for unix, macos, and windows to the GitHub release
-as well as builds and publishes a docker image on dockerhub with the tagged version.
+as well as builds and publishes docker images to dockerhub with the tagged version.
 
 ## Local Build
 Run `make` to perform all the tests.
@@ -31,4 +31,4 @@ Finally, run `make clean lcov`.
 ### Updating Dependencies
 When merging a Dependabot change of depdency, run `make clean test lcov` to 
 ensure that _all_ dependencies have been preserved. Dependabot tends to suppress
-tools, for example `gcov2lcov`, dependencies.
+tool dependencies, for example `gcov2lcov`.
