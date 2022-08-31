@@ -17,6 +17,10 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
    - `Fixed` for any bug fixes.
    - `Security` in case of vulnerabilities.
 
+## [1.7.1] - 2022-08-30
+### Fixed
+- Various typo and inconsistencies in the documentation.
+
 ## [1.7.0] - 2022-08-29
 ### Added
 - The docker images now support both `linux/amd64` and `linux/arm64`.
