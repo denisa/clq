@@ -7,7 +7,7 @@ RUN apk update && apk add --no-cache git ca-certificates tzdata && update-ca-cer
 WORKDIR $GOPATH/src/denisa/clq/
 COPY . .
 RUN go get -d -v
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build \
+RUN CGO_ENABLED=0 GOOS=$TARGETOS GOARCH=$TARGETARCH go build \
       -ldflags="-X main.version=${DOCKER_TAG} -w -s -extldflags '-static'" -a \
       -o /go/bin/clq .
 
