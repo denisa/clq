@@ -17,6 +17,11 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
    - `Fixed` for any bug fixes.
    - `Security` in case of vulnerabilities.
 
+## [1.7.2] - 2022-09-05
+### Fixed
+- Dockerfile had hard-coded the target architecture, rely instead on Docker’s
+  own `TARGETOS` and `TARGETARCH`
+
 ## [1.7.1] - 2022-08-30
 ### Fixed
 - Various typo and inconsistencies in the documentation.
