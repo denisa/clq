@@ -24,6 +24,7 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
 - Bump alpine from 3.16.2 to 3.17.0
 - Bump github.com/stretchr/testify from 1.8.0 to 1.8.1
 - Bump github.com/yuin/goldmark from 1.4.13 to 1.5.3
+- Bump golang from 1.19.0-alpine3.16 to 1.19.4-alpine3.17
 
 ## [1.7.2] - 2022-09-05
 ### Fixed
