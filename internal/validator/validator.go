@@ -83,6 +83,7 @@ func WithRelease(release bool) interface {
 type Validator struct {
 	Config
 	text                     strings.Builder
+	hasIntroductionHeading   bool
 	h1Released, h1Unreleased bool
 	changes                  changelog.ChangeMap
 	hasChangeDescriptions    bool
@@ -138,13 +139,17 @@ func (r *Validator) visitHeading(w util.BufWriter, source []byte, node ast.Node,
 	}
 
 	n := node.(*ast.Heading)
+	if !r.hasIntroductionHeading && n.Level > 1 {
+			return ast.WalkStop, fmt.Errorf("Validation error: Introduction’s title must be defined")
+	}
+
 	switch n.Level {
 	case 1:
 		_, err := r.headers.Section(changelog.IntroductionHeading, r.text.String())
 		if err != nil {
 			return ast.WalkStop, err
 		}
-		// no validation rules defined for the title...
+		r.hasIntroductionHeading = true
 	case 2:
 		if (r.headers.Release() || r.headers.Change()) && !r.hasChangeDescriptions {
 			if err := fmt.Errorf("No change descriptions for %v", r.headers); err != nil {

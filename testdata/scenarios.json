@@ -61,6 +61,11 @@
     "error": "❗️ Validation error: Introduction’s title cannot stay empty\n"
   },
   {
+    "name": "heading_title_missing.md",
+    "result": 1,
+    "error": "❗️ Validation error: Introduction’s title must be defined\n"
+  },
+  {
     "name": "sort_date_newer_release_first.md",
     "result": 0
   },
