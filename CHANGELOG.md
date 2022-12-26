@@ -21,6 +21,7 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
 ### Fixed
 - Better error message when the changelog omits the Introduction’s title.
 - Uses ncipollo/release-action v1, do not specify complete version
+- Bumps alpine from 3.16.2 to 3.17.0
 
 ## [1.7.2] - 2022-09-05
 ### Fixed
