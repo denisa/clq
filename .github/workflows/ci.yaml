@@ -138,7 +138,7 @@ jobs:
       with:
         mode: set
         tag: ${{ steps.clq-extract.outputs.tag }}
-    - uses: ncipollo/release-action@v1.10.0
+    - uses: ncipollo/release-action@v1
       id: create_release
       with:
         tag: ${{ steps.clq-extract.outputs.tag }}
