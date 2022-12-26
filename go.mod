@@ -4,7 +4,7 @@ go 1.19
 
 require (
 	github.com/blang/semver/v4 v4.0.0
-	github.com/stretchr/testify v1.8.0
+	github.com/stretchr/testify v1.8.1
 	github.com/yuin/goldmark v1.4.13
 )
 
