@@ -11,6 +11,6 @@ RUN CGO_ENABLED=0 GOOS=$TARGETOS GOARCH=$TARGETARCH go build \
       -ldflags="-X main.version=${DOCKER_TAG} -w -s -extldflags '-static'" -a \
       -o /go/bin/clq .
 
-FROM alpine:3.17.0
+FROM alpine:3.17.1
 COPY --from=builder /go/bin/clq /usr/bin/clq
 ENTRYPOINT ["/usr/bin/clq"]
