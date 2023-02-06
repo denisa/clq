@@ -23,6 +23,7 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
 - Bump docker/build-push-action from 3 to 4
 - Bump coverallsapp/github-action from 1.1.3 to 2
 - Bump github.com/stretchr/testify from 1.8.1 to 1.8.2
+- Bump github.com/yuin/goldmark from 1.5.3 to 1.5.4
 
 ## [1.7.4] - 2023-03-19
 ### Fixed
