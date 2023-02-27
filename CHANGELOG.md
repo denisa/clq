@@ -22,6 +22,7 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
 - Bump actions/setup-go from 3 to 4
 - Bump docker/build-push-action from 3 to 4
 - Bump coverallsapp/github-action from 1.1.3 to 2
+- Bump github.com/stretchr/testify from 1.8.1 to 1.8.2
 
 ## [1.7.4] - 2023-03-19
 ### Fixed
