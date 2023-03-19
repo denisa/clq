@@ -21,6 +21,7 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
 ### Fixed
 - Bump actions/setup-go from 3 to 4
 - Bump docker/build-push-action from 3 to 4
+- Bump coverallsapp/github-action from 1.1.3 to 2
 
 ## [1.7.4] - 2023-03-19
 ### Fixed
