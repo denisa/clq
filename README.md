@@ -5,7 +5,6 @@
 [![Docker Image Version](https://img.shields.io/docker/v/denisa/clq?label=docker%20tag&sort=semver)](https://hub.docker.com/repository/docker/denisa/clq)
 
 [![test](https://github.com/denisa/clq/workflows/test/badge.svg)](https://github.com/denisa/clq/actions?query=workflow%3Atest+branch%3Amain)
-[![docker build](https://img.shields.io/docker/cloud/build/denisa/clq)](https://hub.docker.com/repository/docker/denisa/clq/builds)
 [![coverage status](https://coveralls.io/repos/github/denisa/clq/badge.svg?branch=main)](https://coveralls.io/github/denisa/clq?branch=main)
 
 # usage
