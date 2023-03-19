@@ -20,6 +20,7 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
 ## [1.7.4] - 2023-03-19
 ### Fixed
 - ask dependabot to only check for major version changes in github actions.
+- properly handles soft and hard line breaks
 
 ## [1.7.3] - 2022-12-25
 ### Fixed

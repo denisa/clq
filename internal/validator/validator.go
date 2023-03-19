@@ -272,7 +272,15 @@ func (r *Validator) visitText(w util.BufWriter, source []byte, node ast.Node, en
 	if entering {
 		n := node.(*ast.Text)
 		segment := n.Segment
-		r.text.Write(segment.Value(source))
+		value := segment.Value(source)
+ 		r.text.Write(value)
+		if ! n.IsRaw() {
+		  if n.HardLineBreak() {
+		    r.text.WriteString("  \n")
+		  } else if n.SoftLineBreak() {
+		    r.text.WriteString(" ")
+		  }
+		}
 	}
 	return ast.WalkContinue, nil
 }
