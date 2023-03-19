@@ -17,6 +17,10 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
    - `Fixed` for any bug fixes.
    - `Security` in case of vulnerabilities.
 
+## [1.7.5] - 2023-05-19
+### Fixed
+- Bump actions/setup-go from 3 to 4
+
 ## [1.7.4] - 2023-03-19
 ### Fixed
 - ask dependabot to only check for major version changes in github actions.
