@@ -20,6 +20,7 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
 ## [1.7.5] - 2023-05-19
 ### Fixed
 - Bump actions/setup-go from 3 to 4
+- Bump docker/build-push-action from 3 to 4
 
 ## [1.7.4] - 2023-03-19
 ### Fixed
