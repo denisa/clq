@@ -398,6 +398,54 @@
     "output": "Change log\n"
   },
   {
+    "title": "query hard-break no extra space",
+    "arguments": [
+      "-output",
+      "md",
+      "-query",
+      "releases[0].changes[]/"
+    ],
+    "input": "# Change log\n## [Unreleased]\n### Added\n- line1  \nline2",
+    "result": 0,
+    "output": "### Added\n- line1  \nline2\n"
+  },
+  {
+    "title": "query hard-break with extra space",
+    "arguments": [
+      "-output",
+      "md",
+      "-query",
+      "releases[0].changes[]/"
+    ],
+    "input": "# Change log\n## [Unreleased]\n### Added\n- line1  \n  line2",
+    "result": 0,
+    "output": "### Added\n- line1  \nline2\n"
+  },
+  {
+    "title": "query soft-break no extra space",
+    "arguments": [
+      "-output",
+      "md",
+      "-query",
+      "releases[0].changes[]/"
+    ],
+    "input": "# Change log\n## [Unreleased]\n### Added\n- line1\nline2",
+    "result": 0,
+    "output": "### Added\n- line1 line2\n"
+  },
+  {
+    "title": "query soft-break with extra space",
+    "arguments": [
+      "-output",
+      "md",
+      "-query",
+      "releases[0].changes[]/"
+    ],
+    "input": "# Change log\n## [Unreleased]\n### Added\n- line1\n  line2",
+    "result": 0,
+    "output": "### Added\n- line1 line2\n"
+  },
+  {
     "platform": "unix",
     "title": "query_release_status_multiple_files",
     "arguments": [
