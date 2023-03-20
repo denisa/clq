@@ -17,6 +17,17 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
    - `Fixed` for any bug fixes.
    - `Security` in case of vulnerabilities.
 
+## [1.7.5] - 2023-05-19
+### Fixed
+- Bump actions/setup-go from 3 to 4
+- Bump docker/build-push-action from 3 to 4
+- Bump coverallsapp/github-action from 1.1.3 to 2
+- Bump github.com/stretchr/testify from 1.8.1 to 1.8.2
+- Bump github.com/yuin/goldmark from 1.5.3 to 1.5.4
+- Bump alpine from 3.17.0 to 3.17.2 in /build/docker/alpine
+- Always checkout the repository first, this allows setup actions to uses info from the  
+  repository. Looking at you, setup-go
+
 ## [1.7.4] - 2023-03-19
 ### Fixed
 - ask dependabot to only check for major version changes in github actions.
