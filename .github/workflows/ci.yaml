@@ -16,18 +16,18 @@ jobs:
         platform: [macos-latest, windows-latest]
     runs-on: ${{ matrix.platform }}
     steps:
+    - uses: actions/checkout@v3
     - uses: actions/setup-go@v4
       with:
         go-version: ${{ env.GO }}
-    - uses: actions/checkout@v3
     - run: make test
   test-ubuntu:
     runs-on: ubuntu-latest
     steps:
+    - uses: actions/checkout@v3
     - uses: actions/setup-go@v4
       with:
         go-version: ${{ env.GO }}
-    - uses: actions/checkout@v3
     - run: make lcov
     - name: Send coverage
       uses: coverallsapp/github-action@v2
@@ -36,18 +36,18 @@ jobs:
   test-docker:
     runs-on: ubuntu-latest
     steps:
+    - uses: actions/checkout@v3
     - id: buildx
       uses: docker/setup-buildx-action@v2
-    - uses: actions/checkout@v3
     - run: make docker-test
   test-version:
     if: (github.event_name == 'pull_request') || (github.event_name == 'push' && github.ref == 'refs/heads/main')
     runs-on: ubuntu-latest
     steps:
+    - uses: actions/checkout@v3
     - uses: actions/setup-go@v4
       with:
         go-version: ${{ env.GO }}
-    - uses: actions/checkout@v3
     - name: Release validation of the CHANGELOG.md
       id: clq-extract
       run: |
@@ -73,6 +73,7 @@ jobs:
       name: dockerhub
       url: https://hub.docker.com/repository/docker/denisa/clq
     steps:
+    - uses: actions/checkout@v3
     - uses: actions/setup-go@v4
       with:
         go-version: ${{ env.GO }}
@@ -83,7 +84,6 @@ jobs:
       with:
         username: ${{ secrets.DOCKER_HUB_USERNAME }}
         password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
-    - uses: actions/checkout@v3
     - run: make build
     - name: Extract release information
       id: clq-extract
