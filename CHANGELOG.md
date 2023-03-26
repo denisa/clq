@@ -17,6 +17,10 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
    - `Fixed` for any bug fixes.
    - `Security` in case of vulnerabilities.
 
+## [1.7.7] - 2023-05-25
+### Fixed
+- Add go report card, fix most issues
+
 ## [1.7.6] - 2023-05-25
 ### Fixed
 - Bump golang from 1.19 to 1.20
