@@ -24,8 +24,8 @@ func TestIsSupportedNoValue(t *testing.T) {
 
 func TestIncrementFor(t *testing.T) {
 	testcases := []struct {
-		changeMap ChangeMap
-		expectedIncrement  semver.Identifier
+		changeMap         ChangeMap
+		expectedIncrement semver.Identifier
 		expectedTrigger   string
 	}{
 		{ChangeMap{"Added": true}, semver.Major, "Added"},

@@ -132,7 +132,7 @@ func parseName(element string) (name, selector string, isList, isRecursive bool,
 
 func elementIsFinal(name string, isList bool, elements []string) error {
 	if isList {
-		return fmt.Errorf("%q is a scalar attribue", name)
+		return fmt.Errorf("%q is a scalar attribute", name)
 	}
 	if len(elements) != 0 {
 		return fmt.Errorf("No further query element allowed after %q", name)
@@ -142,7 +142,7 @@ func elementIsFinal(name string, isList bool, elements []string) error {
 
 func elementIsCollection(name string, isList bool) error {
 	if !isList {
-		return fmt.Errorf("%q is a collection attribue", name)
+		return fmt.Errorf("%q is a collection attribute", name)
 	}
 	return nil
 }

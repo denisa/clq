@@ -6,6 +6,7 @@
 
 [![ci](https://github.com/denisa/clq/workflows/ci/badge.svg)](https://github.com/denisa/clq/actions?query=workflow%3Aci+branch%3Amain)
 [![coverage status](https://coveralls.io/repos/github/denisa/clq/badge.svg?branch=main)](https://coveralls.io/github/denisa/clq?branch=main)
+[![Go Report Card](https://goreportcard.com/badge/github.com/denisa/clq)](https://goreportcard.com/report/github.com/denisa/clq)
 
 # usage
 

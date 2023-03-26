@@ -116,7 +116,7 @@ func TestResetFilledChangelogToOneIsSameAsTwoPushToEmptyChangelog(t *testing.T) 
 
 func requireEventsEquals(require *require.Assertions, expected *[]string, actual *[]string) {
 	require.Equalf(len(*expected), len(*actual), "%v\n%v", *expected, *actual)
-	for i, _ := range *expected {
+	for i := range *expected {
 		require.Equal((*expected)[i], (*actual)[i])
 	}
 }
