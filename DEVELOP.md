@@ -22,7 +22,7 @@ Run `make docker-test` to build and test the docker images.
 
 ## Processes
 ### Updating the version of golang
-- `brew unpin go; brew update; brew pin go`
+- `brew unpin go; brew upgrade go; brew pin go`
 - `go.mod`
 - `.github/workflows/ci.yaml`
 - base images in `build/docker/alpine/Dockerfile`,  `build/docker/slim/Dockerfile`
