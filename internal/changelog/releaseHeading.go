@@ -15,7 +15,7 @@ type ChangeMap map[string]bool
 
 func (c ChangeMap) String() string {
 	var changes []string
-	for k, _ := range c {
+	for k := range c {
 		changes = append(changes, k)
 	}
 	return strings.Join(changes, ", ")
