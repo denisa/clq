@@ -1,4 +1,5 @@
-name: ci
+---
+name: "ci"
 on:
   push:
     branches:
@@ -53,7 +54,7 @@ jobs:
       run: |
         make build
         release_version=$(dist/clq -changeMap .github/clq/changemap.json -release -query 'releases[0].version' CHANGELOG.md)
-        echo "::set-output name=tag::v${release_version}"
+        echo "tag=v${release_version}" >> "${GITHUB_OUTPUT}"
     - uses: denisa/semantic-tag-helper@v1
       with:
         mode: test
@@ -91,24 +92,26 @@ jobs:
         release_version=$(dist/clq -changeMap .github/clq/changemap.json -release -query 'releases[0].version' CHANGELOG.md)
 
         release_name=$(dist/clq -changeMap .github/clq/changemap.json -release -query 'releases[0].label' CHANGELOG.md)
-        if [ -z "$release_name" ]; then
-          release_name="Release $release_version"
+        if [ -z "${release_name}" ]; then
+          release_name="Release ${release_version}"
         fi
 
         release_status=$(dist/clq -changeMap .github/clq/changemap.json -release -query 'releases[0].status' CHANGELOG.md)
 
         release_changes=$(dist/clq -changeMap .github/clq/changemap.json -release -output md -query 'releases[0].changes[]/' CHANGELOG.md)
 
-        echo "::set-output name=changes::${release_changes//$'\n'/'%0A'}"
-        echo "::set-output name=name::$release_name"
-        echo "::set-output name=status::$release_status"
-        echo "::set-output name=tag::v${release_version}"
-        echo "::set-output name=version::$release_version"
+        {
+        echo "changes=${release_changes//$'\n'/'%0A'}"
+        echo "name=${release_name}"
+        echo "status=${release_status}"
+        echo "tag=v${release_version}"
+        echo "version=${release_version}"
+        } >> "${GITHUB_OUTPUT}"
     - run: |
         release_version=${{ steps.clq-extract.outputs.version }}
         VERSION=$release_version make clean assertVersionDefined build-all
         test "$(dist/clq-linux-amd64 -changeMap .github/clq/changemap.json -version)" = "clq $release_version"
-        VERSION=$release_version make assertVersionDefined docker-test
+        VERSION=${release_version} make assertVersionDefined docker-test
     - uses: docker/build-push-action@v4
       with:
         builder: ${{ steps.buildx.outputs.name }}

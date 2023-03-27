@@ -1,0 +1,9 @@
+---
+MD013:
+  line_length: 255
+MD024:
+  siblings_only: true
+MD049:
+  style: asterisk
+MD050:
+  style: asterisk

@@ -7,26 +7,39 @@
 Keep the newest entry at top, format date according to ISO 8601: `YYYY-MM-DD`.
 
 Categories, defined in [changemap.json](.github/clq/changemap.json)):
-- _major_ release trigger:
-   - `Changed` for changes in existing functionality.
-   - `Removed` for now removed features.
-- _minor_ release trigger:
-   - `Added` for new features.
-   - `Deprecated` for soon-to-be removed features.
-- _bug-fix_ release trigger:
-   - `Fixed` for any bug fixes.
-   - `Security` in case of vulnerabilities.
+
+- *major* release trigger:
+  - `Changed` for changes in existing functionality.
+  - `Removed` for now removed features.
+- *minor* release trigger:
+  - `Added` for new features.
+  - `Deprecated` for soon-to-be removed features.
+- *bugfix* release trigger:
+  - `Fixed` for any bugfixes.
+  - `Security` in case of vulnerabilities.
+
+## [1.7.8] - 2023-05-26
+
+### Fixed
+
+- Introduce super-linter
 
 ## [1.7.7] - 2023-05-25
+
 ### Fixed
+
 - Add go report card, fix most issues
 
 ## [1.7.6] - 2023-05-25
+
 ### Fixed
+
 - Bump golang from 1.19 to 1.20
 
 ## [1.7.5] - 2023-05-19
+
 ### Fixed
+
 - Bump actions/setup-go from 3 to 4
 - Bump docker/build-push-action from 3 to 4
 - Bump coverallsapp/github-action from 1.1.3 to 2
@@ -37,12 +50,16 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
   repository. Looking at you, setup-go
 
 ## [1.7.4] - 2023-03-19
+
 ### Fixed
-- ask dependabot to only check for major version changes in github actions.
+
+- ask dependabot to only check for major version changes in GitHub actions.
 - properly handles soft and hard line breaks
 
 ## [1.7.3] - 2022-12-25
+
 ### Fixed
+
 - Better error message when the changelog omits the Introduction’s title.
 - Uses ncipollo/release-action v1, do not specify complete version
 - Bump alpine from 3.16.2 to 3.17.0
@@ -51,26 +68,35 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
 - Bump golang from 1.19.0-alpine3.16 to 1.19.4-alpine3.17
 
 ## [1.7.2] - 2022-09-05
+
 ### Fixed
+
 - Dockerfile had hard-coded the target architecture, rely instead on Docker’s
   own `TARGETOS` and `TARGETARCH`
 
 ## [1.7.1] - 2022-08-30
+
 ### Fixed
+
 - Various typo and inconsistencies in the documentation.
 
 ## [1.7.0] - 2022-08-29
+
 ### Added
+
 - The docker images now support both `linux/amd64` and `linux/arm64`.
 - Uses `docker/build-push-action`, remove docker-push target from the Makefile
 
 ### Fixed
+
 - The make target `docker-test` now fails if the tested image produce an error
 - The version of clq build and used by CI to extract the version information was being
   erroneously published to the release; stop doing that.
 
 ## [1.6.6] - 2022-08-27
+
 ### Fixed
+
 - release job was failing to upload artifacts because workflows had both
   ncipollo/release-action and actions/create-release
 - retire actions/upload-release-asset and let ncipollo/release-action upload artifacts
@@ -78,7 +104,9 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
 - Bumps actions/setup-go from 3.2.1 to 3.3.0
 
 ## [1.6.5] - 2022-08-27
+
 ### Fixed
+
 - Bump github.com/stretchr/testify from 1.7.1 to 1.8.0
 - Bump github.com/yuin/goldmark from 1.4.12 to 1.4.13
 - Bump actions/setup-go from 3.1.0 to 3.2.1
@@ -86,22 +114,28 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
 - Bump golang from 1.18.2 to 1.19.0
 
 ## [1.6.4] - 2022-05-15
+
 ### Fixed
+
 - Uses denisa/semantic-tag-helper@v1
 - Uses ncipollo/release-action
 - Bump docker/login-action from 1 to 2
 - Bump docker/setup-buildx-action from 1 to 2
 - Bumps golang from 1.18.1-alpine3.15 to 1.18.2-alpine3.15.
 - Bump actions/setup-go from 3.0.0 to 3.1.0
-- Use a custom changemap in which Changes implies change to existing functionality, hence 
+- Use a custom changemap in which Changes implies change to existing functionality, hence
   a major version bump.
 
 ## [1.6.3] - 2022-05-08
+
 ### Fixed
-- rename github branch to `main`
+
+- rename GitHub branch to `main`
 
 ## [1.6.2] - 2022-05-07
+
 ### Fixed
+
 - When clq disagrees with the version change, it now shows the correct version
   and the change kind responsible for it.
 - Bump actions/checkout from 3.0.1 to 3.0.2
@@ -110,7 +144,9 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
 - Bump alpine from 3.15.0 to 3.15.4 in /build/docker/alpine
 
 ## [1.6.1] - 2022-04-23
+
 ### Fixed
+
 - Bump github.com/yuin/goldmark from 1.4.4 to 1.4.11
 - Bump github.com/stretchr/testify from 1.7.0 to 1.7.1
 - Bump actions/setup-go from 2.1.4 to 3.0.0
@@ -118,13 +154,17 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
 - Bump golang from 1.17.4 to 1.18.1
 
 ## [1.6.0] - 2021-12-09
+
 ### Added
+
 - Upgrade to go 1.17
 - Bump golang in /build/docker/alpine
 - Bump golang in /build/docker/slim
 
 ## [1.5.0] - 2021-12-04
+
 ### Added
+
 - Upgrade to go 1.16
 - Bump golang in /build/docker/alpine
 - Bump golang in /build/docker/slim
@@ -132,21 +172,28 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
 - Stop using Docker Content Trust (the golang images aren’t signed)
 
 ### Fixed
+
 - Bump actions/setup-go from 2.1.3 to 2.1.4
 - Bump alpine from 3.12 to 3.15.0 in /build/docker/alpine, /build/docker/slim
 - Bump actions/checkout from 2.3.4 to 2.4.0
 - Bump github.com/stretchr/testify from 1.6.1 to 1.7.0
 
 ## [1.4.1] - 2021-11-28
+
 ### Fixed
+
 - DockerHub is not available anymore
 
 ## [1.4.0] - 2021-01-01
+
 ### Added
+
 - can read the mapping from categories to change from a json file
 
 ## [1.3.5] - 2020-12-28
+
 ### Fixed
+
 - Bump github.com/yuin/goldmark from 1.2.1 to 1.3.1
 - Bumps golang base image from 1.15.0-alpine3.12 to 1.15.6-alpine3.12
 - Bump actions/checkout from v2.3.2 to v2.3.4
@@ -156,72 +203,99 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
 - workflow converted from set-env to set-output
 
 ## [1.3.4] - 2020-08-17
+
 ### Fixed
+
 - Bump golang to 1.15
 - Update actions/checkout requirement to v2.3.2
 - Bump actions/create-release from v1.1.2 to v1.1.3
 - Bump actions/setup-go from v2.1.1 to v2.1.2
 
 ## [1.3.3] - 2020-08-04
+
 ### Fixed
+
 - dependabot was not re-configured for the re-organized Dockerfiles
 
 ## [1.3.2] - 2020-08-04
+
 ### Fixed
+
 - Bump github.com/yuin/goldmark from 1.2.0 to 1.2.1
 
 ## [1.3.1] - 2020-07-28
+
 ### Fixed
+
 - Create codeql-analysis.yml
 - Bump actions/setup-go from v2.1.0 to v2.1.1
 - Bump github.com/yuin/goldmark from 1.1.32 to 1.2.0
 
 ## [1.3.0] - 2020-07-23
+
 ### Added
+
 - provide a new alpine-based docker image for use as a parent image by the clq-action
 
 ## [1.2.1] - 2020-07-21
+
 ### Fixed
+
 - add class diagram
 - use CHANGELOG.md to fill in GitHub release information
 
 ## [1.2.0] - 2020-07-19
+
 ### Added
+
 - option '-output md' will format the result of a query as markdown.
   There is an implied '-output json' if left unspecified.
 - query can return multiple results
 
 ### Fixed
+
 - Bump actions/checkout from v2.2.0 to v2.3.1
 - Bump actions/create-release from v1.1.0 to v1.1.2
 - Bump actions/setup-go from v2.0.3 to v2.1.0
 
 ## [1.1.2] - 2020-06-09
+
 ### Fixed
+
 - pull-request fails when a tag exists for the CHANGELOG’s release
 
 ## [1.1.1] - 2020-06-08
+
 ### Fixed
-- recognize release status _prereleased_ when creating github’s release
+
+- recognize release status *prereleased* when creating github’s release
 - include latest version in readme
 
 ## [1.1.0] - 2020-06-08
+
 ### Added
-- a query for a release status can now return _prereleased_
+
+- a query for a release status can now return *prereleased*
 
 ## [1.0.2] - 2020-06-08
+
 ### Fixed
+
 - now set the version in the released binaries
 - bump github.com/stretchr/testify from 1.6.0 to 1.6.1
 - bump github.com/yuin/goldmark from 1.1.31 to 1.1.32
 
 ## [1.0.1] - 2020-06-07
+
 ### Fixed
-- the _tag_ job will not run unless all tests are green
+
+- the *tag* job will not run unless all tests are green
 
 ## [1.0.0] - 2020-06-05
+
 ### Added
+
 - basic validations
 - basic queries
-- docker image and (amd64) binaries for linux, macos and windows
+- docker image and (amd64) binaries for linux, macOS and windows
 - dependabot configuration
