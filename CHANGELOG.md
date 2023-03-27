@@ -18,17 +18,17 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
   - `Fixed` for any bugfixes.
   - `Security` in case of vulnerabilities.
 
+## [1.7.8] - 2023-05-26
+
+### Fixed
+
+- Introduce super-linter
+
 ## [1.7.7] - 2023-05-25
 
 ### Fixed
 
 - Add go report card, fix most issues
-
-## [1.7.7] - 2023-05-26
-
-### Fixed
-
-- Introduce super-linter
 
 ## [1.7.6] - 2023-05-25
 
