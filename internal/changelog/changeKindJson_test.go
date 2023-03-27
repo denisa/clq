@@ -12,21 +12,21 @@ func TestMarshal(t *testing.T) {
 	val, err := json.Marshal(c)
 	require.NoError(t, err)
 	require.JSONEq(t, `[
-    {"name":"Added", "increment":"major"},
-    {"name":"Changed", "increment":"minor"},
-    {"name":"Deprecated", "increment":"minor"},
-    {"name":"Fixed", "increment":"patch"},
-    {"name":"Removed", "increment":"major"},
-    {"name":"Security", "increment":"patch"}
-    ]`, string(val))
+		{"name":"Added", "increment":"major"},
+		{"name":"Changed", "increment":"minor"},
+		{"name":"Deprecated", "increment":"minor"},
+		{"name":"Fixed", "increment":"patch"},
+		{"name":"Removed", "increment":"major"},
+		{"name":"Security", "increment":"patch"}
+		]`, string(val))
 }
 
 func TestUnmarshal(t *testing.T) {
 	c := &ChangeKind{changes: make(changeKindToSemverIdentifier)}
 	err := json.Unmarshal([]byte(`[
-    {"name":"Added", "increment":"major"},
-    {"name":"Fixed", "increment":"patch"}
-    ]`), c)
+		{"name":"Added", "increment":"major"},
+		{"name":"Fixed", "increment":"patch"}
+		]`), c)
 	require.NoError(t, err)
 	require.Equal(t, "Added, Fixed", c.keysOf())
 }
@@ -40,8 +40,8 @@ func TestUnmarshalIllegalJson(t *testing.T) {
 func TestUnmarshalIllegalArgument(t *testing.T) {
 	c := &ChangeKind{changes: make(changeKindToSemverIdentifier)}
 	err := json.Unmarshal([]byte(`[
-    {"name":"Added", "increment":"Major"},
-    {"name":"Fixed", "increment":"Patch"}
-    ]`), c)
+		{"name":"Added", "increment":"Major"},
+		{"name":"Fixed", "increment":"Patch"}
+		]`), c)
 	require.Error(t, err)
 }

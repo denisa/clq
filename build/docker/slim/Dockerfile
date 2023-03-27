@@ -17,8 +17,9 @@ RUN adduser \
 
 WORKDIR $GOPATH/src/denisa/clq/
 COPY . .
-RUN go get -d -v
-RUN CGO_ENABLED=0 GOOS=$TARGETOS GOARCH=$TARGETARCH go build \
+RUN \
+  go get -d -v && \
+  CGO_ENABLED=0 GOOS=$TARGETOS GOARCH=$TARGETARCH go build \
       -ldflags="-X main.version=${DOCKER_TAG} -w -s -extldflags '-static'" -a \
       -o /go/bin/clq .
 
