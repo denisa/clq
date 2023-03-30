@@ -45,7 +45,7 @@ jobs:
     if: (github.event_name == 'pull_request') || (github.event_name == 'push' && github.ref == 'refs/heads/main')
     runs-on: ubuntu-latest
     outputs:
-      status: ${{ steps.clq-extract.output.status }}
+      status: ${{ steps.clq-extract.outputs.status }}
     steps:
     - uses: actions/checkout@v3
     - uses: actions/setup-go@v4
@@ -69,7 +69,7 @@ jobs:
     needs: [test-os, test-ubuntu, test-docker, test-version]
     runs-on: ubuntu-latest
     outputs:
-      releasable: ${{ steps.is.output.releasable }}
+      releasable: ${{ steps.is.outputs.releasable }}
     steps:
     - name: Release validation of the CHANGELOG.md
       id: is
@@ -86,7 +86,7 @@ jobs:
           fi
         fi
   release:
-    if: ${{ needs.test.oututs.releasable }} == 'yes'
+    if: ${{ needs.test.outputs.releasable }} == 'yes'
     needs: test
     runs-on: ubuntu-latest
     environment:
