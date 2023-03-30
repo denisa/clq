@@ -44,6 +44,8 @@ jobs:
   test-version:
     if: (github.event_name == 'pull_request') || (github.event_name == 'push' && github.ref == 'refs/heads/main')
     runs-on: ubuntu-latest
+    outputs:
+      status: ${{ steps.clq-extract.output.status }}
     steps:
     - uses: actions/checkout@v3
     - uses: actions/setup-go@v4
@@ -54,7 +56,11 @@ jobs:
       run: |
         make build
         release_version=$(dist/clq -changeMap .github/clq/changemap.json -release -query 'releases[0].version' CHANGELOG.md)
-        echo "tag=v${release_version}" >> "${GITHUB_OUTPUT}"
+        release_status=$(dist/clq -changeMap .github/clq/changemap.json -release -query 'releases[0].status' CHANGELOG.md)
+        {
+          echo "status=${release_status}"
+          echo "tag=v${release_version}"
+        } >> "${GITHUB_OUTPUT}"
     - uses: denisa/semantic-tag-helper@v1
       with:
         mode: test
@@ -62,12 +68,25 @@ jobs:
   test:
     needs: [test-os, test-ubuntu, test-docker, test-version]
     runs-on: ubuntu-latest
+    outputs:
+      releasable: ${{ steps.is.output.releasable }}
     steps:
     - name: Release validation of the CHANGELOG.md
+      id: is
       run: |
-        echo "All tests passed"
+        if [ "${{ github.event_name }}" == 'push' ]; then
+          if [ "${{ github.ref }}" == 'refs/heads/main' ]; then
+            if [ "${{ needs.test-version.outputs.status }}" == 'released' ]; then
+              echo "releasable=yes" >> "${GITHUB_OUTPUT}"
+            fi
+          else
+            if [ "${{ needs.test-version.outputs.status }}" == 'prereleased' ]; then
+              echo "releasable=yes" >> "${GITHUB_OUTPUT}"
+            fi
+          fi
+        fi
   release:
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: ${{ needs.test.oututs.releasable }} == 'yes'
     needs: test
     runs-on: ubuntu-latest
     environment:
