@@ -42,7 +42,7 @@ jobs:
       uses: docker/setup-buildx-action@v2
     - run: make docker-test
   test-version:
-    if: (github.event_name == 'pull_request') || (github.event_name == 'push' && github.ref == 'refs/heads/main')
+    if: (github.event_name == 'pull_request') || (github.ref == 'refs/heads/main')
     runs-on: ubuntu-latest
     outputs:
       status: ${{ steps.clq-extract.outputs.status }}
@@ -84,7 +84,7 @@ jobs:
           fi
         fi
   release:
-    if: ${{ needs.test.outputs.releasable }} == 'yes'
+    if: needs.test.outputs.releasable == 'yes'
     needs: test
     runs-on: ubuntu-latest
     environment:
