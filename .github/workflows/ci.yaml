@@ -74,15 +74,13 @@ jobs:
     - name: Release validation of the CHANGELOG.md
       id: is
       run: |
-        if [ "${{ github.event_name }}" == 'push' ]; then
-          if [ "${{ github.ref }}" == 'refs/heads/main' ]; then
-            if [ "${{ needs.test-version.outputs.status }}" == 'released' ]; then
-              echo "releasable=yes" >> "${GITHUB_OUTPUT}"
-            fi
-          else
-            if [ "${{ needs.test-version.outputs.status }}" == 'prereleased' ]; then
-              echo "releasable=yes" >> "${GITHUB_OUTPUT}"
-            fi
+        if [ "${{ github.ref }}" == 'refs/heads/main' ]; then
+          if [ "${{ needs.test-version.outputs.status }}" == 'released' ]; then
+            echo "releasable=yes" >> "${GITHUB_OUTPUT}"
+          fi
+        else
+          if [ "${{ needs.test-version.outputs.status }}" == 'prereleased' ]; then
+            echo "releasable=yes" >> "${GITHUB_OUTPUT}"
           fi
         fi
   release:
