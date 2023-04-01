@@ -18,25 +18,31 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
   - `Fixed` for any bugfixes.
   - `Security` in case of vulnerabilities.
 
-## [1.7.8] - 2023-05-26
+## [1.7.8-310.1] - 2023-03-31
+
+### Fixed
+
+- pre-release
+
+## [1.7.8] - 2023-03-26
 
 ### Fixed
 
 - Introduce super-linter
 
-## [1.7.7] - 2023-05-25
+## [1.7.7] - 2023-03-25
 
 ### Fixed
 
 - Add go report card, fix most issues
 
-## [1.7.6] - 2023-05-25
+## [1.7.6] - 2023-03-25
 
 ### Fixed
 
 - Bump golang from 1.19 to 1.20
 
-## [1.7.5] - 2023-05-19
+## [1.7.5] - 2023-03-19
 
 ### Fixed
 
