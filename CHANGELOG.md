@@ -22,7 +22,8 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
 
 ### Fixed
 
-- pre-release
+- prerelease
+- fix testi logic
 
 ## [1.7.8] - 2023-03-26
 
