@@ -127,6 +127,8 @@ jobs:
         echo "tag=v${release_version}"
         echo "version=${release_version}"
         } >> "${GITHUB_OUTPUT}"
+
+        cat "${GITHUB_OUTPUT}"
     - run: |
         release_version=${{ steps.clq-extract.outputs.version }}
         VERSION=$release_version make clean assertVersionDefined build-all
