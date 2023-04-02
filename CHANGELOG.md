@@ -24,6 +24,8 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
 
 - Provides better error message when the date is not correctly formatted
 - multi-line output with HERE doc ('https://github.com/github/docs/issues/21529')
+- GitHub Action runner advises against displaying the environment’s URL  
+  `Warning: Skip setting environment url as environment 'dockerhub' may contain secret.`
 
 ## [1.7.8] - 2023-03-26
 

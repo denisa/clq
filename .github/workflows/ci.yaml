@@ -70,9 +70,7 @@ jobs:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     needs: test
     runs-on: ubuntu-latest
-    environment:
-      name: dockerhub
-      url: https://hub.docker.com/repository/docker/denisa/clq
+    environment: dockerhub
     steps:
     - uses: actions/checkout@v3
     - uses: actions/setup-go@v4
