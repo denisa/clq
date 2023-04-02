@@ -117,18 +117,16 @@ jobs:
 
         release_changes=$(dist/clq -changeMap .github/clq/changemap.json -release -output md -query 'releases[0].changes[]/' CHANGELOG.md)
 
-        release_changes="${release_changes//'%'/'%25'}"
-        release_changes="${release_changes//$'\n'/'%0A'}"
-        release_changes="${release_changes//$'\r'/'%0D'}"
+        EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
         {
-        echo "changes=${release_changes}"
+        echo "changes<<$EOF"
+        echo "${release_changes}"
+        echo "$EOF"
         echo "name=${release_name}"
         echo "status=${release_status}"
         echo "tag=v${release_version}"
         echo "version=${release_version}"
         } >> "${GITHUB_OUTPUT}"
-
-        cat "${GITHUB_OUTPUT}"
     - run: |
         release_version=${{ steps.clq-extract.outputs.version }}
         VERSION=$release_version make clean assertVersionDefined build-all
