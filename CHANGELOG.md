@@ -18,12 +18,11 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
   - `Fixed` for any bugfixes.
   - `Security` in case of vulnerabilities.
 
-## [1.7.9-310.2] - 2023-04-1
+## [1.7.9-310.2] - 2023-04-01
 
 ### Fixed
 
 - extract character conversion
-
 
 ## [1.7.9-310.1] - 2023-03-31
 

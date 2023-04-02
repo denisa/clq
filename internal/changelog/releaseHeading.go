@@ -29,8 +29,8 @@ type Release struct {
 	version semver.Version
 }
 
-const semverPattern string = `(?P<semver>\S+?)`
-const isoDatePattern string = `(?P<date>\d\d\d\d-\d\d-\d\d)`
+const semverPattern string = `(?P<semver>\S+)`
+const isoDatePattern string = `(?P<date>\S+)`
 
 func newRelease(title string) (Heading, error) {
 	if matched, _ := regexp.MatchString(`^\[\s*Unreleased\s*\]$`, title); matched {
