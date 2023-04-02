@@ -23,6 +23,7 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
 ### Fixed
 
 - Provides better error message when the date is not correctly formatted
+- multi-line output with HERE doc ('https://github.com/github/docs/issues/21529')
 
 ## [1.7.8] - 2023-03-26
 
