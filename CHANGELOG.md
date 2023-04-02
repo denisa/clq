@@ -22,7 +22,7 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
 
 ### Fixed
 
-- multi-line output with HERE doc (https://github.com/github/docs/issues/21529)
+- multi-line output with HERE doc (<https://github.com/github/docs/issues/21529>)
 
 ## [1.7.9-310.3] - 2023-04-02
 
