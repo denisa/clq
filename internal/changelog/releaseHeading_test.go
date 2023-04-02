@@ -71,8 +71,13 @@ func TestReleaseReleasedLabel(t *testing.T) {
 	require.True(r.HasBeenReleased())
 }
 
-func TestReleaseNonIsoDateShouldFail(t *testing.T) {
+func TestReleaseNonIsoDateSeparatorShouldFail(t *testing.T) {
 	_, err := newRelease("[1.2.3] - 2020.02.15")
+	require.Error(t, err)
+}
+
+func TestReleaseNonIsoDateSingleDigitShouldFail(t *testing.T) {
+	_, err := newRelease("[1.2.3] - 2020-4-1")
 	require.Error(t, err)
 }
 

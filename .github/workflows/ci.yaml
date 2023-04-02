@@ -70,9 +70,7 @@ jobs:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     needs: test
     runs-on: ubuntu-latest
-    environment:
-      name: dockerhub
-      url: https://hub.docker.com/repository/docker/denisa/clq
+    environment: dockerhub
     steps:
     - uses: actions/checkout@v3
     - uses: actions/setup-go@v4
@@ -100,12 +98,15 @@ jobs:
 
         release_changes=$(dist/clq -changeMap .github/clq/changemap.json -release -output md -query 'releases[0].changes[]/' CHANGELOG.md)
 
+        EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
         {
-        echo "changes=${release_changes//$'\n'/'%0A'}"
-        echo "name=${release_name}"
-        echo "status=${release_status}"
-        echo "tag=v${release_version}"
-        echo "version=${release_version}"
+          echo "changes<<$EOF"
+          echo "${release_changes}"
+          echo "$EOF"
+          echo "name=${release_name}"
+          echo "status=${release_status}"
+          echo "tag=v${release_version}"
+          echo "version=${release_version}"
         } >> "${GITHUB_OUTPUT}"
     - run: |
         release_version=${{ steps.clq-extract.outputs.version }}
