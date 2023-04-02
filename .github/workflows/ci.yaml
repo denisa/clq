@@ -117,8 +117,11 @@ jobs:
 
         release_changes=$(dist/clq -changeMap .github/clq/changemap.json -release -output md -query 'releases[0].changes[]/' CHANGELOG.md)
 
+        release_changes="${release_changes//'%'/'%25'}"
+        release_changes="${release_changes//$'\n'/'%0A'}"
+        release_changes="${release_changes//$'\r'/'%0D'}"
         {
-        echo "changes=${release_changes//$'\n'/'%0A'}"
+        echo "changes=${release_changes}"
         echo "name=${release_name}"
         echo "status=${release_status}"
         echo "tag=v${release_version}"
