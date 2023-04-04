@@ -1,6 +1,7 @@
 package validator
 
 import (
+	"bytes"
 	"fmt"
 	"strings"
 
@@ -115,7 +116,9 @@ func (r *Validator) RegisterFuncs(reg renderer.NodeRendererFuncRegisterer) {
 	reg.Register(ast.KindList, r.visitList)
 	reg.Register(ast.KindListItem, r.visitListItem)
 
+	reg.Register(ast.KindAutoLink, r.visitAutoLink)
 	reg.Register(ast.KindImage, r.visitImage)
+	reg.Register(ast.KindLink, r.visitLink)
 	reg.Register(ast.KindText, r.visitText)
 }
 
@@ -242,6 +245,38 @@ func (r *Validator) validateChangeHeading(change changelog.Change) error {
 	return nil
 }
 
+func (r *Validator) visitAutoLink(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
+	n := node.(*ast.AutoLink)
+	if entering {
+		r.text.WriteString("<")
+		url := n.URL(source)
+		if n.AutoLinkType == ast.AutoLinkEmail && !bytes.HasPrefix(bytes.ToLower(url), []byte("mailto:")) {
+			r.text.WriteString("mailto:")
+		}
+		r.text.Write(url)
+		r.text.WriteString(">")
+	}
+	return ast.WalkContinue, nil
+}
+
+func (r *Validator) visitLink(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
+	n := node.(*ast.Link)
+	if entering {
+		r.text.WriteString("[")
+	} else {
+		r.text.WriteString("](")
+		r.text.Write(n.Destination)
+		_ = w.WriteByte('"')
+		if n.Title != nil {
+			r.text.WriteString(" \"")
+			r.text.Write(n.Title)
+			r.text.WriteString("\"")
+		}
+		r.text.WriteString(")")
+	}
+	return ast.WalkContinue, nil
+}
+
 func (r *Validator) visitList(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
 	return ast.WalkContinue, nil
 }
@@ -269,8 +304,8 @@ func (r *Validator) visitImage(w util.BufWriter, source []byte, node ast.Node, e
 }
 
 func (r *Validator) visitText(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
+	n := node.(*ast.Text)
 	if entering {
-		n := node.(*ast.Text)
 		segment := n.Segment
 		value := segment.Value(source)
 		r.text.Write(value)

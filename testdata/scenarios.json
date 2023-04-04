@@ -388,6 +388,66 @@
     "output": "[{\"title\":\"Added\"},{\"title\":\"Removed\"}]\n"
   },
   {
+    "title": "format auto link",
+    "arguments": [
+      "-output",
+      "md",
+      "-query",
+      "releases[0].changes[]/"
+    ],
+    "input": "# Change log\n## [1.0.0] - 2020-06-20\n### Added\n- <https://github.com/denisa/clq>",
+    "result": 0,
+    "output": "### Added\n- <https://github.com/denisa/clq>\n"
+  },
+  {
+    "title": "format auto link assumed email",
+    "arguments": [
+      "-output",
+      "md",
+      "-query",
+      "releases[0].changes[]/"
+    ],
+    "input": "# Change log\n## [1.0.0] - 2020-06-20\n### Added\n- <foo@bar.com>",
+    "result": 0,
+    "output": "### Added\n- <mailto:foo@bar.com>\n"
+  },
+  {
+    "title": "format auto link email",
+    "arguments": [
+      "-output",
+      "md",
+      "-query",
+      "releases[0].changes[]/"
+    ],
+    "input": "# Change log\n## [1.0.0] - 2020-06-20\n### Added\n- <mailto:foo@bar.com>",
+    "result": 0,
+    "output": "### Added\n- <mailto:foo@bar.com>\n"
+  },
+  {
+    "title": "format link",
+    "arguments": [
+      "-output",
+      "md",
+      "-query",
+      "releases[0].changes[]/"
+    ],
+    "input": "# Change log\n## [1.0.0] - 2020-06-20\n### Added\n- [clq](https://github.com/denisa/clq)",
+    "result": 0,
+    "output": "### Added\n- [clq](https://github.com/denisa/clq)\n"
+  },
+  {
+    "title": "format link with title",
+    "arguments": [
+      "-output",
+      "md",
+      "-query",
+      "releases[0].changes[]/"
+    ],
+    "input": "# Change log\n## [1.0.0] - 2020-06-20\n### Added\n- [clq](https://github.com/denisa/clq 'The Changelog Query Tool')",
+    "result": 0,
+    "output": "### Added\n- [clq](https://github.com/denisa/clq \"The Changelog Query Tool\")\n"
+  },
+  {
     "title": "query title",
     "arguments": [
       "-query",
