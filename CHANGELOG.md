@@ -18,12 +18,18 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
   - `Fixed` for any bugfixes.
   - `Security` in case of vulnerabilities.
 
+## [1.7.10] - 2023-04-03
+
+### Fixed
+
+- clq now parses and renders links in the changelog
+
 ## [1.7.9] - 2023-04-02
 
 ### Fixed
 
 - Provides better error message when the date is not correctly formatted
-- multi-line output with HERE doc ('https://github.com/github/docs/issues/21529')
+- multi-line output with HERE doc (<https://github.com/github/docs/issues/21529>)
 - GitHub Action runner advises against displaying the environment’s URL  
   `Warning: Skip setting environment url as environment 'dockerhub' may contain secret.`
 
