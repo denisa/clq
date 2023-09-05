@@ -26,6 +26,7 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
 - Bumps actions/checkout from 3 to 4
 - Bump github.com/stretchr/testify from 1.8.2 to 1.8.4
 - Bump alpine from 3.17.2 to 3.18.2
+- Bump golang from 1.20.2 to 1.20.5
 
 ## [1.7.10] - 2023-04-03
 
