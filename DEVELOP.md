@@ -42,3 +42,9 @@ Finally, run `make clean lcov`.
 When merging a Dependabot change of dependency, run `make clean test lcov` to
 ensure that *all* dependencies have been preserved. Dependabot tends to suppress
 tool dependencies, for example `gcov2lcov`.
+
+### Docker: updating Alpine
+
+Dependabot will update only the base image for `denisa/clq:slim`.
+Manually update the alpine version used by the *builder* for [alpine](build/docker/alpine/Dockerfile)
+and [slim](build/docker/slim/Dockerfile).

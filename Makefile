@@ -15,7 +15,7 @@ superlinter:
 		-e RUN_LOCAL=true \
 		--env-file ".github/super-linter.env" \
 		-w /tmp/lint -v "$$PWD":/tmp/lint \
-		github/super-linter:v4
+		github/super-linter:v5
 
 .PHONY: assertVersionDefined
 assertVersionDefined:
