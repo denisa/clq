@@ -25,6 +25,7 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
 - Bumps github/super-linter from 4 to 5
 - Bumps actions/checkout from 3 to 4
 - Bump github.com/stretchr/testify from 1.8.2 to 1.8.4
+- Bump alpine from 3.17.2 to 3.18.2
 
 ## [1.7.10] - 2023-04-03
 
