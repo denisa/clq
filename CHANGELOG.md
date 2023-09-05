@@ -23,6 +23,7 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
 ### Fixed
 
 - Bumps github/super-linter from 4 to 5
+- Bumps actions/checkout from 3 to 4
 
 ## [1.7.10] - 2023-04-03
 
