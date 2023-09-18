@@ -18,6 +18,13 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
   - `Fixed` for any bugfixes.
   - `Security` in case of vulnerabilities.
 
+
+## [1.7.12] - 2023-10-07
+
+### Fixed
+
+- Bump docker/login-action from 2 to 3
+
 ## [1.7.11] - 2023-09-04
 
 ### Fixed
