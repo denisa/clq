@@ -25,6 +25,7 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
 
 - Bump docker/login-action from 2 to 3
 - Bump docker/setup-buildx-action from 2 to 3
+- Bump docker/setup-qemu-action from 2 to 3
 
 ## [1.7.11] - 2023-09-04
 
