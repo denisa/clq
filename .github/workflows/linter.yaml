@@ -16,6 +16,6 @@ jobs:
         with:
           fetch-depth: 0
       - run: cat .github/super-linter.env >> "$GITHUB_ENV"
-      - uses: github/super-linter@v5
+      - uses: super-linter/super-linter@v5
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
