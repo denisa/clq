@@ -18,6 +18,16 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
   - `Fixed` for any bugfixes.
   - `Security` in case of vulnerabilities.
 
+## [1.7.12] - 2023-10-07
+
+### Fixed
+
+- Bump docker/login-action from 2 to 3
+- Bump docker/setup-buildx-action from 2 to 3
+- Bump docker/setup-qemu-action from 2 to 3
+- Bump docker/build-push-action from 4 to 5
+- Bump github.com/yuin/goldmark from 1.5.4 to 1.5.6
+
 ## [1.7.11] - 2023-09-04
 
 ### Fixed

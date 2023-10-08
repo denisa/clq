@@ -39,7 +39,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - id: buildx
-      uses: docker/setup-buildx-action@v2
+      uses: docker/setup-buildx-action@v3
     - run: make docker-test
   test-version:
     if: (github.event_name == 'pull_request') || (github.event_name == 'push' && github.ref == 'refs/heads/main')
@@ -76,10 +76,10 @@ jobs:
     - uses: actions/setup-go@v4
       with:
         go-version: ${{ env.GO }}
-    - uses: docker/setup-qemu-action@v2
-    - uses: docker/setup-buildx-action@v2
+    - uses: docker/setup-qemu-action@v3
+    - uses: docker/setup-buildx-action@v3
       id: buildx
-    - uses: docker/login-action@v2
+    - uses: docker/login-action@v3
       with:
         username: ${{ secrets.DOCKER_HUB_USERNAME }}
         password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
@@ -113,7 +113,7 @@ jobs:
         VERSION=$release_version make clean assertVersionDefined build-all
         test "$(dist/clq-linux-amd64 -changeMap .github/clq/changemap.json -version)" = "clq $release_version"
         VERSION=${release_version} make assertVersionDefined docker-test
-    - uses: docker/build-push-action@v4
+    - uses: docker/build-push-action@v5
       with:
         builder: ${{ steps.buildx.outputs.name }}
         build-args: |
@@ -124,7 +124,7 @@ jobs:
         push: true
         tags: |
           denisa/clq:${{ steps.clq-extract.outputs.version }}-alpine
-    - uses: docker/build-push-action@v4
+    - uses: docker/build-push-action@v5
       with:
         builder: ${{ steps.buildx.outputs.name }}
         build-args: |
