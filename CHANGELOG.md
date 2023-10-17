@@ -18,6 +18,12 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
   - `Fixed` for any bugfixes.
   - `Security` in case of vulnerabilities.
 
+## [1.7.15] - 2023-10-16
+
+### Fixed
+
+- Document usage with [Whalebrew](https://github.com/whalebrew/whalebrew).
+
 ## [1.7.14] - 2023-10-07
 
 ### Fixed
@@ -61,7 +67,7 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
 ### Fixed
 
 - Provides better error message when the date is not correctly formatted
-- multi-line output with HERE doc (<https://github.com/github/docs/issues/21529>)
+- Multi-line output with HERE doc (<https://github.com/github/docs/issues/21529>)
 - GitHub Action runner advises against displaying the environment’s URL  
   `Warning: Skip setting environment url as environment 'dockerhub' may contain secret.`
 
@@ -100,8 +106,8 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
 
 ### Fixed
 
-- ask dependabot to only check for major version changes in GitHub actions.
-- properly handles soft and hard line breaks
+- Ask dependabot to only check for major version changes in GitHub actions.
+- Properly handles soft and hard line breaks
 
 ## [1.7.3] - 2022-12-25
 
@@ -144,10 +150,10 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
 
 ### Fixed
 
-- release job was failing to upload artifacts because workflows had both
+- Release job was failing to upload artifacts because workflows had both
   ncipollo/release-action and actions/create-release
-- retire actions/upload-release-asset and let ncipollo/release-action upload artifacts
-- produce arm64 binaries for darwin and linux
+- Retire actions/upload-release-asset and let ncipollo/release-action upload artifacts
+- Produce arm64 binaries for darwin and linux
 - Bumps actions/setup-go from 3.2.1 to 3.3.0
 
 ## [1.6.5] - 2022-08-27
@@ -235,7 +241,7 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
 
 ### Added
 
-- can read the mapping from categories to change from a json file
+- Can read the mapping from categories to change from a json file
 
 ## [1.3.5] - 2020-12-28
 
@@ -262,7 +268,7 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
 
 ### Fixed
 
-- dependabot was not re-configured for the re-organized Dockerfiles
+- Dependabot was not re-configured for the re-organized Dockerfiles
 
 ## [1.3.2] - 2020-08-04
 
@@ -282,22 +288,22 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
 
 ### Added
 
-- provide a new alpine-based docker image for use as a parent image by the clq-action
+- Provide a new alpine-based docker image for use as a parent image by the clq-action
 
 ## [1.2.1] - 2020-07-21
 
 ### Fixed
 
-- add class diagram
-- use CHANGELOG.md to fill in GitHub release information
+- Add class diagram
+- Use CHANGELOG.md to fill in GitHub release information
 
 ## [1.2.0] - 2020-07-19
 
 ### Added
 
-- option '-output md' will format the result of a query as markdown.
+- Option '-output md' will format the result of a query as markdown.
   There is an implied '-output json' if left unspecified.
-- query can return multiple results
+- Query can return multiple results
 
 ### Fixed
 
@@ -309,28 +315,28 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
 
 ### Fixed
 
-- pull-request fails when a tag exists for the CHANGELOG’s release
+- Pull-request fails when a tag exists for the CHANGELOG’s release
 
 ## [1.1.1] - 2020-06-08
 
 ### Fixed
 
-- recognize release status *prereleased* when creating github’s release
-- include latest version in readme
+- Recognize release status *prereleased* when creating github’s release
+- Include latest version in readme
 
 ## [1.1.0] - 2020-06-08
 
 ### Added
 
-- a query for a release status can now return *prereleased*
+- A query for a release status can now return *prereleased*
 
 ## [1.0.2] - 2020-06-08
 
 ### Fixed
 
-- now set the version in the released binaries
-- bump github.com/stretchr/testify from 1.6.0 to 1.6.1
-- bump github.com/yuin/goldmark from 1.1.31 to 1.1.32
+- Now set the version in the released binaries
+- Bump github.com/stretchr/testify from 1.6.0 to 1.6.1
+- Bump github.com/yuin/goldmark from 1.1.31 to 1.1.32
 
 ## [1.0.1] - 2020-06-07
 
@@ -342,7 +348,7 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
 
 ### Added
 
-- basic validations
-- basic queries
-- docker image and (amd64) binaries for linux, macOS and windows
-- dependabot configuration
+- Basic validations
+- Basic queries
+- Docker image and (amd64) binaries for linux, macOS and windows
+- Dependabot configuration
