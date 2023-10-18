@@ -2,11 +2,17 @@
 name: "CodeQL"
 on:
   push:
-    branches:
-      - '**'
-    tags-ignore:
-      - '*'
+    branches: [ main ]
   pull_request:
+    branches: [ main ]
+    paths-ignore:
+      - '**/*.json'
+      - '**/*.md'
+      - '**/*.puml'
+      - '**/*.txt'
+      - '**/*.yaml'
+      - '**/*.yml'
+      - '**/Dockerfile'
 
 jobs:
   analyse:
