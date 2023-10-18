@@ -18,6 +18,13 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
   - `Fixed` for any bugfixes.
   - `Security` in case of vulnerabilities.
 
+## [1.7.16] - 2023-10-17
+
+### Fixed
+
+- As per [GitHub Blog](https://github.blog/changelog/2021-09-27-showing-code-scanning-alerts-on-pull-requests/),
+  perform CodeQL analyses only for pushes to the `main` branch and pull requests agains the `main`.
+
 ## [1.7.15] - 2023-10-16
 
 ### Fixed
