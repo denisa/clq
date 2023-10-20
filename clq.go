@@ -60,14 +60,15 @@ func (clq *Clq) entryPoint(name string, arguments ...string) int {
 		clq.documents = options.Args()
 	}
 
+	changeKind, err := changelog.NewChangeKind(*changeMap)
+	if err != nil {
+		clq.error("", err)
+		return 2
+	}
+
 	var hasError bool
 	for _, document := range clq.documents {
 		queryEngine, err := query.NewQueryEngine(*queryString, *output)
-		if err != nil {
-			clq.error("", err)
-			return 2
-		}
-		changeKind, err := changelog.NewChangeKind(*changeMap)
 		if err != nil {
 			clq.error("", err)
 			return 2
