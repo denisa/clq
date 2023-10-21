@@ -44,7 +44,7 @@ func (m ChangeKind) IsSupported(title string) error {
 	if _, ok := m.changes[title]; ok {
 		return nil
 	}
-	return fmt.Errorf("Validation error: Unknown change headings %q is not one of [%v]", title, m.keysOf())
+	return fmt.Errorf("Validation error: Unknown change heading %q is not one of [%v]", title, m.keysOf())
 }
 
 // Returns the increment kind to apply for a set of change kinds and the reason for it.

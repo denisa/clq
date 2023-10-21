@@ -23,7 +23,7 @@
   {
     "name": "heading_change_unknown_heading.md",
     "result": 1,
-    "error": "❗️ Validation error: Unknown change headings \"Corrected\" is not one of [Added, Changed, Deprecated, Fixed, Removed, Security]\n"
+    "error": "❗️ Validation error: Unknown change heading \"Corrected\" is not one of [Added, Changed, Deprecated, Fixed, Removed, Security]\n"
   },
   {
     "name": "heading_release_not_recognized.md",
