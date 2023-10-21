@@ -6,7 +6,7 @@ import (
 	"github.com/denisa/clq/internal/changelog"
 )
 
-// a jsonResultCollector produces a markdown-repesentation of the query result.
+// a mdResultCollector produces a markdown-repesentation of the query result.
 type mdResultCollector struct {
 	result strings.Builder
 	prefix string

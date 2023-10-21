@@ -15,7 +15,7 @@ type OutputFormat interface {
 	open(heading changelog.Heading)
 	// Close is called when all of a heading’s children have been visited.
 	close(heading changelog.Heading)
-	// setCollection lets the OutputFormat kows that the query will produce a
+	// setCollection lets the OutputFormat knows that the query will produce a
 	// collection of results.
 	setCollection()
 }
