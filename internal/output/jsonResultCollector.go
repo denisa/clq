@@ -1,4 +1,4 @@
-package query
+package output
 
 import (
 	"encoding/json"
@@ -36,12 +36,12 @@ func (rc *jsonResultCollector) Result() string {
 	return string(jsonString)
 }
 
-func (rc *jsonResultCollector) open(heading changelog.Heading) {
+func (rc *jsonResultCollector) Open(heading changelog.Heading) {
 	opened := jsonResult{kind: heading.Kind()}
 	rc.results = append(rc.results, opened)
 }
 
-func (rc *jsonResultCollector) close(heading changelog.Heading) {
+func (rc *jsonResultCollector) Close(heading changelog.Heading) {
 	i := len(rc.results) - 1
 	if i == -1 {
 		return
@@ -71,15 +71,15 @@ func (rc *jsonResultCollector) close(heading changelog.Heading) {
 	result[rc.results[i].name] = append(collection, newValue)
 }
 
-func (rc *jsonResultCollector) setCollection() {
+func (rc *jsonResultCollector) SetCollection() {
 	rc.collection = true
 }
 
-func (rc *jsonResultCollector) set(value string) {
+func (rc *jsonResultCollector) Set(value string) {
 	rc.results[len(rc.results)-1].value = value
 }
 
-func (rc *jsonResultCollector) setField(name string, value string) {
+func (rc *jsonResultCollector) SetField(name string, value string) {
 	i := len(rc.results) - 1
 	if rc.results[i].value == nil {
 		rc.results[i].value = make(map[string]interface{})
@@ -88,7 +88,7 @@ func (rc *jsonResultCollector) setField(name string, value string) {
 	result[name] = value
 }
 
-func (rc *jsonResultCollector) array(name string) {
+func (rc *jsonResultCollector) Array(name string) {
 	i := len(rc.results) - 1
 	if rc.results[i].value == nil {
 		rc.results[i].value = make(map[string]interface{})

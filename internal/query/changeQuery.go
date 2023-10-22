@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/denisa/clq/internal/changelog"
+	"github.com/denisa/clq/internal/output"
 )
 
 func (qe *QueryEngine) newChangeQuery(selector string, isRecursive bool, queryElements []string) error {
@@ -18,16 +19,16 @@ func (qe *QueryEngine) newChangeQuery(selector string, isRecursive bool, queryEl
 	if len(queryElements) == 0 {
 		if isRecursive {
 			_ = qe.newChangeItemQuery("", true, nil)
-			queryMe.enter = func(rc resultCollector, h changelog.Heading) {
+			queryMe.enter = func(of output.OutputFormat, h changelog.Heading) {
 				if h, ok := h.(changelog.Change); ok {
-					rc.setField("title", h.Title())
-					rc.array("descriptions")
+					of.SetField("title", h.Title())
+					of.Array("descriptions")
 				}
 			}
 		} else {
-			queryMe.enter = func(rc resultCollector, h changelog.Heading) {
+			queryMe.enter = func(of output.OutputFormat, h changelog.Heading) {
 				if h, ok := h.(changelog.Change); ok {
-					rc.setField("title", h.Title())
+					of.SetField("title", h.Title())
 				}
 			}
 		}
@@ -53,9 +54,9 @@ func (qe *QueryEngine) newChangeQuery(selector string, isRecursive bool, queryEl
 		if err := elementIsFinal(elementName, elementIsList, queryElements[1:]); err != nil {
 			return err
 		}
-		queryMe.enter = func(rc resultCollector, h changelog.Heading) {
+		queryMe.enter = func(of output.OutputFormat, h changelog.Heading) {
 			if h, ok := h.(changelog.Change); ok {
-				rc.set(h.Title())
+				of.Set(h.Title())
 			}
 		}
 	}

@@ -366,6 +366,18 @@
     "output": "[{\"title\":\"Added\", \"descriptions\":[\"waldo\", \"fred\"]}]\n"
   },
   {
+    "title": "cli unknow output format",
+    "arguments": [
+      "-output",
+      "ascii",
+      "-query",
+      "releases[1].changes[]/"
+    ],
+    "input": "# Change log\n## [Unreleased]\n### Added\n- waldo\n- fred\n## [1.0.0] - 2020-06-20\n### Removed\n- foo\n- bar",
+    "result": 2,
+    "error": "❗️ Unrecognized output format \"ascii\". Supported format: \"json\", \"md\"\n"
+  },
+  {
     "title": "query last release changes",
     "arguments": [
       "-output",

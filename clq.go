@@ -9,6 +9,7 @@ import (
 	"os"
 
 	"github.com/denisa/clq/internal/changelog"
+	"github.com/denisa/clq/internal/output"
 	"github.com/denisa/clq/internal/query"
 	"github.com/denisa/clq/internal/validator"
 	"github.com/yuin/goldmark"
@@ -39,7 +40,7 @@ func (clq *Clq) entryPoint(name string, arguments ...string) int {
 		options.PrintDefaults()
 	}
 	var changeMap = options.String("changeMap", "", "Name of a file defining the mapping from change kind to semantic version change")
-	var output = options.String("output", "json", "Output format, for complex result. One of: json|md")
+	var formatName = options.String("output", "json", "Output format, for complex result. One of: json|md")
 	var queryString = options.String("query", "", "A query to extract information out of the change log")
 	var release = options.Bool("release", false, "Enable release-mode validation")
 	var showVersion = options.Bool("version", false, "Prints clq version")
@@ -68,7 +69,13 @@ func (clq *Clq) entryPoint(name string, arguments ...string) int {
 
 	var hasError bool
 	for _, document := range clq.documents {
-		queryEngine, err := query.NewQueryEngine(*queryString, *output)
+		outputFormat, err := output.NewOutputFormat(*formatName)
+		if err != nil {
+			clq.error("", err)
+			return 2
+		}
+
+		queryEngine, err := query.NewQueryEngine(*queryString, outputFormat)
 		if err != nil {
 			clq.error("", err)
 			return 2

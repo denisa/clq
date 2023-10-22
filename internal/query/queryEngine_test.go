@@ -4,13 +4,9 @@ import (
 	"testing"
 
 	"github.com/denisa/clq/internal/changelog"
+	"github.com/denisa/clq/internal/output"
 	"github.com/stretchr/testify/require"
 )
-
-func TestUnsupportedOutputFormat(t *testing.T) {
-	_, err := NewQueryEngine("title", "yaml")
-	require.Error(t, err)
-}
 
 func TestEmptyQueryAgainstIntroduction(t *testing.T) {
 	require := require.New(t)
@@ -101,6 +97,18 @@ func TestElementIsFinalMoreelementsInScalarContext(t *testing.T) {
 	require.Error(t, elementIsFinal("title", false, []string{"kind"}))
 }
 
+func newQueryEngine(query string, formatName string) (*QueryEngine, error) {
+	outputFormat, err := output.NewOutputFormat(formatName)
+	if err != nil {
+		return nil, err
+	}
+	qe, err := NewQueryEngine(query, outputFormat)
+	if err != nil {
+		return nil, err
+	}
+	return qe, nil
+}
+
 func newHeading(kind changelog.HeadingKind, text string) changelog.Heading {
 	h, err := changelog.NewHeading(kind, text)
 	if err != nil {
@@ -110,7 +118,7 @@ func newHeading(kind changelog.HeadingKind, text string) changelog.Heading {
 }
 
 func apply(query string, headings []changelog.Heading) (string, error) {
-	qe, err := NewQueryEngine(query, "json")
+	qe, err := newQueryEngine(query, "json")
 	if err != nil {
 		return "", err
 	}

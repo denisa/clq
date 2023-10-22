@@ -8,12 +8,12 @@ import (
 )
 
 func TestChangelogQueryUnsupportedAttribue(t *testing.T) {
-	_, err := NewQueryEngine("publication_date", "json")
+	_, err := newQueryEngine("publication_date", "json")
 	require.Error(t, err)
 }
 
 func TestChangelogQueryUnsupportedTitle(t *testing.T) {
-	_, err := NewQueryEngine("title.size", "json")
+	_, err := newQueryEngine("title.size", "json")
 	require.Error(t, err)
 }
 

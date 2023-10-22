@@ -8,52 +8,52 @@ import (
 )
 
 func TestReleaseQueryMisformedSelector(t *testing.T) {
-	_, err := NewQueryEngine("releases[", "json")
+	_, err := newQueryEngine("releases[", "json")
 	require.Error(t, err)
 }
 
 func TestReleaseQueryUnsupportedSelector(t *testing.T) {
-	_, err := NewQueryEngine("releases[three]", "json")
+	_, err := newQueryEngine("releases[three]", "json")
 	require.Error(t, err)
 }
 
 func TestReleaseQueryAsScalar(t *testing.T) {
-	_, err := NewQueryEngine("releases", "json")
+	_, err := newQueryEngine("releases", "json")
 	require.Error(t, err)
 }
 
 func TestReleaseQueryUnsupportedAttribute(t *testing.T) {
-	_, err := NewQueryEngine("releases[3].publication_date", "json")
+	_, err := newQueryEngine("releases[3].publication_date", "json")
 	require.Error(t, err)
 }
 
 func TestReleaseQueryUnsupportedTitle(t *testing.T) {
-	_, err := NewQueryEngine("releases[2].title.size", "json")
+	_, err := newQueryEngine("releases[2].title.size", "json")
 	require.Error(t, err)
 }
 
 func TestReleaseQueryUnsupportedDate(t *testing.T) {
-	_, err := NewQueryEngine("releases[2].date.size", "json")
+	_, err := newQueryEngine("releases[2].date.size", "json")
 	require.Error(t, err)
 }
 
 func TestReleaseQueryUnsupportedLabel(t *testing.T) {
-	_, err := NewQueryEngine("releases[2].label.size", "json")
+	_, err := newQueryEngine("releases[2].label.size", "json")
 	require.Error(t, err)
 }
 
 func TestReleaseQueryUnsupportedStatus(t *testing.T) {
-	_, err := NewQueryEngine("releases[2].status.size", "json")
+	_, err := newQueryEngine("releases[2].status.size", "json")
 	require.Error(t, err)
 }
 
 func TestReleaseQueryUnsupportedVersion(t *testing.T) {
-	_, err := NewQueryEngine("releases[2].version.size", "json")
+	_, err := newQueryEngine("releases[2].version.size", "json")
 	require.Error(t, err)
 }
 
 func TestReleaseQueryUnsupportedIndex(t *testing.T) {
-	_, err := NewQueryEngine("releases[three].date", "json")
+	_, err := newQueryEngine("releases[three].date", "json")
 	require.Error(t, err)
 }
 

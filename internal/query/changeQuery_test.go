@@ -8,27 +8,27 @@ import (
 )
 
 func TestChangeQueryMisformedSelector(t *testing.T) {
-	_, err := NewQueryEngine("releases[2].changes[", "json")
+	_, err := newQueryEngine("releases[2].changes[", "json")
 	require.Error(t, err)
 }
 
 func TestChangeQueryAsScalar(t *testing.T) {
-	_, err := NewQueryEngine("releases[2].changes", "json")
+	_, err := newQueryEngine("releases[2].changes", "json")
 	require.Error(t, err)
 }
 
 func TestChangeQueryUnsupportedSelector(t *testing.T) {
-	_, err := NewQueryEngine("releases[2].changes[three]", "json")
+	_, err := newQueryEngine("releases[2].changes[three]", "json")
 	require.Error(t, err)
 }
 
 func TestChangeQueryUnsupportedAttribute(t *testing.T) {
-	_, err := NewQueryEngine("releases[2].changes[].fabulator", "json")
+	_, err := newQueryEngine("releases[2].changes[].fabulator", "json")
 	require.Error(t, err)
 }
 
 func TestChangeQueryUnsupportedTitle(t *testing.T) {
-	_, err := NewQueryEngine("releases[2].changes[].title.size", "json")
+	_, err := newQueryEngine("releases[2].changes[].title.size", "json")
 	require.Error(t, err)
 }
 
