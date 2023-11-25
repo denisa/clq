@@ -9,13 +9,14 @@ import (
 
 // Changelog is the current state of the changelog during its traversal.
 type Changelog struct {
-	headings  []Heading
-	listeners []Listener
+	headingsFactory HeadingsFactory
+	headings        []Heading
+	listeners       []Listener
 }
 
 // NewChangelog creates a new empty changelog.
-func NewChangelog() Changelog {
-	return Changelog{}
+func NewChangelog(headingsFactory HeadingsFactory) Changelog {
+	return Changelog{headingsFactory: headingsFactory}
 }
 
 // Listener registers one or more listeners to this changelog.
@@ -61,7 +62,7 @@ func (c *Changelog) Section(kind HeadingKind, title string) (Heading, error) {
 		return nil, fmt.Errorf("Attempting to roll-back a changelog at %v to %v", len(c.headings), kind)
 	}
 
-	h, err := NewHeading(kind, title)
+	h, err := c.headingsFactory.NewHeading(kind, title)
 	if err != nil {
 		return nil, err
 	}

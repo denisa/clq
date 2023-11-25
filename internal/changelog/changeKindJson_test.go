@@ -8,8 +8,8 @@ import (
 )
 
 func TestMarshal(t *testing.T) {
-	c := newChangeKind()
-	val, err := json.Marshal(c)
+	ck, _ := NewChangeKind("")
+	val, err := json.Marshal(ck)
 	require.NoError(t, err)
 	require.JSONEq(t, `[
 		{"name":"Added", "increment":"major"},

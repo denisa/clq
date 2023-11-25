@@ -8,18 +8,21 @@ import (
 )
 
 func TestIsSupportedConfiguredValue(t *testing.T) {
-	r := newChangeKind()
-	require.NoError(t, r.IsSupported("Fixed"))
+	ck, _ := NewChangeKind("")
+	_, err := ck.emojiFor("Fixed")
+	require.NoError(t, err)
 }
 
 func TestIsSupportedUnconfiguredValue(t *testing.T) {
-	r := newChangeKind()
-	require.Error(t, r.IsSupported("Modified"))
+	ck, _ := NewChangeKind("")
+	_, err := ck.emojiFor("Modified")
+	require.Error(t, err)
 }
 
 func TestIsSupportedNoValue(t *testing.T) {
-	r := newChangeKind()
-	require.Error(t, r.IsSupported(""))
+	ck, _ := NewChangeKind("")
+	_, err := ck.emojiFor("")
+	require.Error(t, err)
 }
 
 func TestIncrementFor(t *testing.T) {
@@ -36,7 +39,9 @@ func TestIncrementFor(t *testing.T) {
 	}
 	for _, testcase := range testcases {
 		t.Run(testcase.changeMap.String(), func(t *testing.T) {
-			increment, trigger := newChangeKind().IncrementFor(testcase.changeMap)
+			ck, _ := NewChangeKind("")
+
+			increment, trigger := ck.IncrementFor(testcase.changeMap)
 			require.Equal(t, testcase.expectedIncrement, increment)
 			require.Equal(t, testcase.expectedTrigger, trigger)
 		})
@@ -64,39 +69,39 @@ func TestChangeKindFromWrongFileStructure(t *testing.T) {
 }
 
 func TestEmojiWrongHeading(t *testing.T) {
-	c, err := NewChangeKind("testdata/patch_only.json")
+	ck, err := NewChangeKind("testdata/patch_only.json")
 	require.NoError(t, err)
-	_, err = c.emojiFor("unknown")
+	_, err = ck.emojiFor("unknown")
 	require.Error(t, err)
 }
 
 func TestNewChangeKindWithoutEmoji(t *testing.T) {
-	c, err := NewChangeKind("testdata/patch_only.json")
+	ck, err := NewChangeKind("testdata/patch_only.json")
 	require.NoError(t, err)
-	require.Equal(t, "Fixed, Security", c.keysOf())
+	require.Equal(t, "Fixed, Security", ck.keysOf())
 	{
-		emoji, err := c.emojiFor("Fixed")
+		emoji, err := ck.emojiFor("Fixed")
 		require.NoError(t, err)
 		require.Equal(t, "", emoji)
 	}
 	{
-		emoji, err := c.emojiFor("Security")
+		emoji, err := ck.emojiFor("Security")
 		require.NoError(t, err)
 		require.Equal(t, "", emoji)
 	}
 }
 
 func TestNewChangeKindWithEmoji(t *testing.T) {
-	c, err := NewChangeKind("testdata/patch_only_with_emojis.json")
+	ck, err := NewChangeKind("testdata/patch_only_with_emojis.json")
 	require.NoError(t, err)
-	require.Equal(t, "Fixed, Security", c.keysOf())
+	require.Equal(t, "Fixed, Security", ck.keysOf())
 	{
-		emoji, err := c.emojiFor("Fixed")
+		emoji, err := ck.emojiFor("Fixed")
 		require.NoError(t, err)
 		require.Equal(t, "🐛", emoji)
 	}
 	{
-		emoji, err := c.emojiFor("Security")
+		emoji, err := ck.emojiFor("Security")
 		require.NoError(t, err)
 		require.Equal(t, "🔒", emoji)
 	}

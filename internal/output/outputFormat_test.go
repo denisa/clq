@@ -8,7 +8,6 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-
 func TestUnsupportedOutputFormat(t *testing.T) {
 	_, err := NewOutputFormat("yaml")
 	require.Error(t, err)
@@ -84,9 +83,12 @@ func formatLoneArray(format string) string {
 }
 
 func newHeading(kind changelog.HeadingKind, text string) changelog.Heading {
-	h, err := changelog.NewHeading(kind, text)
-	if err != nil {
+	ck, _ := changelog.NewChangeKind("")
+	hf := changelog.NewHeadingFactory(ck)
+
+	if h, err := hf.NewHeading(kind, text); err != nil {
 		panic(err)
+	} else {
+		return h
 	}
-	return h
 }

@@ -12,7 +12,7 @@ import (
 
 type config struct {
 	semver semver.Identifier
-	emoji string
+	emoji  string
 }
 type changeKindToConfig map[string]config
 
@@ -24,7 +24,7 @@ type ChangeKind struct {
 // Loads a new ChangeKind from a file
 func NewChangeKind(fileName string) (*ChangeKind, error) {
 	if fileName == "" {
-		return newChangeKind(), nil
+		return &ChangeKind{changes: changeKindToConfig{"Added": {semver.Major, ""}, "Removed": {semver.Major, ""}, "Changed": {semver.Minor, ""}, "Deprecated": {semver.Minor, ""}, "Fixed": {semver.Patch, ""}, "Security": {semver.Patch, ""}}}, nil
 	}
 
 	file, e := ioutil.ReadFile(fileName)
@@ -37,18 +37,6 @@ func NewChangeKind(fileName string) (*ChangeKind, error) {
 		return nil, err
 	}
 	return c, nil
-}
-
-func newChangeKind() *ChangeKind {
-	return &ChangeKind{changes: changeKindToConfig{"Added": {semver.Major, ""}, "Removed": {semver.Major, ""}, "Changed": {semver.Minor, ""}, "Deprecated": {semver.Minor, ""}, "Fixed": {semver.Patch, ""}, "Security": {semver.Patch, ""}}}
-}
-
-// Returns an error if the given title is not a recognized change kind.
-func (m ChangeKind) IsSupported(title string) error {
-	if _, ok := m.changes[title]; ok {
-		return nil
-	}
-	return fmt.Errorf("Validation error: Unknown change heading %q is not one of [%v]", title, m.keysOf())
 }
 
 // Returns the increment kind to apply for a set of change kinds and the reason for it.
@@ -66,10 +54,10 @@ func (m ChangeKind) IncrementFor(c ChangeMap) (semver.Identifier, string) {
 
 func (m ChangeKind) add(name string, increment semver.Identifier, emoji string) error {
 	if strings.TrimSpace(name) == "" {
-		return  fmt.Errorf("Validation error: \"name\" is blank")
+		return fmt.Errorf("Validation error: \"name\" is blank")
 	}
 
-	m.changes[name] = config{ semver: increment, emoji: emoji }
+	m.changes[name] = config{semver: increment, emoji: emoji}
 	return nil
 }
 
@@ -97,5 +85,5 @@ func (m ChangeKind) emojiFor(title string) (string, error) {
 	if c, ok := m.changes[title]; ok {
 		return c.emoji, nil
 	}
-	return "", fmt.Errorf("Unknown change heading %q is not one of [%v]", title, m.keysOf())
+	return "", fmt.Errorf("Validation error: Unknown change heading %q is not one of [%v]", title, m.keysOf())
 }

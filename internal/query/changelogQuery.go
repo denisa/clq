@@ -32,7 +32,7 @@ func (qe *QueryEngine) newIntroductionQuery(queryElements []string) error {
 		}
 		queryMe.enter = func(of output.OutputFormat, h changelog.Heading) {
 			if h, ok := h.(changelog.Introduction); ok {
-				of.Set(h.Title())
+				of.Set(h.DisplayTitle())
 			}
 		}
 	}

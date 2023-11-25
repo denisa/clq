@@ -1,0 +1,32 @@
+[
+  {
+    "name": "Added",
+    "increment": "minor",
+    "emoji": "✨"
+  },
+  {
+    "name": "Changed",
+    "increment": "major",
+    "emoji": "💥"
+  },
+  {
+    "name": "Deprecated",
+    "increment": "minor",
+    "emoji": "👎"
+  },
+  {
+    "name": "Fixed",
+    "increment": "patch",
+    "emoji": "🐛"
+  },
+  {
+    "name": "Removed",
+    "increment": "major",
+    "emoji": "🗑️"
+  },
+  {
+    "name": "Security",
+    "increment": "patch",
+    "emoji": "🔒"
+  }
+]

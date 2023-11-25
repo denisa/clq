@@ -13,14 +13,10 @@ func TestAsPath(t *testing.T) {
 	assert.Equal(t, "{foo}", asPath("foo"))
 }
 
-func TestNewHeadingUnknown(t *testing.T) {
-	_, err := NewHeading(-1, "Who knows what")
-	require.Error(t, err)
-}
-
 func requireHeadingInterface(t *testing.T, expected string, actual Heading) {
 	require.Equal(t, expected, actual.Title())
 	require.Equal(t, asPath(actual.Title()), actual.String())
+	require.Equal(t, actual.Title(), actual.DisplayTitle())
 }
 
 func requireHeadingEquals(require *require.Assertions, expected Heading, actual Heading) {

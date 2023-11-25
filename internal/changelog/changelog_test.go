@@ -9,7 +9,9 @@ import (
 func TestNewChangelogIsEmpty(t *testing.T) {
 	require := require.New(t)
 
-	s := NewChangelog()
+	ck, _ := NewChangeKind("")
+	hf := NewHeadingFactory(ck)
+	s := NewChangelog(hf)
 
 	require.False(s.Introduction(), "title not expected")
 	require.False(s.Release(), "release not expected")
@@ -19,7 +21,9 @@ func TestNewChangelogIsEmpty(t *testing.T) {
 func TestOneLevelChangelogIsDocument(t *testing.T) {
 	require := require.New(t)
 
-	s := NewChangelog()
+	ck, _ := NewChangeKind("")
+	hf := NewHeadingFactory(ck)
+	s := NewChangelog(hf)
 	s.Section(IntroductionHeading, "title")
 
 	require.True(s.Introduction(), "title expected")
@@ -30,7 +34,9 @@ func TestOneLevelChangelogIsDocument(t *testing.T) {
 func TestTwoLevelChangelogIsRelease(t *testing.T) {
 	require := require.New(t)
 
-	s := NewChangelog()
+	ck, _ := NewChangeKind("")
+	hf := NewHeadingFactory(ck)
+	s := NewChangelog(hf)
 	s.Section(IntroductionHeading, "title")
 	s.Section(ReleaseHeading, "[Unreleased]")
 
@@ -43,7 +49,9 @@ func TestTwoLevelChangelogIsRelease(t *testing.T) {
 func TestThreeLevelChangelogIsChange(t *testing.T) {
 	require := require.New(t)
 
-	s := NewChangelog()
+	ck, _ := NewChangeKind("")
+	hf := NewHeadingFactory(ck)
+	s := NewChangelog(hf)
 	s.Section(IntroductionHeading, "title")
 	s.Section(ReleaseHeading, "[Unreleased]")
 	s.Section(ChangeHeading, "Added")
@@ -54,13 +62,17 @@ func TestThreeLevelChangelogIsChange(t *testing.T) {
 }
 
 func TestResetChangelogSkipALevelShouldFail(t *testing.T) {
-	s := NewChangelog()
+	ck, _ := NewChangeKind("")
+	hf := NewHeadingFactory(ck)
+	s := NewChangelog(hf)
 	_, err := s.Section(ReleaseHeading, "[Unreleased]")
 	require.Error(t, err)
 }
 
 func TestResetChangelogToInvalidHeadingShouldFail(t *testing.T) {
-	s := NewChangelog()
+	ck, _ := NewChangeKind("")
+	hf := NewHeadingFactory(ck)
+	s := NewChangelog(hf)
 	s.Section(IntroductionHeading, "title")
 	_, err := s.Section(ReleaseHeading, "Unreleased")
 	require.Error(t, err)
@@ -71,7 +83,9 @@ func TestResetFilledChangelogToZeroIsSameAsPushToEmptyChangelog(t *testing.T) {
 
 	recorder := &recorder{}
 
-	s := NewChangelog()
+	ck, _ := NewChangeKind("")
+	hf := NewHeadingFactory(ck)
+	s := NewChangelog(hf)
 	s.Listener(recorder)
 
 	s.Section(IntroductionHeading, "title")
@@ -95,7 +109,9 @@ func TestResetFilledChangelogToOneIsSameAsTwoPushToEmptyChangelog(t *testing.T) 
 
 	recorder := &recorder{}
 
-	s := NewChangelog()
+	ck, _ := NewChangeKind("")
+	hf := NewHeadingFactory(ck)
+	s := NewChangelog(hf)
 	s.Listener(recorder)
 
 	s.Section(IntroductionHeading, "title")

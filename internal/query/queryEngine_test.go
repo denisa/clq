@@ -110,7 +110,9 @@ func newQueryEngine(query string, formatName string) (*QueryEngine, error) {
 }
 
 func newHeading(kind changelog.HeadingKind, text string) changelog.Heading {
-	h, err := changelog.NewHeading(kind, text)
+	ck, _ := changelog.NewChangeKind("")
+	hf := changelog.NewHeadingFactory(ck)
+	h, err := hf.NewHeading(kind, text)
 	if err != nil {
 		panic(err)
 	}

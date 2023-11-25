@@ -9,6 +9,7 @@ import (
 	"os"
 
 	"github.com/denisa/clq/internal/changelog"
+	"github.com/denisa/clq/internal/config"
 	"github.com/denisa/clq/internal/output"
 	"github.com/denisa/clq/internal/query"
 	"github.com/denisa/clq/internal/validator"
@@ -90,13 +91,15 @@ func (clq *Clq) entryPoint(name string, arguments ...string) int {
 		reader := text.NewReader(source)
 		doc := goldmark.DefaultParser().Parse(reader)
 
-		validatorOpts := []validator.Option{validator.WithRelease(*release), validator.WithChangeKind(changeKind)}
+		validatorOpts := []config.Option{config.WithRelease(*release), config.WithChangeKind(changeKind)}
 		if queryEngine.HasQuery() {
-			validatorOpts = append(validatorOpts, validator.WithListener(queryEngine))
+			validatorOpts = append(validatorOpts, config.WithListener(queryEngine))
 		}
+		config := config.NewConfig(validatorOpts...)
+
 		validationEngine := renderer.NewRenderer(
 			renderer.WithNodeRenderers(
-				util.Prioritized(validator.NewValidator(validatorOpts...), 1000)))
+				util.Prioritized(validator.NewValidator(config), 1000)))
 
 		var buf bytes.Buffer
 		if err := validationEngine.Render(&buf, source, doc); err != nil {

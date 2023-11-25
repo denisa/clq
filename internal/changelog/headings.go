@@ -1,9 +1,5 @@
 package changelog
 
-import (
-	"fmt"
-)
-
 // HeadingKind is the type for the multiple sections.
 type HeadingKind int
 
@@ -18,6 +14,8 @@ const (
 type Heading interface {
 	// The Title of the section
 	Title() string
+	// DisplayTitle is the title to be displayed
+	DisplayTitle() string
 	// The HeadingKind of the section
 	Kind() HeadingKind
 	String() string
@@ -30,19 +28,4 @@ type heading struct {
 
 func asPath(name string) string {
 	return "{" + name + "}"
-}
-
-// NewHeading is the factory method that, given a kind and a title, returns the appropriate Heading.
-func NewHeading(kind HeadingKind, title string) (Heading, error) {
-	switch kind {
-	case IntroductionHeading:
-		return newIntroduction(title)
-	case ReleaseHeading:
-		return newRelease(title)
-	case ChangeHeading:
-		return newChange(title)
-	case ChangeDescription:
-		return newChangeItem(title)
-	}
-	return nil, fmt.Errorf("Unknown heading kind %v", kind)
 }

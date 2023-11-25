@@ -18,7 +18,7 @@ func (qe *QueryEngine) newChangeItemQuery(selector string, isRecursive bool, que
 	queryMe.collection = true
 	queryMe.exit = func(of output.OutputFormat, h changelog.Heading) {
 		if h, ok := h.(changelog.ChangeItem); ok {
-			of.Set(h.Title())
+			of.Set(h.DisplayTitle())
 		}
 	}
 	qe.queries = append(qe.queries, queryMe)

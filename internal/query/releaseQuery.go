@@ -83,7 +83,7 @@ func (qe *QueryEngine) newReleaseQuery(selector string, isRecursive bool, queryE
 		}
 		queryMe.enter = func(of output.OutputFormat, h changelog.Heading) {
 			if h, ok := h.(changelog.Release); ok {
-				of.Set(h.Title())
+				of.Set(h.DisplayTitle())
 			}
 		}
 	case "version":

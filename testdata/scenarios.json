@@ -400,6 +400,20 @@
     "output": "[{\"title\":\"Added\"},{\"title\":\"Removed\"}]\n"
   },
   {
+    "title": "format emoji",
+    "arguments": [
+      "-changeMap",
+      "docs/changemap/changedIsMajorWithEmoji.json",
+      "-output",
+      "md",
+      "-query",
+      "releases[1].changes[]/"
+    ],
+    "input": "# Change log\n## [Unreleased]\n### Added\n- waldo\n- fred\n## [1.0.0] - 2020-06-20\n### Removed\n- foo\n- bar",
+    "result": 0,
+    "output": "### 🗑️ Removed\n- foo\n- bar\n"
+  },
+  {
     "title": "format auto link",
     "arguments": [
       "-output",

@@ -11,12 +11,16 @@ import (
 )
 
 func TestNewHeadingRelease(t *testing.T) {
-	h, _ := NewHeading(ReleaseHeading, "[Unreleased]")
+	ck, _ := NewChangeKind("")
+	hf := NewHeadingFactory(ck)
+	h, _ := hf.NewHeading(ReleaseHeading, "[Unreleased]")
 	requireHeadingInterface(t, "[Unreleased]", h)
 }
 
 func TestReleaseUnreleased(t *testing.T) {
-	h, _ := newRelease("[Unreleased]")
+	ck, _ := NewChangeKind("")
+	hf := NewHeadingFactory(ck)
+	h, _ := hf.newRelease("[Unreleased]")
 	r, _ := h.(Release)
 
 	require := require.New(t)
@@ -30,7 +34,9 @@ func TestReleaseUnreleased(t *testing.T) {
 }
 
 func TestReleasePrereleasedNoLabel(t *testing.T) {
-	h, _ := newRelease("[1.2.3-rc.1] - 2020-04-15")
+	ck, _ := NewChangeKind("")
+	hf := NewHeadingFactory(ck)
+	h, _ := hf.newRelease("[1.2.3-rc.1] - 2020-04-15")
 	r, _ := h.(Release)
 
 	require := require.New(t)
@@ -44,7 +50,9 @@ func TestReleasePrereleasedNoLabel(t *testing.T) {
 }
 
 func TestReleaseReleasedNoLabel(t *testing.T) {
-	h, _ := newRelease("[1.2.3] - 2020-04-15")
+	ck, _ := NewChangeKind("")
+	hf := NewHeadingFactory(ck)
+	h, _ := hf.newRelease("[1.2.3] - 2020-04-15")
 	r, _ := h.(Release)
 
 	require := require.New(t)
@@ -58,7 +66,9 @@ func TestReleaseReleasedNoLabel(t *testing.T) {
 }
 
 func TestReleaseReleasedLabel(t *testing.T) {
-	h, _ := newRelease("[1.2.3] - 2020-04-15 Espelho")
+	ck, _ := NewChangeKind("")
+	hf := NewHeadingFactory(ck)
+	h, _ := hf.newRelease("[1.2.3] - 2020-04-15 Espelho")
 	r, _ := h.(Release)
 
 	require := require.New(t)
@@ -72,32 +82,44 @@ func TestReleaseReleasedLabel(t *testing.T) {
 }
 
 func TestReleaseNonIsoDateSeparatorShouldFail(t *testing.T) {
-	_, err := newRelease("[1.2.3] - 2020.02.15")
+	ck, _ := NewChangeKind("")
+	hf := NewHeadingFactory(ck)
+	_, err := hf.newRelease("[1.2.3] - 2020.02.15")
 	require.Error(t, err)
 }
 
 func TestReleaseNonIsoDateSingleDigitShouldFail(t *testing.T) {
-	_, err := newRelease("[1.2.3] - 2020-4-1")
+	ck, _ := NewChangeKind("")
+	hf := NewHeadingFactory(ck)
+	_, err := hf.newRelease("[1.2.3] - 2020-4-1")
 	require.Error(t, err)
 }
 
 func TestReleaseReleasedDateNotInCalendar(t *testing.T) {
-	_, err := newRelease("[1.2.3] - 2020-02-30")
+	ck, _ := NewChangeKind("")
+	hf := NewHeadingFactory(ck)
+	_, err := hf.newRelease("[1.2.3] - 2020-02-30")
 	require.Error(t, err)
 }
 
 func TestReleaseReleasedAndYankedShouldFail(t *testing.T) {
-	_, err := newRelease("[1.2.3] - 2020-02-15 [YANKED]")
+	ck, _ := NewChangeKind("")
+	hf := NewHeadingFactory(ck)
+	_, err := hf.newRelease("[1.2.3] - 2020-02-15 [YANKED]")
 	require.Error(t, err)
 }
 
 func TestReleaseReleasedVersionShouldFail(t *testing.T) {
-	_, err := newRelease("[1.02] - 2020-02-15")
+	ck, _ := NewChangeKind("")
+	hf := NewHeadingFactory(ck)
+	_, err := hf.newRelease("[1.02] - 2020-02-15")
 	require.Error(t, err)
 }
 
 func TestReleaseYanked(t *testing.T) {
-	h, _ := newRelease("1.2.3 - 2020-04-15 [YANKED]")
+	ck, _ := NewChangeKind("")
+	hf := NewHeadingFactory(ck)
+	h, _ := hf.newRelease("1.2.3 - 2020-04-15 [YANKED]")
 	r, _ := h.(Release)
 
 	require := require.New(t)
@@ -110,17 +132,23 @@ func TestReleaseYanked(t *testing.T) {
 }
 
 func TestReleaseYankedDateShouldFail(t *testing.T) {
-	_, err := newRelease("1.2.3 - 2020-02-30 [YANKED]")
+	ck, _ := NewChangeKind("")
+	hf := NewHeadingFactory(ck)
+	_, err := hf.newRelease("1.2.3 - 2020-02-30 [YANKED]")
 	require.Error(t, err)
 }
 
 func TestReleaseYankedVersionShouldFail(t *testing.T) {
-	_, err := newRelease("1.02 - 2020-02-15 [YANKED]")
+	ck, _ := NewChangeKind("")
+	hf := NewHeadingFactory(ck)
+	_, err := hf.newRelease("1.02 - 2020-02-15 [YANKED]")
 	require.Error(t, err)
 }
 
 func TestReleaseVersionEquality(t *testing.T) {
-	h, _ := newRelease("[1.2.3] - 2020-04-15")
+	ck, _ := NewChangeKind("")
+	hf := NewHeadingFactory(ck)
+	h, _ := hf.newRelease("[1.2.3] - 2020-04-15")
 	r, _ := h.(Release)
 
 	require := require.New(t)
@@ -135,10 +163,12 @@ func TestReleaseVersionEquality(t *testing.T) {
 }
 
 func TestReleaseOrdering(t *testing.T) {
-	h, _ := newRelease("[1.2.4] - 2020-04-16")
+	ck, _ := NewChangeKind("")
+	hf := NewHeadingFactory(ck)
+	h, _ := hf.newRelease("[1.2.4] - 2020-04-16")
 	r1, _ := h.(Release)
 
-	h, _ = newRelease("[1.2.3] - 2020-04-15")
+	h, _ = hf.newRelease("[1.2.3] - 2020-04-15")
 	r2, _ := h.(Release)
 
 	require := require.New(t)
@@ -147,10 +177,12 @@ func TestReleaseOrdering(t *testing.T) {
 }
 
 func TestReleaseOrderingSameDay(t *testing.T) {
-	h, _ := newRelease("[1.2.4] - 2020-04-16")
+	ck, _ := NewChangeKind("")
+	hf := NewHeadingFactory(ck)
+	h, _ := hf.newRelease("[1.2.4] - 2020-04-16")
 	r1, _ := h.(Release)
 
-	h, _ = newRelease("[1.2.3] - 2020-04-16")
+	h, _ = hf.newRelease("[1.2.3] - 2020-04-16")
 	r2, _ := h.(Release)
 
 	require := require.New(t)
@@ -159,10 +191,12 @@ func TestReleaseOrderingSameDay(t *testing.T) {
 }
 
 func TestReleaseOrderingSameVersionShouldFail(t *testing.T) {
-	h, _ := newRelease("[1.2.4] - 2020-04-16")
+	ck, _ := NewChangeKind("")
+	hf := NewHeadingFactory(ck)
+	h, _ := hf.newRelease("[1.2.4] - 2020-04-16")
 	r1, _ := h.(Release)
 
-	h, _ = newRelease("[1.2.4] - 2020-04-15")
+	h, _ = hf.newRelease("[1.2.4] - 2020-04-15")
 	r2, _ := h.(Release)
 
 	require := require.New(t)
@@ -171,10 +205,12 @@ func TestReleaseOrderingSameVersionShouldFail(t *testing.T) {
 }
 
 func TestReleaseOrderingMixedUp(t *testing.T) {
-	h, _ := newRelease("[1.2.4] - 2020-04-15")
+	ck, _ := NewChangeKind("")
+	hf := NewHeadingFactory(ck)
+	h, _ := hf.newRelease("[1.2.4] - 2020-04-15")
 	r1, _ := h.(Release)
 	//
-	h, _ = newRelease("[1.2.3] - 2020-04-16")
+	h, _ = hf.newRelease("[1.2.3] - 2020-04-16")
 	r2, _ := h.(Release)
 
 	require := require.New(t)
