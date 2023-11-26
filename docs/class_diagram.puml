@@ -1,6 +1,11 @@
 @startuml
+' https://plantuml.com/class-diagram
+hide empty members
+
 "github.com/yuin/goldmark/renderer.NodeValidator" <|-- validator.Validator
+
 validator.Validator *-- changelog.Changelog
+
 changelog.Changelog "1" *-- "1" changelog.ChangeKind
 changelog.Changelog "1" *-- "*" changelog.Heading
 changelog.Changelog "1" *-- "*" changelog.Listener
@@ -11,7 +16,8 @@ changelog.Heading <|.. changelog.releaseHeading
 changelog.Listener <|.. query.QueryEngine
 interface changelog.Heading
 interface changelog.Listener
-query.QueryEngine *-- query.OutputFormat
+
+query.QueryEngine *-- output.OutputFormat
 query.QueryEngine "1" *-- "*" query.Query
 query.Query <|.. query.changelogQuery
 query.Query <|.. query.releaseQuery
@@ -21,12 +27,10 @@ query.projections <|-- query.changelogQuery
 query.projections <|-- query.releaseQuery
 query.projections <|-- query.changeQuery
 query.projections <|-- query.changeItemQuery
-query.OutputFormat <|.. query.jsonResultCollector
-query.OutputFormat <|.. query.mdResultCollector
-query.resultCollector <|.. query.jsonResultCollector
-query.resultCollector <|.. query.mdResultCollector
-interface query.OutputFormat
 abstract query.projections
 interface query.Query
-interface query.resultCollector
+
+output.OutputFormat <|.. output.jsonResultCollector
+output.OutputFormat <|.. output.mdResultCollector
+interface output.OutputFormat
 @enduml

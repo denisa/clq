@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/denisa/clq/internal/changelog"
+	"github.com/denisa/clq/internal/output"
 )
 
 func (qe *QueryEngine) newChangeItemQuery(selector string, isRecursive bool, queryElements []string) error {
@@ -15,9 +16,9 @@ func (qe *QueryEngine) newChangeItemQuery(selector string, isRecursive bool, que
 	}
 	queryMe := &changeItemQuery{}
 	queryMe.collection = true
-	queryMe.exit = func(rc resultCollector, h changelog.Heading) {
+	queryMe.exit = func(of output.OutputFormat, h changelog.Heading) {
 		if h, ok := h.(changelog.ChangeItem); ok {
-			rc.set(h.Title())
+			of.Set(h.DisplayTitle())
 		}
 	}
 	qe.queries = append(qe.queries, queryMe)

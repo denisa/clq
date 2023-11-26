@@ -32,7 +32,7 @@ type Release struct {
 const semverPattern string = `(?P<semver>\S+)`
 const isoDatePattern string = `(?P<date>\S+)`
 
-func newRelease(title string) (Heading, error) {
+func (h HeadingsFactory) newRelease(title string) (Heading, error) {
 	if matched, _ := regexp.MatchString(`^\[\s*Unreleased\s*\]$`, title); matched {
 		return Release{heading: heading{title: title, kind: ReleaseHeading}}, nil
 	}
@@ -73,6 +73,9 @@ func newRelease(title string) (Heading, error) {
 	return nil, fmt.Errorf("Validation error: Unknown release header for %q", title)
 }
 
+func (h Release) DisplayTitle() string {
+	return h.Title()
+}
 func (h Release) Title() string {
 	return h.title
 }

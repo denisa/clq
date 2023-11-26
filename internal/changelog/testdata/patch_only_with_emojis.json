@@ -1,0 +1,12 @@
+[
+  {
+    "name": "Fixed",
+    "increment": "patch",
+    "emoji": "🐛"
+  },
+  {
+    "name": "Security",
+    "increment": "patch",
+    "emoji": "🔒"
+  }
+]

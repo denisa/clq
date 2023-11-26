@@ -7,16 +7,30 @@ import (
 )
 
 func TestNewHeadingChange(t *testing.T) {
-	h, _ := NewHeading(ChangeHeading, "Security")
+	ck, _ := NewChangeKind("")
+	hf := NewHeadingFactory(ck)
+	h, _ := hf.NewHeading(ChangeHeading, "Security")
 	requireHeadingInterface(t, "Security", h)
 }
 
 func TestChange(t *testing.T) {
-	h, _ := newChange("Security")
+	ck, _ := NewChangeKind("")
+	hf := NewHeadingFactory(ck)
+	h, _ := hf.newChange("Security")
 	requireHeadingInterface(t, "Security", h)
 }
 
 func TestEmptyChangeShouldFail(t *testing.T) {
-	_, err := newChange("")
+	ck, _ := NewChangeKind("")
+	hf := NewHeadingFactory(ck)
+	_, err := hf.newChange("")
 	require.Error(t, err)
+}
+
+func TestChangeDisplayTitleWithEmoji(t *testing.T) {
+	ck, _ := NewChangeKind("testdata/patch_only_with_emojis.json")
+	hf := NewHeadingFactory(ck)
+	h, _ := hf.newChange("Security")
+	require.Equal(t, "Security", h.Title())
+	require.Equal(t, "🔒 Security", h.DisplayTitle())
 }

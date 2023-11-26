@@ -9,11 +9,15 @@ type Introduction struct {
 	heading
 }
 
-func newIntroduction(title string) (Heading, error) {
+func (h HeadingsFactory) newIntroduction(title string) (Heading, error) {
 	if title == "" {
 		return nil, fmt.Errorf("Validation error: Introduction’s title cannot stay empty")
 	}
 	return Introduction{heading{title: title, kind: IntroductionHeading}}, nil
+}
+
+func (h Introduction) DisplayTitle() string {
+	return h.Title()
 }
 
 func (h Introduction) Title() string {

@@ -18,6 +18,19 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
   - `Fixed` for any bugfixes.
   - `Security` in case of vulnerabilities.
 
+## [1.8.0] - 2023-10-17
+
+### Added
+
+- It is now possible to define emoji to be included in the result. Makes for nicer release notes.
+
+### Fixed
+
+- `ioutil.ReadAll`, `ioutil.ReadFile` deprecated since golanmg 1.16
+- fix variables (config, require) that comflict with a package import
+- Bump github.com/yuin/goldmark from 1.5.6 to 1.6.0
+- Bumps alpine from 3.18.2 to 3.18.4.
+
 ## [1.7.16] - 2023-10-17
 
 ### Fixed

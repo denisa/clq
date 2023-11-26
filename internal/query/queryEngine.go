@@ -5,23 +5,19 @@ import (
 	"strings"
 
 	"github.com/denisa/clq/internal/changelog"
+	"github.com/denisa/clq/internal/output"
 )
 
 // QueryEngine tracks the evaluation of the overall query against the complete changelog.
 type QueryEngine struct {
-	output  OutputFormat
+	output  output.OutputFormat
 	queries []Query
 	current int
 }
 
 // NewQueryEngine parses the query and contructs a new dedicated query engine.
 // It is not an error for the query to be empty.
-func NewQueryEngine(query string, formatName string) (*QueryEngine, error) {
-	outputFormat, err := newOutputFormat(formatName)
-	if err != nil {
-		return nil, err
-	}
-
+func NewQueryEngine(query string, outputFormat output.OutputFormat) (*QueryEngine, error) {
 	qe := &QueryEngine{output: outputFormat}
 	if len(query) > 0 {
 		if err := qe.newIntroductionQuery(strings.Split(query, ".")); err != nil {
@@ -29,7 +25,7 @@ func NewQueryEngine(query string, formatName string) (*QueryEngine, error) {
 		}
 		for _, q := range qe.queries {
 			if q.isCollection() {
-				outputFormat.setCollection()
+				outputFormat.SetCollection()
 				break
 			}
 		}
@@ -68,8 +64,8 @@ func (qe *QueryEngine) Enter(heading changelog.Heading) {
 		return
 	}
 	if project != nil {
-		qe.output.open(heading)
-		project(qe.output.(resultCollector), heading)
+		qe.output.Open(heading)
+		project(qe.output, heading)
 	}
 
 	if qe.current+1 < len(qe.queries) {
@@ -96,11 +92,11 @@ func (qe *QueryEngine) Exit(heading changelog.Heading) {
 
 	ok, project := qe.queries[qe.current].Exit(heading)
 	if ok && project != nil {
-		qe.output.open(heading)
-		project(qe.output.(resultCollector), heading)
+		qe.output.Open(heading)
+		project(qe.output, heading)
 	}
 
-	qe.output.close(heading)
+	qe.output.Close(heading)
 }
 
 func parseName(element string) (name, selector string, isList, isRecursive bool, err error) {

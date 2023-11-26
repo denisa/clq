@@ -5,10 +5,11 @@ import (
 	"flag"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"os"
 
 	"github.com/denisa/clq/internal/changelog"
+	"github.com/denisa/clq/internal/config"
+	"github.com/denisa/clq/internal/output"
 	"github.com/denisa/clq/internal/query"
 	"github.com/denisa/clq/internal/validator"
 	"github.com/yuin/goldmark"
@@ -39,7 +40,7 @@ func (clq *Clq) entryPoint(name string, arguments ...string) int {
 		options.PrintDefaults()
 	}
 	var changeMap = options.String("changeMap", "", "Name of a file defining the mapping from change kind to semantic version change")
-	var output = options.String("output", "json", "Output format, for complex result. One of: json|md")
+	var formatName = options.String("output", "json", "Output format, for complex result. One of: json|md")
 	var queryString = options.String("query", "", "A query to extract information out of the change log")
 	var release = options.Bool("release", false, "Enable release-mode validation")
 	var showVersion = options.Bool("version", false, "Prints clq version")
@@ -60,14 +61,21 @@ func (clq *Clq) entryPoint(name string, arguments ...string) int {
 		clq.documents = options.Args()
 	}
 
+	changeKind, err := changelog.NewChangeKind(*changeMap)
+	if err != nil {
+		clq.error("", err)
+		return 2
+	}
+
 	var hasError bool
 	for _, document := range clq.documents {
-		queryEngine, err := query.NewQueryEngine(*queryString, *output)
+		outputFormat, err := output.NewOutputFormat(*formatName)
 		if err != nil {
 			clq.error("", err)
 			return 2
 		}
-		changeKind, err := changelog.NewChangeKind(*changeMap)
+
+		queryEngine, err := query.NewQueryEngine(*queryString, outputFormat)
 		if err != nil {
 			clq.error("", err)
 			return 2
@@ -82,13 +90,15 @@ func (clq *Clq) entryPoint(name string, arguments ...string) int {
 		reader := text.NewReader(source)
 		doc := goldmark.DefaultParser().Parse(reader)
 
-		validatorOpts := []validator.Option{validator.WithRelease(*release), validator.WithChangeKind(changeKind)}
+		validatorOpts := []config.Option{config.WithRelease(*release), config.WithChangeKind(changeKind)}
 		if queryEngine.HasQuery() {
-			validatorOpts = append(validatorOpts, validator.WithListener(queryEngine))
+			validatorOpts = append(validatorOpts, config.WithListener(queryEngine))
 		}
+		cfg := config.NewConfig(validatorOpts...)
+
 		validationEngine := renderer.NewRenderer(
 			renderer.WithNodeRenderers(
-				util.Prioritized(validator.NewValidator(validatorOpts...), 1000)))
+				util.Prioritized(validator.NewValidator(cfg), 1000)))
 
 		var buf bytes.Buffer
 		if err := validationEngine.Render(&buf, source, doc); err != nil {
@@ -107,9 +117,9 @@ func (clq *Clq) entryPoint(name string, arguments ...string) int {
 
 func (clq *Clq) readInput(input string) ([]byte, error) {
 	if input == "-" {
-		return ioutil.ReadAll(clq.stdin)
+		return io.ReadAll(clq.stdin)
 	}
-	return ioutil.ReadFile(input)
+	return os.ReadFile(input)
 }
 
 func (clq *Clq) withFileName() bool {

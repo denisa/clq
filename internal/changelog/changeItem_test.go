@@ -5,11 +5,15 @@ import (
 )
 
 func TestNewHeadingChangeDescription(t *testing.T) {
-	h, _ := NewHeading(ChangeDescription, "foo")
+	ck, _ := NewChangeKind("")
+	hf := NewHeadingFactory(ck)
+	h, _ := hf.NewHeading(ChangeDescription, "foo")
 	requireHeadingInterface(t, "foo", h)
 }
 
 func TestChangeDescription(t *testing.T) {
-	h, _ := newChangeItem("foo")
+	ck, _ := NewChangeKind("")
+	hf := NewHeadingFactory(ck)
+	h, _ := hf.newChangeItem("foo")
 	requireHeadingInterface(t, "foo", h)
 }

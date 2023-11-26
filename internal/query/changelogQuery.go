@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/denisa/clq/internal/changelog"
+	"github.com/denisa/clq/internal/output"
 )
 
 func (qe *QueryEngine) newIntroductionQuery(queryElements []string) error {
@@ -29,9 +30,9 @@ func (qe *QueryEngine) newIntroductionQuery(queryElements []string) error {
 		if err := elementIsFinal(elementName, elementIsList, queryElements[1:]); err != nil {
 			return err
 		}
-		queryMe.enter = func(rc resultCollector, h changelog.Heading) {
+		queryMe.enter = func(of output.OutputFormat, h changelog.Heading) {
 			if h, ok := h.(changelog.Introduction); ok {
-				rc.set(h.Title())
+				of.Set(h.DisplayTitle())
 			}
 		}
 	}

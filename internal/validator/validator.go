@@ -6,83 +6,17 @@ import (
 	"strings"
 
 	"github.com/denisa/clq/internal/changelog"
+	"github.com/denisa/clq/internal/config"
 	"github.com/yuin/goldmark/ast"
 	"github.com/yuin/goldmark/renderer"
 	"github.com/yuin/goldmark/util"
 )
 
-// A Config struct has configurations for the Validator.
-type Config struct {
-	release    bool
-	listener   changelog.Listener
-	changeKind *changelog.ChangeKind
-}
-
-// NewConfig returns a new Config with defaults.
-func NewConfig() Config {
-	return Config{}
-}
-
-// An Option interface sets options for the Validator.
-type Option interface {
-	SetValidationOption(*Config)
-}
-
-// ------------- ChangeKind -------------
-type withChangeKind struct {
-	value *changelog.ChangeKind
-}
-
-func (o *withChangeKind) SetValidationOption(c *Config) {
-	c.changeKind = o.value
-}
-
-// withChangeKind is a functional option that allow you to set the changelog event
-// listener.
-func WithChangeKind(changeKind *changelog.ChangeKind) interface {
-	Option
-} {
-	return &withChangeKind{value: changeKind}
-}
-
-// ------------- Listener -------------
-type withListener struct {
-	value changelog.Listener
-}
-
-func (o *withListener) SetValidationOption(c *Config) {
-	c.listener = o.value
-}
-
-// withListener is a functional option that allow you to set the changelog event
-// listener.
-func WithListener(listener changelog.Listener) interface {
-	Option
-} {
-	return &withListener{value: listener}
-}
-
-// ------------- Release -------------
-type withRelease struct {
-	value bool
-}
-
-func (o *withRelease) SetValidationOption(c *Config) {
-	c.release = o.value
-}
-
-// WithRelease is a functional option that allow you to set the release mode to
-// the Validator.
-func WithRelease(release bool) interface {
-	Option
-} {
-	return &withRelease{release}
-}
-
 // A Validator struct is an implementation of renderer.NodeRenderer that validates
 // a changelog.
 type Validator struct {
-	Config
+	release                  bool
+	changeKind               *changelog.ChangeKind
 	text                     strings.Builder
 	hasIntroductionHeading   bool
 	h1Released, h1Unreleased bool
@@ -92,19 +26,18 @@ type Validator struct {
 	previousRelease          changelog.Release
 }
 
-func NewValidator(opts ...Option) renderer.NodeRenderer {
+func NewValidator(config config.Config) renderer.NodeRenderer {
+	hf := changelog.NewHeadingFactory(config.ChangeKind())
+
 	r := &Validator{
-		Config:  NewConfig(),
-		changes: make(changelog.ChangeMap),
-		headers: changelog.NewChangelog(),
+		release:    config.IsRelease(),
+		changeKind: config.ChangeKind(),
+		changes:    make(changelog.ChangeMap),
+		headers:    changelog.NewChangelog(hf),
 	}
 
-	for _, opt := range opts {
-		opt.SetValidationOption(&r.Config)
-	}
-
-	if r.listener != nil {
-		r.headers.Listener(r.listener)
+	if ok, listeners := config.Listeners(); ok {
+		r.headers.Listener(listeners)
 	}
 
 	return r
@@ -170,7 +103,8 @@ func (r *Validator) visitHeading(w util.BufWriter, source []byte, node ast.Node,
 			}
 
 			if r.previousRelease.IsRelease() && release.IsRelease() {
-				increment, trigger := r.changeKind.IncrementFor(r.changes)
+				changeKind := r.changeKind
+				increment, trigger := changeKind.IncrementFor(r.changes)
 				nextRelease := release.NextRelease(increment)
 				if !r.previousRelease.ReleaseIs(nextRelease) {
 					return ast.WalkStop, fmt.Errorf("Release %q should have version %v because of %q", r.previousRelease.Title(), nextRelease, trigger)
@@ -235,9 +169,6 @@ func (r *Validator) validateReleaseHeading(release changelog.Release) error {
 }
 
 func (r *Validator) validateChangeHeading(change changelog.Change) error {
-	if err := r.changeKind.IsSupported(change.Title()); err != nil {
-		return err
-	}
 	if r.changes[change.Title()] {
 		return fmt.Errorf("Validation error: Multiple headings %q not supported %v", change.Title(), r.headers)
 	}

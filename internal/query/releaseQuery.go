@@ -5,6 +5,7 @@ import (
 	"strconv"
 
 	"github.com/denisa/clq/internal/changelog"
+	"github.com/denisa/clq/internal/output"
 )
 
 func (qe *QueryEngine) newReleaseQuery(selector string, isRecursive bool, queryElements []string) error {
@@ -17,10 +18,10 @@ func (qe *QueryEngine) newReleaseQuery(selector string, isRecursive bool, queryE
 	qe.queries = append(qe.queries, queryMe)
 
 	if len(queryElements) == 0 {
-		queryMe.enter = func(rc resultCollector, h changelog.Heading) {
+		queryMe.enter = func(of output.OutputFormat, h changelog.Heading) {
 			if h, ok := h.(changelog.Release); ok {
-				rc.setField("version", h.Version())
-				rc.setField("date", h.Date())
+				of.SetField("version", h.Version())
+				of.SetField("date", h.Date())
 			}
 		}
 		return nil
@@ -45,34 +46,34 @@ func (qe *QueryEngine) newReleaseQuery(selector string, isRecursive bool, queryE
 		if err := elementIsFinal(elementName, elementIsList, queryElements[1:]); err != nil {
 			return err
 		}
-		queryMe.enter = func(rc resultCollector, h changelog.Heading) {
+		queryMe.enter = func(of output.OutputFormat, h changelog.Heading) {
 			if h, ok := h.(changelog.Release); ok {
-				rc.set(h.Date())
+				of.Set(h.Date())
 			}
 		}
 	case "label":
 		if err := elementIsFinal(elementName, elementIsList, queryElements[1:]); err != nil {
 			return err
 		}
-		queryMe.enter = func(rc resultCollector, h changelog.Heading) {
+		queryMe.enter = func(of output.OutputFormat, h changelog.Heading) {
 			if h, ok := h.(changelog.Release); ok {
-				rc.set(h.Label())
+				of.Set(h.Label())
 			}
 		}
 	case "status":
 		if err := elementIsFinal(elementName, elementIsList, queryElements[1:]); err != nil {
 			return err
 		}
-		queryMe.enter = func(rc resultCollector, h changelog.Heading) {
+		queryMe.enter = func(of output.OutputFormat, h changelog.Heading) {
 			if h, ok := h.(changelog.Release); ok {
 				if !h.HasBeenReleased() {
-					rc.set("unreleased")
+					of.Set("unreleased")
 				} else if h.HasBeenYanked() {
-					rc.set("yanked")
+					of.Set("yanked")
 				} else if h.IsPrerelease() {
-					rc.set("prereleased")
+					of.Set("prereleased")
 				} else {
-					rc.set("released")
+					of.Set("released")
 				}
 			}
 		}
@@ -80,18 +81,18 @@ func (qe *QueryEngine) newReleaseQuery(selector string, isRecursive bool, queryE
 		if err := elementIsFinal(elementName, elementIsList, queryElements[1:]); err != nil {
 			return err
 		}
-		queryMe.enter = func(rc resultCollector, h changelog.Heading) {
+		queryMe.enter = func(of output.OutputFormat, h changelog.Heading) {
 			if h, ok := h.(changelog.Release); ok {
-				rc.set(h.Title())
+				of.Set(h.DisplayTitle())
 			}
 		}
 	case "version":
 		if err := elementIsFinal(elementName, elementIsList, queryElements[1:]); err != nil {
 			return err
 		}
-		queryMe.enter = func(rc resultCollector, h changelog.Heading) {
+		queryMe.enter = func(of output.OutputFormat, h changelog.Heading) {
 			if h, ok := h.(changelog.Release); ok {
-				rc.set(h.Version())
+				of.Set(h.Version())
 			}
 		}
 	}

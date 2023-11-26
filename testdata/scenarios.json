@@ -23,7 +23,7 @@
   {
     "name": "heading_change_unknown_heading.md",
     "result": 1,
-    "error": "❗️ Validation error: Unknown change headings \"Corrected\" is not one of [Added, Changed, Deprecated, Fixed, Removed, Security]\n"
+    "error": "❗️ Validation error: Unknown change heading \"Corrected\" is not one of [Added, Changed, Deprecated, Fixed, Removed, Security]\n"
   },
   {
     "name": "heading_release_not_recognized.md",
@@ -366,6 +366,18 @@
     "output": "[{\"title\":\"Added\", \"descriptions\":[\"waldo\", \"fred\"]}]\n"
   },
   {
+    "title": "cli unknow output format",
+    "arguments": [
+      "-output",
+      "ascii",
+      "-query",
+      "releases[1].changes[]/"
+    ],
+    "input": "# Change log\n## [Unreleased]\n### Added\n- waldo\n- fred\n## [1.0.0] - 2020-06-20\n### Removed\n- foo\n- bar",
+    "result": 2,
+    "error": "❗️ Unrecognized output format \"ascii\". Supported format: \"json\", \"md\"\n"
+  },
+  {
     "title": "query last release changes",
     "arguments": [
       "-output",
@@ -386,6 +398,20 @@
     "input": "# Change log\n## [Unreleased]\n### Added\n- waldo\n- fred\n### Removed\n- foo\n- bar",
     "result": 0,
     "output": "[{\"title\":\"Added\"},{\"title\":\"Removed\"}]\n"
+  },
+  {
+    "title": "format emoji",
+    "arguments": [
+      "-changeMap",
+      "docs/changemap/changedIsMajorWithEmoji.json",
+      "-output",
+      "md",
+      "-query",
+      "releases[1].changes[]/"
+    ],
+    "input": "# Change log\n## [Unreleased]\n### Added\n- waldo\n- fred\n## [1.0.0] - 2020-06-20\n### Removed\n- foo\n- bar",
+    "result": 0,
+    "output": "### 🗑️ Removed\n- foo\n- bar\n"
   },
   {
     "title": "format auto link",

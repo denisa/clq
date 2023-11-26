@@ -11,6 +11,7 @@ import (
 type ChangeKindDto struct {
 	Name      string `json:"name"`
 	Increment string `json:"increment"`
+	Emoji     string `json:"emoji,omitempty"`
 }
 type ChangeKindsDto []*ChangeKindDto
 
@@ -24,7 +25,7 @@ func (s ByName) Less(i, j int) bool { return s.ChangeKindsDto[i].Name < s.Change
 func (c ChangeKind) MarshalJSON() ([]byte, error) {
 	var result ChangeKindsDto
 	for k, l := range c.changes {
-		result = append(result, &ChangeKindDto{Name: k, Increment: l.String()})
+		result = append(result, &ChangeKindDto{Name: k, Increment: l.semver.String(), Emoji: l.emoji})
 	}
 	// enforcing arbitrary order for testing
 	sort.Sort(ByName{result})
@@ -32,16 +33,18 @@ func (c ChangeKind) MarshalJSON() ([]byte, error) {
 }
 
 func (u *ChangeKind) UnmarshalJSON(data []byte) error {
-	var aux ChangeKindsDto
-	if err := json.Unmarshal(data, &aux); err != nil {
+	var dto ChangeKindsDto
+	if err := json.Unmarshal(data, &dto); err != nil {
 		return err
 	}
-	for _, val := range aux {
+	for _, val := range dto {
 		inc, err := semver.NewIdentifier(val.Increment)
 		if err != nil {
 			return fmt.Errorf("Error parsing  %q: %q", val.Name, err)
 		}
-		u.add(val.Name, inc)
+		if err := u.add(val.Name, inc, val.Emoji); err != nil {
+			return err
+		}
 	}
 	return nil
 }

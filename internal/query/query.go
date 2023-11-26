@@ -6,6 +6,7 @@ package query
 
 import (
 	"github.com/denisa/clq/internal/changelog"
+	"github.com/denisa/clq/internal/output"
 )
 
 // Query is the query for a single heading.
@@ -20,4 +21,13 @@ type Query interface {
 	Exit(heading changelog.Heading) (bool, project)
 	// isCollection returns true is this query produces a collection of results
 	isCollection() bool
+}
+
+// a project function projects the desired part of the heading in the output.OutputFormat.
+type project func(of output.OutputFormat, heading changelog.Heading)
+
+// projections is a base type for all queries
+type projections struct {
+	enter, exit project
+	collection  bool
 }
