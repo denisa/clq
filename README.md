@@ -41,12 +41,12 @@ Options are:
 Example:
 
 - `clq CHANGELOG.md`  
-    validates the file.
+  validates the file.
 - `clq -release CHANGELOG.md`  
-    validates the file and further enforces that the most recent release is neither *[Unreleased]*  
-    nor has been *[YANKED]*. This validation is recommended before cutting a release or merging to main.
+  validates the file and further enforces that the most recent release is neither *[Unreleased]*
+  nor has been *[YANKED]*. This validation is recommended before cutting a release or merging to main.
 - `clq -query releases[0].version CHANGELOG.md`  
-    validates the complete changelog and returns the version of the most recent release.
+  validates the complete changelog and returns the version of the most recent release.
 
 ### Execution with Docker
 
@@ -63,7 +63,7 @@ After a one time installation `whalebrew install denisa/clq`, a one or more chan
 can be validated with a simple `clq CHANGELOG.md` or `clq */CHANGELOG.md`.
 
 The project also generates a 2nd docker image whose label ends wih `-alpine`, for example: `1.2.3-alpine`.
-This image, larger, is for use  by the [clq-action](https://github.com/denisa/clq-action).
+This image, larger, is for use by the [clq-action](https://github.com/denisa/clq-action).
 
 ### GitHub action
 
@@ -99,9 +99,9 @@ Note:
 
 - The most recent version comes first.
 - The only deviation from the official spec is the optional LABEL on a release entry.
-The label is convenient for teams that want to highlight individual releases by naming
-them. Such might be the case for releases cut, for example, for a quarterly demo:
-`## [1.5.2] - 2019.10.02 Espelho`
+  The label is convenient for teams that want to highlight individual releases by naming
+  them. Such might be the case for releases cut, for example, for a quarterly demo:
+  `## [1.5.2] - 2019.10.02 Espelho`
 
 ## Validation
 
@@ -109,8 +109,8 @@ clq supports two validation modes, *feature* and *release*. The *feature* mode i
 development work is in progress and the only requirement is for the changelog to be valid but not necessarily current.
 On the opposite, the *release* mode applies to release branches and, therefore, pull-requests.
 
-By default, clq operates in the *feature* mode. In that mode, clq validates that the changelog file conforms to the grammar.
-It further validates that the releases are sorted chronologically from most recent to oldest,
+By default, clq operates in the *feature* mode. In that mode, clq validates that the changelog file conforms to the
+grammar. It further validates that the releases are sorted chronologically from most recent to oldest,
 that the versions numbers are properly decreasing and that the version change between any two versions
 is justified by the change kinds present, according to a mapping from the type of change to the type of version change.
 
@@ -131,12 +131,30 @@ an *Added* section only triggers a minor version change:
 
 ```json
 [
-  {"name":"Added", "increment":"minor"},
-  {"name":"Changed", "increment":"minor"},
-  {"name":"Deprecated", "increment":"minor"},
-  {"name":"Fixed", "increment":"patch"},
-  {"name":"Removed", "increment":"major"},
-  {"name":"Security", "increment":"patch"}
+  {
+    "name": "Added",
+    "increment": "minor"
+  },
+  {
+    "name": "Changed",
+    "increment": "minor"
+  },
+  {
+    "name": "Deprecated",
+    "increment": "minor"
+  },
+  {
+    "name": "Fixed",
+    "increment": "patch"
+  },
+  {
+    "name": "Removed",
+    "increment": "major"
+  },
+  {
+    "name": "Security",
+    "increment": "patch"
+  }
 ]
 ```
 
@@ -148,6 +166,46 @@ that the first entry in the changelog is an actual release entry.
 *Note* that prereleases might or might not be supported at this time.  
 ![P’têt ben… P’têt pas… J’peux pas dire…](https://lestribulationsdunfrancophoneenfrancophonie.files.wordpress.com/2017/02/http-www-etaletaculture-frwp-contentuploads201512une-reponse-de-normands.jpg?w=317&h=269)  
 (Astérix & Obélix, *Le tour de Gaule d’Astérix*, 1953)
+
+## Emoji
+
+The `changeMap` option further lets emoji be assigned to the change kinds with the optional `emoji` attribute in the
+json file. The example extend on the previous one and define emoji for each change kinds:
+
+```json
+[
+  {
+    "name": "Added",
+    "increment": "minor",
+    "emoji": "✨"
+  },
+  {
+    "name": "Changed",
+    "increment": "major",
+    "emoji": "💥"
+  },
+  {
+    "name": "Deprecated",
+    "increment": "minor",
+    "emoji": "👎"
+  },
+  {
+    "name": "Fixed",
+    "increment": "patch",
+    "emoji": "🐛"
+  },
+  {
+    "name": "Removed",
+    "increment": "major",
+    "emoji": "🗑️"
+  },
+  {
+    "name": "Security",
+    "increment": "patch",
+    "emoji": "🔒"
+  }
+]
+```
 
 ## Query Expression Language
 
@@ -192,13 +250,13 @@ For the sample changelog
 ```
 
 - `releases[1].version`  
-    -> `1.0.0`
+  -> `1.0.0`
 - `releases[1]`  
-    -> `{"version":"1.0.0", "date":"2020-06-20"}`
+  -> `{"version":"1.0.0", "date":"2020-06-20"}`
 - `releases[0].changes[]`  
-    -> `[{"title":"Added"}]`
+  -> `[{"title":"Added"}]`
 - `releases[0].changes[]/`  
-    -> `[{"title":"Added", "descriptions":["waldo", "fred"]}]`
+  -> `[{"title":"Added", "descriptions":["waldo", "fred"]}]`
 
 ### Document Model
 
