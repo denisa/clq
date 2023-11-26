@@ -29,6 +29,7 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
 - `ioutil.ReadAll`, `ioutil.ReadFile` deprecated since golanmg 1.16
 - fix variables (config, require) that comflict with a package import
 - Bump github.com/yuin/goldmark from 1.5.6 to 1.6.0
+- Bumps alpine from 3.18.2 to 3.18.4.
 
 ## [1.7.16] - 2023-10-17
 
