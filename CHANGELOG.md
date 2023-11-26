@@ -18,6 +18,12 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
   - `Fixed` for any bugfixes.
   - `Security` in case of vulnerabilities.
 
+## [1.8.1] - 2023-12-04
+
+### Fixed
+
+- Bumps golang from 1.20 to 1.21
+
 ## [1.8.0] - 2023-10-17
 
 ### Added
