@@ -9,22 +9,22 @@ import (
 )
 
 func TestAllValues(t *testing.T) {
-	require := require.New(t)
+	assertions := require.New(t)
 	ForEach(func(i Identifier) error {
 		t.Run(strconv.Itoa(int(i)), func(t *testing.T) {
 			val, err := NewIdentifier(i.String())
-			require.NoError(err)
-			require.Equal(i, val)
+			assertions.NoError(err)
+			assertions.Equal(i, val)
 		})
 		return nil
 	})
 }
 
 func TestUndefinedValue(t *testing.T) {
-	require := require.New(t)
+	assertions := require.New(t)
 	_, err := NewIdentifier("undefined value")
-	require.Error(err)
-	require.Panics(func() { endOfEnum.String() })
+	assertions.Error(err)
+	assertions.Panics(func() { endOfEnum.String() })
 }
 
 func TestForEach(t *testing.T) {

@@ -23,14 +23,14 @@ func TestReleaseUnreleased(t *testing.T) {
 	h, _ := hf.newRelease("[Unreleased]")
 	r, _ := h.(Release)
 
-	require := require.New(t)
-	require.Empty(r.Version())
-	require.Empty(r.Date())
-	require.Empty(r.Label())
-	require.False(r.IsRelease())
-	require.False(r.IsPrerelease())
-	require.False(r.HasBeenYanked())
-	require.False(r.HasBeenReleased())
+	assertions := require.New(t)
+	assertions.Empty(r.Version())
+	assertions.Empty(r.Date())
+	assertions.Empty(r.Label())
+	assertions.False(r.IsRelease())
+	assertions.False(r.IsPrerelease())
+	assertions.False(r.HasBeenYanked())
+	assertions.False(r.HasBeenReleased())
 }
 
 func TestReleasePrereleasedNoLabel(t *testing.T) {
@@ -39,14 +39,14 @@ func TestReleasePrereleasedNoLabel(t *testing.T) {
 	h, _ := hf.newRelease("[1.2.3-rc.1] - 2020-04-15")
 	r, _ := h.(Release)
 
-	require := require.New(t)
-	require.Equal("1.2.3-rc.1", r.Version())
-	require.Equal("2020-04-15", r.Date())
-	require.Empty(r.Label())
-	require.False(r.IsRelease())
-	require.True(r.IsPrerelease())
-	require.False(r.HasBeenYanked())
-	require.True(r.HasBeenReleased())
+	assertions := require.New(t)
+	assertions.Equal("1.2.3-rc.1", r.Version())
+	assertions.Equal("2020-04-15", r.Date())
+	assertions.Empty(r.Label())
+	assertions.False(r.IsRelease())
+	assertions.True(r.IsPrerelease())
+	assertions.False(r.HasBeenYanked())
+	assertions.True(r.HasBeenReleased())
 }
 
 func TestReleaseReleasedNoLabel(t *testing.T) {
@@ -55,14 +55,14 @@ func TestReleaseReleasedNoLabel(t *testing.T) {
 	h, _ := hf.newRelease("[1.2.3] - 2020-04-15")
 	r, _ := h.(Release)
 
-	require := require.New(t)
-	require.Equal("1.2.3", r.Version())
-	require.Equal("2020-04-15", r.Date())
-	require.Empty(r.Label())
-	require.True(r.IsRelease())
-	require.False(r.IsPrerelease())
-	require.False(r.HasBeenYanked())
-	require.True(r.HasBeenReleased())
+	assertions := require.New(t)
+	assertions.Equal("1.2.3", r.Version())
+	assertions.Equal("2020-04-15", r.Date())
+	assertions.Empty(r.Label())
+	assertions.True(r.IsRelease())
+	assertions.False(r.IsPrerelease())
+	assertions.False(r.HasBeenYanked())
+	assertions.True(r.HasBeenReleased())
 }
 
 func TestReleaseReleasedLabel(t *testing.T) {
@@ -71,14 +71,14 @@ func TestReleaseReleasedLabel(t *testing.T) {
 	h, _ := hf.newRelease("[1.2.3] - 2020-04-15 Espelho")
 	r, _ := h.(Release)
 
-	require := require.New(t)
-	require.Equal("1.2.3", r.Version())
-	require.Equal("2020-04-15", r.Date())
-	require.Equal("Espelho", r.Label())
-	require.True(r.IsRelease())
-	require.False(r.IsPrerelease())
-	require.False(r.HasBeenYanked())
-	require.True(r.HasBeenReleased())
+	assertions := require.New(t)
+	assertions.Equal("1.2.3", r.Version())
+	assertions.Equal("2020-04-15", r.Date())
+	assertions.Equal("Espelho", r.Label())
+	assertions.True(r.IsRelease())
+	assertions.False(r.IsPrerelease())
+	assertions.False(r.HasBeenYanked())
+	assertions.True(r.HasBeenReleased())
 }
 
 func TestReleaseNonIsoDateSeparatorShouldFail(t *testing.T) {
@@ -122,13 +122,13 @@ func TestReleaseYanked(t *testing.T) {
 	h, _ := hf.newRelease("1.2.3 - 2020-04-15 [YANKED]")
 	r, _ := h.(Release)
 
-	require := require.New(t)
-	require.Equal("1.2.3", r.Version())
-	require.Equal("2020-04-15", r.Date())
-	require.Empty(r.Label())
-	require.True(r.IsRelease())
-	require.True(r.HasBeenYanked())
-	require.True(r.HasBeenReleased())
+	assertions := require.New(t)
+	assertions.Equal("1.2.3", r.Version())
+	assertions.Equal("2020-04-15", r.Date())
+	assertions.Empty(r.Label())
+	assertions.True(r.IsRelease())
+	assertions.True(r.HasBeenYanked())
+	assertions.True(r.HasBeenReleased())
 }
 
 func TestReleaseYankedDateShouldFail(t *testing.T) {
@@ -151,14 +151,14 @@ func TestReleaseVersionEquality(t *testing.T) {
 	h, _ := hf.newRelease("[1.2.3] - 2020-04-15")
 	r, _ := h.(Release)
 
-	require := require.New(t)
+	assertions := require.New(t)
 	{
 		v, _ := semver.Make("1.2.3")
-		require.True(r.ReleaseIs(v))
+		assertions.True(r.ReleaseIs(v))
 	}
 	{
 		v, _ := semver.Make("1.2.4")
-		require.False(r.ReleaseIs(v))
+		assertions.False(r.ReleaseIs(v))
 	}
 }
 
@@ -171,9 +171,9 @@ func TestReleaseOrdering(t *testing.T) {
 	h, _ = hf.newRelease("[1.2.3] - 2020-04-15")
 	r2, _ := h.(Release)
 
-	require := require.New(t)
-	require.NoError(r1.IsNewerThan(r2))
-	require.Error(r2.IsNewerThan(r1))
+	assertions := require.New(t)
+	assertions.NoError(r1.IsNewerThan(r2))
+	assertions.Error(r2.IsNewerThan(r1))
 }
 
 func TestReleaseOrderingSameDay(t *testing.T) {
@@ -185,9 +185,9 @@ func TestReleaseOrderingSameDay(t *testing.T) {
 	h, _ = hf.newRelease("[1.2.3] - 2020-04-16")
 	r2, _ := h.(Release)
 
-	require := require.New(t)
-	require.NoError(r1.IsNewerThan(r2))
-	require.Error(r2.IsNewerThan(r1))
+	assertions := require.New(t)
+	assertions.NoError(r1.IsNewerThan(r2))
+	assertions.Error(r2.IsNewerThan(r1))
 }
 
 func TestReleaseOrderingSameVersionShouldFail(t *testing.T) {
@@ -199,9 +199,9 @@ func TestReleaseOrderingSameVersionShouldFail(t *testing.T) {
 	h, _ = hf.newRelease("[1.2.4] - 2020-04-15")
 	r2, _ := h.(Release)
 
-	require := require.New(t)
-	require.Error(r1.IsNewerThan(r2))
-	require.Error(r2.IsNewerThan(r1))
+	assertions := require.New(t)
+	assertions.Error(r1.IsNewerThan(r2))
+	assertions.Error(r2.IsNewerThan(r1))
 }
 
 func TestReleaseOrderingMixedUp(t *testing.T) {
@@ -213,9 +213,9 @@ func TestReleaseOrderingMixedUp(t *testing.T) {
 	h, _ = hf.newRelease("[1.2.3] - 2020-04-16")
 	r2, _ := h.(Release)
 
-	require := require.New(t)
-	require.Error(r2.IsNewerThan(r1))
-	require.Error(r1.IsNewerThan(r2))
+	assertions := require.New(t)
+	assertions.Error(r2.IsNewerThan(r1))
+	assertions.Error(r1.IsNewerThan(r2))
 }
 
 func TestNextRelease(t *testing.T) {
@@ -272,17 +272,17 @@ func TestSubexp(t *testing.T) {
 
 	for index, testcase := range testcases {
 		t.Run(strconv.Itoa(index), func(t *testing.T) {
-			require := require.New(t)
+			assertions := require.New(t)
 			re, err := regexp.Compile(testcase.exp)
 			if err != nil {
-				require.Nil(err)
+				assertions.Nil(err)
 				return
 			}
 
 			matches := re.FindStringSubmatch(testcase.input)
 
 			value := subexp(re.SubexpNames(), matches, testcase.subexp)
-			require.Equal(testcase.value, value)
+			assertions.Equal(testcase.value, value)
 		})
 	}
 }

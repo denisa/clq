@@ -42,7 +42,7 @@ func (s Scenario) name() string {
 }
 
 func TestScenarios(t *testing.T) {
-	assert := assert.New(t)
+	assertions := assert.New(t)
 	file, err := os.Open("testdata/scenarios.json")
 	require.NoError(t, err)
 	defer file.Close()
@@ -81,7 +81,7 @@ func TestScenarios(t *testing.T) {
 				} else if scenario.Name != "" {
 					scenario.Arguments = append(scenario.Arguments, filepath.Join("testdata", scenario.Name))
 				}
-				scenario.executeClq(assert)
+				scenario.executeClq(assertions)
 			})
 		}
 	}
@@ -100,21 +100,21 @@ func TestScenarios(t *testing.T) {
 	}
 }
 
-func (scenario Scenario) executeClq(assert *assert.Assertions) {
+func (scenario Scenario) executeClq(assertions *assert.Assertions) {
 	var actualOutput strings.Builder
 	var actualErr strings.Builder
 	clq := &Clq{stdin: strings.NewReader(scenario.Input), stdout: &actualOutput, stderr: &actualErr}
 
 	var actualCode = clq.entryPoint("clq", scenario.Arguments...)
 
-	assert.Equal(scenario.Result, actualCode)
+	assertions.Equal(scenario.Result, actualCode)
 	switch scenario.OutputFormat {
 	case "json":
-		assert.JSONEq(scenario.Output, actualOutput.String())
+		assertions.JSONEq(scenario.Output, actualOutput.String())
 	default:
-		assert.Equal(scenario.Output, actualOutput.String())
+		assertions.Equal(scenario.Output, actualOutput.String())
 	}
-	assert.Equal(scenario.Error, actualErr.String())
+	assertions.Equal(scenario.Error, actualErr.String())
 }
 
 func allTestFiles(t *testing.T) map[string]bool {

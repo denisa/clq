@@ -94,11 +94,11 @@ func (clq *Clq) entryPoint(name string, arguments ...string) int {
 		if queryEngine.HasQuery() {
 			validatorOpts = append(validatorOpts, config.WithListener(queryEngine))
 		}
-		config := config.NewConfig(validatorOpts...)
+		cfg := config.NewConfig(validatorOpts...)
 
 		validationEngine := renderer.NewRenderer(
 			renderer.WithNodeRenderers(
-				util.Prioritized(validator.NewValidator(config), 1000)))
+				util.Prioritized(validator.NewValidator(cfg), 1000)))
 
 		var buf bytes.Buffer
 		if err := validationEngine.Render(&buf, source, doc); err != nil {

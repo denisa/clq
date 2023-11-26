@@ -18,47 +18,47 @@ func TestChangelogQueryUnsupportedTitle(t *testing.T) {
 }
 
 func TestChangelogQueryTitle(t *testing.T) {
-	require := require.New(t)
+	assertions := require.New(t)
 
 	result, err := apply("title", []changelog.Heading{
 		newHeading(changelog.IntroductionHeading, "changelog"),
 	})
-	require.NoError(err)
-	require.Equal("changelog", result)
+	assertions.NoError(err)
+	assertions.Equal("changelog", result)
 }
 
 func TestChangelogQueryTitleAgainstRelease(t *testing.T) {
-	require := require.New(t)
+	assertions := require.New(t)
 
 	result, err := apply("title", []changelog.Heading{
 		newHeading(changelog.ReleaseHeading, "[1.2.3] - 2020-05-16"),
 	})
-	require.NoError(err)
-	require.Empty(result)
+	assertions.NoError(err)
+	assertions.Empty(result)
 }
 
 func TestChangelogQueryUnsupportedEnter(t *testing.T) {
-	require := require.New(t)
+	assertions := require.New(t)
 
 	query := &changelogQuery{}
-	require.False(query.Enter(newHeading(changelog.ReleaseHeading, "[1.2.3] - 2020-05-16")))
+	assertions.False(query.Enter(newHeading(changelog.ReleaseHeading, "[1.2.3] - 2020-05-16")))
 }
 
 func TestChangelogQueryUnsupportedExit(t *testing.T) {
-	require := require.New(t)
+	assertions := require.New(t)
 
 	query := &changelogQuery{}
-	require.False(query.Exit(newHeading(changelog.ReleaseHeading, "[1.2.3] - 2020-05-16")))
+	assertions.False(query.Exit(newHeading(changelog.ReleaseHeading, "[1.2.3] - 2020-05-16")))
 }
 
 func TestChangelogQueryCollection(t *testing.T) {
-	require := require.New(t)
+	assertions := require.New(t)
 	{
 		query := &changelogQuery{}
-		require.False(query.isCollection())
+		assertions.False(query.isCollection())
 	}
 	{
 		query := &changelogQuery{projections{collection: true}}
-		require.True(query.isCollection())
+		assertions.True(query.isCollection())
 	}
 }

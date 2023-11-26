@@ -33,31 +33,31 @@ func TestChangeQueryUnsupportedTitle(t *testing.T) {
 }
 
 func TestChangeQueryAgainstIntroduction(t *testing.T) {
-	require := require.New(t)
+	assertions := require.New(t)
 
 	result, err := apply("releases[0].changes[]", []changelog.Heading{
 		newHeading(changelog.IntroductionHeading, "changelog"),
 		newHeading(changelog.ReleaseHeading, "[1.2.3] - 2020-05-16"),
 		newHeading(changelog.ReleaseHeading, "[1.2.2] - 2020-05-16"),
 	})
-	require.NoError(err)
-	require.JSONEq("[]", result)
+	assertions.NoError(err)
+	assertions.JSONEq("[]", result)
 }
 
 func TestChangeQueryTitleSingle(t *testing.T) {
-	require := require.New(t)
+	assertions := require.New(t)
 
 	result, err := apply("releases[0].changes[].title", []changelog.Heading{
 		newHeading(changelog.IntroductionHeading, "changelog"),
 		newHeading(changelog.ReleaseHeading, "[1.2.3] - 2020-05-16"),
 		newHeading(changelog.ChangeHeading, "Removed"),
 	})
-	require.NoError(err)
-	require.JSONEq("[\"Removed\"]", result)
+	assertions.NoError(err)
+	assertions.JSONEq("[\"Removed\"]", result)
 }
 
 func TestChangeQueryTitleMultiple(t *testing.T) {
-	require := require.New(t)
+	assertions := require.New(t)
 
 	result, err := apply("releases[0].changes[].title", []changelog.Heading{
 		newHeading(changelog.IntroductionHeading, "changelog"),
@@ -66,24 +66,24 @@ func TestChangeQueryTitleMultiple(t *testing.T) {
 		newHeading(changelog.ChangeHeading, "Added"),
 		newHeading(changelog.ChangeHeading, "Security"),
 	})
-	require.NoError(err)
-	require.JSONEq("[\"Removed\", \"Added\", \"Security\"]", result)
+	assertions.NoError(err)
+	assertions.JSONEq("[\"Removed\", \"Added\", \"Security\"]", result)
 }
 
 func TestChangeQueryWithoutItems(t *testing.T) {
-	require := require.New(t)
+	assertions := require.New(t)
 
 	result, err := apply("releases[0].changes[]", []changelog.Heading{
 		newHeading(changelog.IntroductionHeading, "changelog"),
 		newHeading(changelog.ReleaseHeading, "[1.2.3] - 2020-05-16"),
 		newHeading(changelog.ChangeHeading, "Removed"),
 	})
-	require.NoError(err)
-	require.JSONEq("[{\"title\":\"Removed\"}]", result)
+	assertions.NoError(err)
+	assertions.JSONEq("[{\"title\":\"Removed\"}]", result)
 }
 
 func TestChangeQuerySecondReleaseChanges(t *testing.T) {
-	require := require.New(t)
+	assertions := require.New(t)
 
 	result, err := apply("releases[1].changes[]", []changelog.Heading{
 		newHeading(changelog.IntroductionHeading, "changelog"),
@@ -98,12 +98,12 @@ func TestChangeQuerySecondReleaseChanges(t *testing.T) {
 		newHeading(changelog.ChangeHeading, "Security"),
 		newHeading(changelog.ChangeDescription, "thud"),
 	})
-	require.NoError(err)
-	require.JSONEq("[{\"title\":\"Added\"},{\"title\":\"Fixed\"},{\"title\":\"Security\"}]", result)
+	assertions.NoError(err)
+	assertions.JSONEq("[{\"title\":\"Added\"},{\"title\":\"Fixed\"},{\"title\":\"Security\"}]", result)
 }
 
 func TestChangeQuerySecondReleaseChangesRecursive(t *testing.T) {
-	require := require.New(t)
+	assertions := require.New(t)
 
 	result, err := apply("releases[1].changes[]/", []changelog.Heading{
 		newHeading(changelog.IntroductionHeading, "changelog"),
@@ -116,32 +116,32 @@ func TestChangeQuerySecondReleaseChangesRecursive(t *testing.T) {
 		newHeading(changelog.ChangeHeading, "Fixed"),
 		newHeading(changelog.ChangeDescription, "waldo"),
 	})
-	require.NoError(err)
-	require.JSONEq("[{\"title\":\"Added\", \"descriptions\":[\"bar\"]},{\"title\":\"Fixed\", \"descriptions\":[\"waldo\"]}]", result)
+	assertions.NoError(err)
+	assertions.JSONEq("[{\"title\":\"Added\", \"descriptions\":[\"bar\"]},{\"title\":\"Fixed\", \"descriptions\":[\"waldo\"]}]", result)
 }
 
 func TestChangeQueryUnsupportedEnter(t *testing.T) {
-	require := require.New(t)
+	assertions := require.New(t)
 
 	query := &changeQuery{}
-	require.False(query.Enter(newHeading(changelog.IntroductionHeading, "changelog")))
+	assertions.False(query.Enter(newHeading(changelog.IntroductionHeading, "changelog")))
 }
 
 func TestChangequeryUnsupportedExit(t *testing.T) {
-	require := require.New(t)
+	assertions := require.New(t)
 
 	query := &changeQuery{}
-	require.False(query.Exit(newHeading(changelog.IntroductionHeading, "changelog")))
+	assertions.False(query.Exit(newHeading(changelog.IntroductionHeading, "changelog")))
 }
 
 func TestChangeQueryCollection(t *testing.T) {
-	require := require.New(t)
+	assertions := require.New(t)
 	{
 		query := &changeQuery{}
-		require.False(query.isCollection())
+		assertions.False(query.isCollection())
 	}
 	{
 		query := &changeQuery{projections{collection: true}}
-		require.True(query.isCollection())
+		assertions.True(query.isCollection())
 	}
 }

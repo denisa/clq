@@ -19,7 +19,7 @@ func requireHeadingInterface(t *testing.T, expected string, actual Heading) {
 	require.Equal(t, actual.Title(), actual.DisplayTitle())
 }
 
-func requireHeadingEquals(require *require.Assertions, expected Heading, actual Heading) {
-	require.Equal(expected, actual)
-	require.Equal(reflect.TypeOf(expected), reflect.TypeOf(actual))
+func requireHeadingEquals(assertions *require.Assertions, expected Heading, actual Heading) {
+	assertions.Equal(expected, actual)
+	assertions.Equal(reflect.TypeOf(expected), reflect.TypeOf(actual))
 }

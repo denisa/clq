@@ -9,13 +9,13 @@ import (
 )
 
 func TestEmptyQueryAgainstIntroduction(t *testing.T) {
-	require := require.New(t)
+	assertions := require.New(t)
 
 	result, err := apply("", []changelog.Heading{
 		newHeading(changelog.IntroductionHeading, "changelog"),
 	})
-	require.NoError(err)
-	require.Equal("", result)
+	assertions.NoError(err)
+	assertions.Equal("", result)
 }
 
 func TestParseNameFormatError(t *testing.T) {
@@ -38,43 +38,43 @@ func TestParseNameFormatError(t *testing.T) {
 }
 
 func TestParseNameNotRecursiveList(t *testing.T) {
-	require := require.New(t)
+	assertions := require.New(t)
 	name, selector, isList, isRecursive, err := parseName("title")
-	require.NoError(err)
-	require.Equal("title", name)
-	require.Equal("", selector)
-	require.False(isList)
-	require.False(isRecursive)
+	assertions.NoError(err)
+	assertions.Equal("title", name)
+	assertions.Equal("", selector)
+	assertions.False(isList)
+	assertions.False(isRecursive)
 }
 
 func TestParseNameListNoSelector(t *testing.T) {
-	require := require.New(t)
+	assertions := require.New(t)
 	name, selector, isList, isRecursive, err := parseName("changes[]")
-	require.NoError(err)
-	require.Equal("changes", name)
-	require.Equal("", selector)
-	require.True(isList)
-	require.False(isRecursive)
+	assertions.NoError(err)
+	assertions.Equal("changes", name)
+	assertions.Equal("", selector)
+	assertions.True(isList)
+	assertions.False(isRecursive)
 }
 
 func TestParseNameListWithSelector(t *testing.T) {
-	require := require.New(t)
+	assertions := require.New(t)
 	name, selector, isList, isRecursive, err := parseName("changes[2]")
-	require.NoError(err)
-	require.Equal("changes", name)
-	require.Equal("2", selector)
-	require.True(isList)
-	require.False(isRecursive)
+	assertions.NoError(err)
+	assertions.Equal("changes", name)
+	assertions.Equal("2", selector)
+	assertions.True(isList)
+	assertions.False(isRecursive)
 }
 
 func TestParseNameRecursiveListNoSelector(t *testing.T) {
-	require := require.New(t)
+	assertions := require.New(t)
 	name, selector, isList, isRecursive, err := parseName("changes[]/")
-	require.NoError(err)
-	require.Equal("changes", name)
-	require.Equal("", selector)
-	require.True(isList)
-	require.True(isRecursive)
+	assertions.NoError(err)
+	assertions.Equal("changes", name)
+	assertions.Equal("", selector)
+	assertions.True(isList)
+	assertions.True(isRecursive)
 }
 
 func TestElementIsCollectionInScalarContext(t *testing.T) {
