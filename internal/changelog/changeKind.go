@@ -3,7 +3,7 @@ package changelog
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"os"
 	"sort"
 	"strings"
 
@@ -27,7 +27,7 @@ func NewChangeKind(fileName string) (*ChangeKind, error) {
 		return &ChangeKind{changes: changeKindToConfig{"Added": {semver.Major, ""}, "Removed": {semver.Major, ""}, "Changed": {semver.Minor, ""}, "Deprecated": {semver.Minor, ""}, "Fixed": {semver.Patch, ""}, "Security": {semver.Patch, ""}}}, nil
 	}
 
-	file, e := ioutil.ReadFile(fileName)
+	file, e := os.ReadFile(fileName)
 	if e != nil {
 		return nil, e
 	}

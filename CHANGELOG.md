@@ -24,6 +24,10 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
 
 - It is now possible to define emoji to be included in the result. Makes for nicer release notes.
 
+### Fixed
+
+- `ioutil.ReadAll`, `ioutil.ReadFile` deprecated since golanmg 1.16
+
 ## [1.7.16] - 2023-10-17
 
 ### Fixed
