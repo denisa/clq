@@ -23,6 +23,7 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
 ### Fixed
 
 - Bumps golang from 1.20 to 1.21
+- Bumps alpine from 3.18.4 to 3.18.5
 
 ## [1.8.0] - 2023-10-17
 
