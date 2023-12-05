@@ -59,7 +59,7 @@ func TestScenarios(t *testing.T) {
 		}
 		for _, scenario := range scenarios {
 			t.Run(scenario.name(), func(t *testing.T) {
-				if scenario.Platform  == "skip" {
+				if scenario.Platform == "skip" {
 
 				}
 				switch scenario.Platform {
