@@ -75,7 +75,7 @@ func (clq *Clq) entryPoint(name string, arguments ...string) int {
 			return 2
 		}
 
-		queryEngine, err := query.NewQueryEngine(*queryString, outputFormat)
+		queryEngine, err := query.NewEngine(*queryString, outputFormat)
 		if err != nil {
 			clq.error("", err)
 			return 2

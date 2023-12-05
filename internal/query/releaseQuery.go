@@ -8,7 +8,7 @@ import (
 	"github.com/denisa/clq/internal/output"
 )
 
-func (qe *QueryEngine) newReleaseQuery(selector string, _ bool, queryElements []string) error {
+func (qe *Engine) newReleaseQuery(selector string, _ bool, queryElements []string) error {
 	i, err := strconv.Atoi(selector)
 	if err != nil {
 		return fmt.Errorf("Query release selector %q parsing error: %v", selector, err)

@@ -7,7 +7,7 @@ import (
 	"github.com/denisa/clq/internal/output"
 )
 
-func (qe *QueryEngine) newIntroductionQuery(queryElements []string) error {
+func (qe *Engine) newIntroductionQuery(queryElements []string) error {
 	queryMe := &changelogQuery{}
 	qe.queries = append(qe.queries, queryMe)
 

@@ -8,17 +8,17 @@ import (
 	"github.com/denisa/clq/internal/output"
 )
 
-// QueryEngine tracks the evaluation of the overall query against the complete changelog.
-type QueryEngine struct {
+// Engine tracks the evaluation of the overall query against the complete changelog.
+type Engine struct {
 	output  output.Format
 	queries []Query
 	current int
 }
 
-// NewQueryEngine parses the query and contructs a new dedicated query engine.
+// NewEngine parses the query and contructs a new dedicated query engine.
 // It is not an error for the query to be empty.
-func NewQueryEngine(query string, outputFormat output.Format) (*QueryEngine, error) {
-	qe := &QueryEngine{output: outputFormat}
+func NewEngine(query string, outputFormat output.Format) (*Engine, error) {
+	qe := &Engine{output: outputFormat}
 	if len(query) > 0 {
 		if err := qe.newIntroductionQuery(strings.Split(query, ".")); err != nil {
 			return nil, err
@@ -33,17 +33,17 @@ func NewQueryEngine(query string, outputFormat output.Format) (*QueryEngine, err
 	return qe, nil
 }
 
-// HasQuery is true the QueryEngine was constructed with a non-empty query.
-// a QueryEngine with an empty query is a no-op and an be skipped.
-func (qe *QueryEngine) HasQuery() bool { return len(qe.queries) > 0 }
+// HasQuery is true the Engine was constructed with a non-empty query.
+// a Engine with an empty query is a no-op and an be skipped.
+func (qe *Engine) HasQuery() bool { return len(qe.queries) > 0 }
 
 // Result returns the result of the query evaluation.
-func (qe *QueryEngine) Result() string {
+func (qe *Engine) Result() string {
 	return qe.output.Result()
 }
 
 // Enter lets the query engine evaluates the heading upon entering it.
-func (qe *QueryEngine) Enter(heading changelog.Heading) {
+func (qe *Engine) Enter(heading changelog.Heading) {
 	if qe.current == len(qe.queries) {
 		// no queries defined...
 		return
@@ -74,7 +74,7 @@ func (qe *QueryEngine) Enter(heading changelog.Heading) {
 }
 
 // Exit lets the query engine evaluates the heading upon leaving it.
-func (qe *QueryEngine) Exit(heading changelog.Heading) {
+func (qe *Engine) Exit(heading changelog.Heading) {
 	if qe.current == len(qe.queries) {
 		// no queries defined...
 		return

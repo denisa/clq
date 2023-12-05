@@ -97,12 +97,12 @@ func TestElementIsFinalMoreelementsInScalarContext(t *testing.T) {
 	require.Error(t, elementIsFinal("title", false, []string{"kind"}))
 }
 
-func newQueryEngine(query string, formatName string) (*QueryEngine, error) {
+func newQueryEngine(query string, formatName string) (*Engine, error) {
 	outputFormat, err := output.NewFormat(formatName)
 	if err != nil {
 		return nil, err
 	}
-	qe, err := NewQueryEngine(query, outputFormat)
+	qe, err := NewEngine(query, outputFormat)
 	if err != nil {
 		return nil, err
 	}
