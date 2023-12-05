@@ -69,7 +69,7 @@ func (clq *Clq) entryPoint(name string, arguments ...string) int {
 
 	var hasError bool
 	for _, document := range clq.documents {
-		outputFormat, err := output.NewOutputFormat(*formatName)
+		outputFormat, err := output.NewFormat(*formatName)
 		if err != nil {
 			clq.error("", err)
 			return 2

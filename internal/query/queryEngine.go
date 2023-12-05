@@ -10,14 +10,14 @@ import (
 
 // QueryEngine tracks the evaluation of the overall query against the complete changelog.
 type QueryEngine struct {
-	output  output.OutputFormat
+	output  output.Format
 	queries []Query
 	current int
 }
 
 // NewQueryEngine parses the query and contructs a new dedicated query engine.
 // It is not an error for the query to be empty.
-func NewQueryEngine(query string, outputFormat output.OutputFormat) (*QueryEngine, error) {
+func NewQueryEngine(query string, outputFormat output.Format) (*QueryEngine, error) {
 	qe := &QueryEngine{output: outputFormat}
 	if len(query) > 0 {
 		if err := qe.newIntroductionQuery(strings.Split(query, ".")); err != nil {

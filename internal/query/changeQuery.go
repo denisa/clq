@@ -19,14 +19,14 @@ func (qe *QueryEngine) newChangeQuery(selector string, isRecursive bool, queryEl
 	if len(queryElements) == 0 {
 		if isRecursive {
 			_ = qe.newChangeItemQuery("", true, nil)
-			queryMe.enter = func(of output.OutputFormat, h changelog.Heading) {
+			queryMe.enter = func(of output.Format, h changelog.Heading) {
 				if h, ok := h.(changelog.Change); ok {
 					of.SetField("title", h.DisplayTitle())
 					of.Array("descriptions")
 				}
 			}
 		} else {
-			queryMe.enter = func(of output.OutputFormat, h changelog.Heading) {
+			queryMe.enter = func(of output.Format, h changelog.Heading) {
 				if h, ok := h.(changelog.Change); ok {
 					of.SetField("title", h.DisplayTitle())
 				}
@@ -54,7 +54,7 @@ func (qe *QueryEngine) newChangeQuery(selector string, isRecursive bool, queryEl
 		if err := elementIsFinal(elementName, elementIsList, queryElements[1:]); err != nil {
 			return err
 		}
-		queryMe.enter = func(of output.OutputFormat, h changelog.Heading) {
+		queryMe.enter = func(of output.Format, h changelog.Heading) {
 			if h, ok := h.(changelog.Change); ok {
 				of.Set(h.DisplayTitle())
 			}

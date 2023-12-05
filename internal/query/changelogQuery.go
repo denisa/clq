@@ -30,7 +30,7 @@ func (qe *QueryEngine) newIntroductionQuery(queryElements []string) error {
 		if err := elementIsFinal(elementName, elementIsList, queryElements[1:]); err != nil {
 			return err
 		}
-		queryMe.enter = func(of output.OutputFormat, h changelog.Heading) {
+		queryMe.enter = func(of output.Format, h changelog.Heading) {
 			if h, ok := h.(changelog.Introduction); ok {
 				of.Set(h.DisplayTitle())
 			}

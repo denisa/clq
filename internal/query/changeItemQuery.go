@@ -16,7 +16,7 @@ func (qe *QueryEngine) newChangeItemQuery(selector string, _ bool, queryElements
 	}
 	queryMe := &changeItemQuery{}
 	queryMe.collection = true
-	queryMe.exit = func(of output.OutputFormat, h changelog.Heading) {
+	queryMe.exit = func(of output.Format, h changelog.Heading) {
 		if h, ok := h.(changelog.ChangeItem); ok {
 			of.Set(h.DisplayTitle())
 		}

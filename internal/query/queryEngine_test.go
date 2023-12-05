@@ -98,7 +98,7 @@ func TestElementIsFinalMoreelementsInScalarContext(t *testing.T) {
 }
 
 func newQueryEngine(query string, formatName string) (*QueryEngine, error) {
-	outputFormat, err := output.NewOutputFormat(formatName)
+	outputFormat, err := output.NewFormat(formatName)
 	if err != nil {
 		return nil, err
 	}
