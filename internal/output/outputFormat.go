@@ -11,7 +11,7 @@ import (
 type OutputFormat interface {
 	// Result a string representation of the query result.
 	Result() string
-	// open is called when a heading is first met.
+	// Open is called when a heading is first met.
 	Open(heading changelog.Heading)
 	// Close is called when all of a heading’s children have been visited.
 	Close(heading changelog.Heading)

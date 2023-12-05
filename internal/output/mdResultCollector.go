@@ -29,7 +29,7 @@ func lineStart(heading changelog.HeadingKind) string {
 	}
 }
 
-func (rc *mdResultCollector) Close(heading changelog.Heading) {
+func (rc *mdResultCollector) Close(_ changelog.Heading) {
 }
 
 func (rc *mdResultCollector) SetCollection() {
@@ -51,5 +51,5 @@ func (rc *mdResultCollector) SetField(name string, value string) {
 	}
 }
 
-func (rc *mdResultCollector) Array(name string) {
+func (rc *mdResultCollector) Array(_ string) {
 }

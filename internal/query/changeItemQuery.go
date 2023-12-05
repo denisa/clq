@@ -7,7 +7,7 @@ import (
 	"github.com/denisa/clq/internal/output"
 )
 
-func (qe *QueryEngine) newChangeItemQuery(selector string, isRecursive bool, queryElements []string) error {
+func (qe *QueryEngine) newChangeItemQuery(selector string, _ bool, queryElements []string) error {
 	if selector != "" {
 		return fmt.Errorf("Query change selector %q not yet supported", selector)
 	}

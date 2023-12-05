@@ -33,7 +33,7 @@ const semverPattern string = `(?P<semver>\S+)`
 const isoDatePattern string = `(?P<date>\S+)`
 
 func (h HeadingsFactory) newRelease(title string) (Heading, error) {
-	if matched, _ := regexp.MatchString(`^\[\s*Unreleased\s*\]$`, title); matched {
+	if matched, _ := regexp.MatchString(`^\[\s*Unreleased\s*]$`, title); matched {
 		return Release{heading: heading{title: title, kind: ReleaseHeading}}, nil
 	}
 	{
@@ -45,7 +45,7 @@ func (h HeadingsFactory) newRelease(title string) (Heading, error) {
 				return nil, fmt.Errorf("Validation error: Illegal date (%v) for %v", err, title)
 			}
 			label := subexp(groups, matches, "label")
-			if matched, _ := regexp.MatchString(`\[\s*YANKED\s*\]`, label); matched {
+			if matched, _ := regexp.MatchString(`\[\s*YANKED\s*]`, label); matched {
 				return nil, fmt.Errorf("Validation error: the version of a [YANKED] release cannot stand between [...] for %v", title)
 			}
 			version, err := semver.Make(subexp(groups, matches, "semver"))
@@ -143,8 +143,9 @@ func (h Release) NextRelease(semverIdentifier semverConstants.Identifier) semver
 		return semver.Version{Major: h.version.Major, Minor: h.version.Minor + 1, Patch: 0}
 	case semverConstants.Patch:
 		return semver.Version{Major: h.version.Major, Minor: h.version.Minor, Patch: h.version.Patch + 1}
+	default:
+		return h.version
 	}
-	return h.version
 }
 
 // IsNewerThan returns an error if this release if not newer than another release.

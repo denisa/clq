@@ -55,7 +55,7 @@ func (r *Validator) RegisterFuncs(reg renderer.NodeRendererFuncRegisterer) {
 	reg.Register(ast.KindText, r.visitText)
 }
 
-func (r *Validator) visitDocument(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
+func (r *Validator) visitDocument(_ util.BufWriter, _ []byte, _ ast.Node, entering bool) (ast.WalkStatus, error) {
 	if !entering {
 		if !r.h1Released && !r.h1Unreleased {
 			return ast.WalkStop, fmt.Errorf("Validation error: No release defined in changelog")
@@ -68,7 +68,7 @@ func (r *Validator) visitDocument(w util.BufWriter, source []byte, node ast.Node
 	return ast.WalkContinue, nil
 }
 
-func (r *Validator) visitHeading(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
+func (r *Validator) visitHeading(_ util.BufWriter, _ []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
 	if entering {
 		r.text.Reset()
 		return ast.WalkContinue, nil
@@ -176,7 +176,7 @@ func (r *Validator) validateChangeHeading(change changelog.Change) error {
 	return nil
 }
 
-func (r *Validator) visitAutoLink(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
+func (r *Validator) visitAutoLink(_ util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
 	n := node.(*ast.AutoLink)
 	if entering {
 		r.text.WriteString("<")
@@ -190,7 +190,7 @@ func (r *Validator) visitAutoLink(w util.BufWriter, source []byte, node ast.Node
 	return ast.WalkContinue, nil
 }
 
-func (r *Validator) visitLink(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
+func (r *Validator) visitLink(w util.BufWriter, _ []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
 	n := node.(*ast.Link)
 	if entering {
 		r.text.WriteString("[")
@@ -208,11 +208,11 @@ func (r *Validator) visitLink(w util.BufWriter, source []byte, node ast.Node, en
 	return ast.WalkContinue, nil
 }
 
-func (r *Validator) visitList(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
+func (r *Validator) visitList(_ util.BufWriter, _ []byte, _ ast.Node, _ bool) (ast.WalkStatus, error) {
 	return ast.WalkContinue, nil
 }
 
-func (r *Validator) visitListItem(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
+func (r *Validator) visitListItem(_ util.BufWriter, _ []byte, _ ast.Node, entering bool) (ast.WalkStatus, error) {
 	if entering {
 		r.text.Reset()
 		return ast.WalkContinue, nil
@@ -227,14 +227,14 @@ func (r *Validator) visitListItem(w util.BufWriter, source []byte, node ast.Node
 	return ast.WalkContinue, nil
 }
 
-func (r *Validator) visitImage(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
+func (r *Validator) visitImage(_ util.BufWriter, _ []byte, _ ast.Node, entering bool) (ast.WalkStatus, error) {
 	if entering {
 		return ast.WalkSkipChildren, nil
 	}
 	return ast.WalkContinue, nil
 }
 
-func (r *Validator) visitText(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
+func (r *Validator) visitText(_ util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
 	n := node.(*ast.Text)
 	if entering {
 		segment := n.Segment

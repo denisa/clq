@@ -10,7 +10,7 @@ import (
 
 func TestAllValues(t *testing.T) {
 	assertions := require.New(t)
-	ForEach(func(i Identifier) error {
+	_ = ForEach(func(i Identifier) error {
 		t.Run(strconv.Itoa(int(i)), func(t *testing.T) {
 			val, err := NewIdentifier(i.String())
 			assertions.NoError(err)
@@ -24,12 +24,12 @@ func TestUndefinedValue(t *testing.T) {
 	assertions := require.New(t)
 	_, err := NewIdentifier("undefined value")
 	assertions.Error(err)
-	assertions.Panics(func() { endOfEnum.String() })
+	assertions.Panics(func() { _ = endOfEnum.String() })
 }
 
 func TestForEach(t *testing.T) {
 	count := 0
-	ForEach(func(arg1 Identifier) error {
+	_ = ForEach(func(arg1 Identifier) error {
 		count++
 		return nil
 	})

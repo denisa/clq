@@ -45,7 +45,7 @@ func TestScenarios(t *testing.T) {
 	assertions := assert.New(t)
 	file, err := os.Open("testdata/scenarios.json")
 	require.NoError(t, err)
-	defer file.Close()
+	defer closeIgnoreError(file)
 
 	dec := json.NewDecoder(bufio.NewReader(file))
 
@@ -59,6 +59,9 @@ func TestScenarios(t *testing.T) {
 		}
 		for _, scenario := range scenarios {
 			t.Run(scenario.name(), func(t *testing.T) {
+				if scenario.Platform  == "skip" {
+
+				}
 				switch scenario.Platform {
 				case "skip":
 					t.SkipNow()
@@ -120,7 +123,7 @@ func (scenario Scenario) executeClq(assertions *assert.Assertions) {
 func allTestFiles(t *testing.T) map[string]bool {
 	file, err := os.Open("testdata")
 	require.NoError(t, err)
-	defer file.Close()
+	defer closeIgnoreError(file)
 
 	names, err := file.Readdirnames(0)
 	require.NoError(t, err)
@@ -133,4 +136,8 @@ func allTestFiles(t *testing.T) map[string]bool {
 		result[val] = true
 	}
 	return result
+}
+
+func closeIgnoreError(file *os.File) {
+	_ = file.Close()
 }

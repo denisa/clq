@@ -24,7 +24,7 @@ func TestOneLevelChangelogIsDocument(t *testing.T) {
 	ck, _ := NewChangeKind("")
 	hf := NewHeadingFactory(ck)
 	s := NewChangelog(hf)
-	s.Section(IntroductionHeading, "title")
+	_, _ = s.Section(IntroductionHeading, "title")
 
 	assertions.True(s.Introduction(), "title expected")
 	assertions.False(s.Release(), "release not expected")
@@ -37,8 +37,8 @@ func TestTwoLevelChangelogIsRelease(t *testing.T) {
 	ck, _ := NewChangeKind("")
 	hf := NewHeadingFactory(ck)
 	s := NewChangelog(hf)
-	s.Section(IntroductionHeading, "title")
-	s.Section(ReleaseHeading, "[Unreleased]")
+	_, _ = s.Section(IntroductionHeading, "title")
+	_, _ = s.Section(ReleaseHeading, "[Unreleased]")
 
 	assertions.False(s.Introduction(), "title not expected")
 	assertions.True(s.Release(), "release expected")
@@ -52,9 +52,9 @@ func TestThreeLevelChangelogIsChange(t *testing.T) {
 	ck, _ := NewChangeKind("")
 	hf := NewHeadingFactory(ck)
 	s := NewChangelog(hf)
-	s.Section(IntroductionHeading, "title")
-	s.Section(ReleaseHeading, "[Unreleased]")
-	s.Section(ChangeHeading, "Added")
+	_, _ = s.Section(IntroductionHeading, "title")
+	_, _ = s.Section(ReleaseHeading, "[Unreleased]")
+	_, _ = s.Section(ChangeHeading, "Added")
 
 	assertions.False(s.Introduction(), "title not expected")
 	assertions.False(s.Release(), "release not expected")
@@ -73,7 +73,7 @@ func TestResetChangelogToInvalidHeadingShouldFail(t *testing.T) {
 	ck, _ := NewChangeKind("")
 	hf := NewHeadingFactory(ck)
 	s := NewChangelog(hf)
-	s.Section(IntroductionHeading, "title")
+	_, _ = s.Section(IntroductionHeading, "title")
 	_, err := s.Section(ReleaseHeading, "Unreleased")
 	require.Error(t, err)
 }
@@ -88,13 +88,13 @@ func TestResetFilledChangelogToZeroIsSameAsPushToEmptyChangelog(t *testing.T) {
 	s := NewChangelog(hf)
 	s.Listener(recorder)
 
-	s.Section(IntroductionHeading, "title")
+	_, _ = s.Section(IntroductionHeading, "title")
 	requireEventsEquals(assertions, &[]string{"Enter {title}"}, &recorder.events)
 
-	s.Section(ReleaseHeading, "[Unreleased]")
+	_, _ = s.Section(ReleaseHeading, "[Unreleased]")
 	requireEventsEquals(assertions, &[]string{"Enter {title}", "Enter {[Unreleased]}"}, &recorder.events)
 
-	s.Section(ChangeHeading, "Added")
+	_, _ = s.Section(ChangeHeading, "Added")
 	requireEventsEquals(assertions, &[]string{"Enter {title}", "Enter {[Unreleased]}", "Enter {Added}"}, &recorder.events)
 	assertions.Equal("{title}{[Unreleased]}{Added}", s.String())
 
@@ -114,13 +114,13 @@ func TestResetFilledChangelogToOneIsSameAsTwoPushToEmptyChangelog(t *testing.T) 
 	s := NewChangelog(hf)
 	s.Listener(recorder)
 
-	s.Section(IntroductionHeading, "title")
+	_, _ = s.Section(IntroductionHeading, "title")
 	requireEventsEquals(assertions, &[]string{"Enter {title}"}, &recorder.events)
 
-	s.Section(ReleaseHeading, "[Unreleased]")
+	_, _ = s.Section(ReleaseHeading, "[Unreleased]")
 	requireEventsEquals(assertions, &[]string{"Enter {title}", "Enter {[Unreleased]}"}, &recorder.events)
 
-	s.Section(ChangeHeading, "Added")
+	_, _ = s.Section(ChangeHeading, "Added")
 	requireEventsEquals(assertions, &[]string{"Enter {title}", "Enter {[Unreleased]}", "Enter {Added}"}, &recorder.events)
 	assertions.Equal("{title}{[Unreleased]}{Added}", s.String())
 

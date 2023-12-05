@@ -36,7 +36,7 @@ func (clq *Clq) entryPoint(name string, arguments ...string) int {
 	options := flag.NewFlagSet(name, flag.ContinueOnError)
 	options.SetOutput(clq.stderr)
 	options.Usage = func() {
-		fmt.Fprintf(options.Output(), "\nUsage: %s { flags } <path to changelog.md>\n\nOptions are:\n", options.Name())
+		_, _ = fmt.Fprintf(options.Output(), "\nUsage: %s { flags } <path to changelog.md>\n\nOptions are:\n", options.Name())
 		options.PrintDefaults()
 	}
 	var changeMap = options.String("changeMap", "", "Name of a file defining the mapping from change kind to semantic version change")
@@ -51,7 +51,7 @@ func (clq *Clq) entryPoint(name string, arguments ...string) int {
 	}
 
 	if *showVersion {
-		fmt.Fprintf(clq.stdout, "clq %v\n", version)
+		_, _ = fmt.Fprintf(clq.stdout, "clq %v\n", version)
 		return 0
 	}
 
@@ -128,25 +128,25 @@ func (clq *Clq) withFileName() bool {
 
 func (clq *Clq) error(document string, err error) {
 	if err, ok := err.(*os.PathError); ok {
-		fmt.Fprintf(clq.stderr, "❗️ %v: %v\n", err.Path, err.Err.Error())
+		_, _ = fmt.Fprintf(clq.stderr, "❗️ %v: %v\n", err.Path, err.Err.Error())
 		return
 	}
 
 	if clq.withFileName() && document != "" {
-		fmt.Fprintf(clq.stderr, "❗️ %v: %v\n", document, err)
+		_, _ = fmt.Fprintf(clq.stderr, "❗️ %v: %v\n", document, err)
 	} else {
-		fmt.Fprintf(clq.stderr, "❗️ %v\n", err)
+		_, _ = fmt.Fprintf(clq.stderr, "❗️ %v\n", err)
 	}
 }
 
 func (clq *Clq) output(document string, result string) {
 	if result == "" {
 		if clq.verbose {
-			fmt.Fprintf(clq.stdout, "✅ %v\n", document)
+			_, _ = fmt.Fprintf(clq.stdout, "✅ %v\n", document)
 		}
 	} else if clq.withFileName() {
-		fmt.Fprintf(clq.stdout, "✅ %v: %v\n", document, result)
+		_, _ = fmt.Fprintf(clq.stdout, "✅ %v: %v\n", document, result)
 	} else {
-		fmt.Fprintln(clq.stdout, result)
+		_, _ = fmt.Fprintln(clq.stdout, result)
 	}
 }
