@@ -1,6 +1,6 @@
 package changelog
 
-// a Listener is notified as a heading is visited
+// Listener is notified as a heading is visited
 type Listener interface {
 	// Enter is called when a heading is first met.
 	Enter(h Heading)

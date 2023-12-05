@@ -23,8 +23,8 @@ type Query interface {
 	isCollection() bool
 }
 
-// a project function projects the desired part of the heading in the output.OutputFormat.
-type project func(of output.OutputFormat, heading changelog.Heading)
+// a project function projects the desired part of the heading in the output.Format.
+type project func(of output.Format, heading changelog.Heading)
 
 // projections is a base type for all queries
 type projections struct {

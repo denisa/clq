@@ -8,7 +8,7 @@ import (
 	"github.com/denisa/clq/internal/output"
 )
 
-func (qe *QueryEngine) newReleaseQuery(selector string, isRecursive bool, queryElements []string) error {
+func (qe *Engine) newReleaseQuery(selector string, _ bool, queryElements []string) error {
 	i, err := strconv.Atoi(selector)
 	if err != nil {
 		return fmt.Errorf("Query release selector %q parsing error: %v", selector, err)
@@ -18,7 +18,7 @@ func (qe *QueryEngine) newReleaseQuery(selector string, isRecursive bool, queryE
 	qe.queries = append(qe.queries, queryMe)
 
 	if len(queryElements) == 0 {
-		queryMe.enter = func(of output.OutputFormat, h changelog.Heading) {
+		queryMe.enter = func(of output.Format, h changelog.Heading) {
 			if h, ok := h.(changelog.Release); ok {
 				of.SetField("version", h.Version())
 				of.SetField("date", h.Date())
@@ -46,7 +46,7 @@ func (qe *QueryEngine) newReleaseQuery(selector string, isRecursive bool, queryE
 		if err := elementIsFinal(elementName, elementIsList, queryElements[1:]); err != nil {
 			return err
 		}
-		queryMe.enter = func(of output.OutputFormat, h changelog.Heading) {
+		queryMe.enter = func(of output.Format, h changelog.Heading) {
 			if h, ok := h.(changelog.Release); ok {
 				of.Set(h.Date())
 			}
@@ -55,7 +55,7 @@ func (qe *QueryEngine) newReleaseQuery(selector string, isRecursive bool, queryE
 		if err := elementIsFinal(elementName, elementIsList, queryElements[1:]); err != nil {
 			return err
 		}
-		queryMe.enter = func(of output.OutputFormat, h changelog.Heading) {
+		queryMe.enter = func(of output.Format, h changelog.Heading) {
 			if h, ok := h.(changelog.Release); ok {
 				of.Set(h.Label())
 			}
@@ -64,7 +64,7 @@ func (qe *QueryEngine) newReleaseQuery(selector string, isRecursive bool, queryE
 		if err := elementIsFinal(elementName, elementIsList, queryElements[1:]); err != nil {
 			return err
 		}
-		queryMe.enter = func(of output.OutputFormat, h changelog.Heading) {
+		queryMe.enter = func(of output.Format, h changelog.Heading) {
 			if h, ok := h.(changelog.Release); ok {
 				if !h.HasBeenReleased() {
 					of.Set("unreleased")
@@ -81,7 +81,7 @@ func (qe *QueryEngine) newReleaseQuery(selector string, isRecursive bool, queryE
 		if err := elementIsFinal(elementName, elementIsList, queryElements[1:]); err != nil {
 			return err
 		}
-		queryMe.enter = func(of output.OutputFormat, h changelog.Heading) {
+		queryMe.enter = func(of output.Format, h changelog.Heading) {
 			if h, ok := h.(changelog.Release); ok {
 				of.Set(h.DisplayTitle())
 			}
@@ -90,7 +90,7 @@ func (qe *QueryEngine) newReleaseQuery(selector string, isRecursive bool, queryE
 		if err := elementIsFinal(elementName, elementIsList, queryElements[1:]); err != nil {
 			return err
 		}
-		queryMe.enter = func(of output.OutputFormat, h changelog.Heading) {
+		queryMe.enter = func(of output.Format, h changelog.Heading) {
 			if h, ok := h.(changelog.Release); ok {
 				of.Set(h.Version())
 			}

@@ -30,7 +30,7 @@ query.projections <|-- query.changeItemQuery
 abstract query.projections
 interface query.Query
 
-output.OutputFormat <|.. output.jsonResultCollector
-output.OutputFormat <|.. output.mdResultCollector
-interface output.OutputFormat
+output.Format <|.. output.jsonResultCollector
+output.Format <|.. output.mdResultCollector
+interface output.Format
 @enduml

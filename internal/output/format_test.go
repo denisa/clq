@@ -9,19 +9,19 @@ import (
 )
 
 func TestUnsupportedOutputFormat(t *testing.T) {
-	_, err := NewOutputFormat("yaml")
+	_, err := NewFormat("yaml")
 	require.Error(t, err)
 }
 
 func formatNoOutputDefined(format string) string {
-	of, _ := NewOutputFormat(format)
+	of, _ := NewFormat(format)
 	of.Open(newHeading(changelog.IntroductionHeading, "Changelog"))
 	of.Close(newHeading(changelog.IntroductionHeading, "Changelog"))
 	return of.Result()
 }
 
 func formatIntroductionHeading(format string) string {
-	of, _ := NewOutputFormat(format)
+	of, _ := NewFormat(format)
 	title := "Changelog"
 	h := newHeading(changelog.IntroductionHeading, title)
 	of.Open(h)
@@ -31,7 +31,7 @@ func formatIntroductionHeading(format string) string {
 }
 
 func formatReleaseHeading(format string) string {
-	of, _ := NewOutputFormat(format)
+	of, _ := NewFormat(format)
 	title := "[1.2.3] - 2020-05-16"
 	h := newHeading(changelog.ReleaseHeading, title)
 	of.Open(h)
@@ -41,7 +41,7 @@ func formatReleaseHeading(format string) string {
 }
 
 func formatChangeHeading(format string) string {
-	of, _ := NewOutputFormat(format)
+	of, _ := NewFormat(format)
 	title := "Added"
 	h := newHeading(changelog.ChangeHeading, title)
 	of.Open(h)
@@ -51,7 +51,7 @@ func formatChangeHeading(format string) string {
 }
 
 func formatChangeDescription(format string) string {
-	of, _ := NewOutputFormat(format)
+	of, _ := NewFormat(format)
 	title := "foo"
 	h := newHeading(changelog.ChangeDescription, title)
 	of.Open(h)
@@ -61,7 +61,7 @@ func formatChangeDescription(format string) string {
 }
 
 func formatLoneArray(format string) string {
-	of, _ := NewOutputFormat(format)
+	of, _ := NewFormat(format)
 
 	h := newHeading(changelog.ChangeHeading, "Added")
 	of.Open(h)

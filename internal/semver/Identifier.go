@@ -29,8 +29,9 @@ func (id Identifier) String() string {
 		return "prerelease"
 	case Build:
 		return "build"
+	default:
+		panic(fmt.Sprintf("${id} not defined"))
 	}
-	panic(fmt.Sprintf("${id} not defined"))
 }
 
 func NewIdentifier(name string) (Identifier, error) {

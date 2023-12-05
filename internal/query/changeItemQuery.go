@@ -7,7 +7,7 @@ import (
 	"github.com/denisa/clq/internal/output"
 )
 
-func (qe *QueryEngine) newChangeItemQuery(selector string, isRecursive bool, queryElements []string) error {
+func (qe *Engine) newChangeItemQuery(selector string, _ bool, queryElements []string) error {
 	if selector != "" {
 		return fmt.Errorf("Query change selector %q not yet supported", selector)
 	}
@@ -16,7 +16,7 @@ func (qe *QueryEngine) newChangeItemQuery(selector string, isRecursive bool, que
 	}
 	queryMe := &changeItemQuery{}
 	queryMe.collection = true
-	queryMe.exit = func(of output.OutputFormat, h changelog.Heading) {
+	queryMe.exit = func(of output.Format, h changelog.Heading) {
 		if h, ok := h.(changelog.ChangeItem); ok {
 			of.Set(h.DisplayTitle())
 		}

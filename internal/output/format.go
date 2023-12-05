@@ -6,16 +6,16 @@ import (
 	"github.com/denisa/clq/internal/changelog"
 )
 
-// OutputFormat exposes to the rest of the application the plugin mechanism
+// Format exposes to the rest of the application the plugin mechanism
 // through which multiple output formats are supported.
-type OutputFormat interface {
+type Format interface {
 	// Result a string representation of the query result.
 	Result() string
-	// open is called when a heading is first met.
+	// Open is called when a heading is first met.
 	Open(heading changelog.Heading)
 	// Close is called when all of a heading’s children have been visited.
 	Close(heading changelog.Heading)
-	// SetCollection lets the OutputFormat knows that the query will produce a
+	// SetCollection lets the Format knows that the query will produce a
 	// collection of results.
 	SetCollection()
 	Set(value string)
@@ -23,7 +23,7 @@ type OutputFormat interface {
 	Array(name string)
 }
 
-func NewOutputFormat(formatName string) (OutputFormat, error) {
+func NewFormat(formatName string) (Format, error) {
 	switch formatName {
 	case "json":
 		return &jsonResultCollector{}, nil

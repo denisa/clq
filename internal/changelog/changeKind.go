@@ -40,11 +40,11 @@ func NewChangeKind(fileName string) (*ChangeKind, error) {
 }
 
 // Returns the increment kind to apply for a set of change kinds and the reason for it.
-func (m ChangeKind) IncrementFor(c ChangeMap) (semver.Identifier, string) {
+func (ck ChangeKind) IncrementFor(c ChangeMap) (semver.Identifier, string) {
 	increment := semver.Build
 	trigger := ""
 	for k := range c {
-		if val, ok := m.changes[k]; ok && val.semver < increment {
+		if val, ok := ck.changes[k]; ok && val.semver < increment {
 			increment = val.semver
 			trigger = k
 		}
@@ -52,28 +52,28 @@ func (m ChangeKind) IncrementFor(c ChangeMap) (semver.Identifier, string) {
 	return increment, trigger
 }
 
-func (m ChangeKind) add(name string, increment semver.Identifier, emoji string) error {
+func (ck ChangeKind) add(name string, increment semver.Identifier, emoji string) error {
 	if strings.TrimSpace(name) == "" {
 		return fmt.Errorf("Validation error: \"name\" is blank")
 	}
 
-	m.changes[name] = config{semver: increment, emoji: emoji}
+	ck.changes[name] = config{semver: increment, emoji: emoji}
 	return nil
 }
 
-func (m ChangeKind) keysOf() string {
+func (ck ChangeKind) keysOf() string {
 	var result []string
-	semver.ForEach(func(i semver.Identifier) error {
-		result = append(result, m.keysFor(i)...)
+	_ = semver.ForEach(func(i semver.Identifier) error {
+		result = append(result, ck.keysFor(i)...)
 		return nil
 	})
 	sort.Strings(result)
 	return strings.Join(result, ", ")
 }
 
-func (m ChangeKind) keysFor(kind semver.Identifier) []string {
+func (ck ChangeKind) keysFor(kind semver.Identifier) []string {
 	var result []string
-	for k, l := range m.changes {
+	for k, l := range ck.changes {
 		if l.semver == kind {
 			result = append(result, k)
 		}
@@ -81,9 +81,9 @@ func (m ChangeKind) keysFor(kind semver.Identifier) []string {
 	return result
 }
 
-func (m ChangeKind) emojiFor(title string) (string, error) {
-	if c, ok := m.changes[title]; ok {
+func (ck ChangeKind) emojiFor(title string) (string, error) {
+	if c, ok := ck.changes[title]; ok {
 		return c.emoji, nil
 	}
-	return "", fmt.Errorf("Validation error: Unknown change heading %q is not one of [%v]", title, m.keysOf())
+	return "", fmt.Errorf("Validation error: Unknown change heading %q is not one of [%v]", title, ck.keysOf())
 }

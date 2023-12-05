@@ -16,7 +16,7 @@ type Heading interface {
 	Title() string
 	// DisplayTitle is the title to be displayed
 	DisplayTitle() string
-	// The HeadingKind of the section
+	// Kind is the HeadingKind for the section
 	Kind() HeadingKind
 	String() string
 }

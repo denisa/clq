@@ -7,7 +7,7 @@ import (
 	"github.com/denisa/clq/internal/output"
 )
 
-func (qe *QueryEngine) newIntroductionQuery(queryElements []string) error {
+func (qe *Engine) newIntroductionQuery(queryElements []string) error {
 	queryMe := &changelogQuery{}
 	qe.queries = append(qe.queries, queryMe)
 
@@ -30,7 +30,7 @@ func (qe *QueryEngine) newIntroductionQuery(queryElements []string) error {
 		if err := elementIsFinal(elementName, elementIsList, queryElements[1:]); err != nil {
 			return err
 		}
-		queryMe.enter = func(of output.OutputFormat, h changelog.Heading) {
+		queryMe.enter = func(of output.Format, h changelog.Heading) {
 			if h, ok := h.(changelog.Introduction); ok {
 				of.Set(h.DisplayTitle())
 			}

@@ -41,7 +41,7 @@ func (rc *jsonResultCollector) Open(heading changelog.Heading) {
 	rc.results = append(rc.results, opened)
 }
 
-func (rc *jsonResultCollector) Close(heading changelog.Heading) {
+func (rc *jsonResultCollector) Close(_ changelog.Heading) {
 	i := len(rc.results) - 1
 	if i == -1 {
 		return

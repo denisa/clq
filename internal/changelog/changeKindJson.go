@@ -22,9 +22,9 @@ type ByName struct{ ChangeKindsDto }
 
 func (s ByName) Less(i, j int) bool { return s.ChangeKindsDto[i].Name < s.ChangeKindsDto[j].Name }
 
-func (c ChangeKind) MarshalJSON() ([]byte, error) {
+func (ck ChangeKind) MarshalJSON() ([]byte, error) {
 	var result ChangeKindsDto
-	for k, l := range c.changes {
+	for k, l := range ck.changes {
 		result = append(result, &ChangeKindDto{Name: k, Increment: l.semver.String(), Emoji: l.emoji})
 	}
 	// enforcing arbitrary order for testing
@@ -32,7 +32,7 @@ func (c ChangeKind) MarshalJSON() ([]byte, error) {
 	return json.Marshal(result)
 }
 
-func (u *ChangeKind) UnmarshalJSON(data []byte) error {
+func (ck *ChangeKind) UnmarshalJSON(data []byte) error {
 	var dto ChangeKindsDto
 	if err := json.Unmarshal(data, &dto); err != nil {
 		return err
@@ -42,7 +42,7 @@ func (u *ChangeKind) UnmarshalJSON(data []byte) error {
 		if err != nil {
 			return fmt.Errorf("Error parsing  %q: %q", val.Name, err)
 		}
-		if err := u.add(val.Name, inc, val.Emoji); err != nil {
+		if err := ck.add(val.Name, inc, val.Emoji); err != nil {
 			return err
 		}
 	}
