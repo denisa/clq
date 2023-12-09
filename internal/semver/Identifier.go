@@ -1,10 +1,10 @@
-// Helpers to work with semantic version.
+// Package semver provides helpers to work with semantic version.
 // Complements "github.com/blang/semver/v4"
 package semver
 
 import "fmt"
 
-// Constants to reason about the parts (eg identifiers) of a semantic version
+// Identifier provides constants to reason about the parts (eg identifiers) of a semantic version
 type Identifier int
 
 const (

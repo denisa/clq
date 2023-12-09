@@ -1,4 +1,4 @@
-// The changelog package keeps track of the current state during the traversal of a changelog document.
+// Package changelog keeps track of the current state during the traversal of a changelog document.
 // Things are named according to entries in the grammar.
 package changelog
 

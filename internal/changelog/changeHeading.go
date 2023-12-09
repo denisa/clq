@@ -2,7 +2,7 @@ package changelog
 
 import "fmt"
 
-// Level 3, change groups
+// Change is a level 3 heaading indicating a change kind
 type Change struct {
 	heading
 	emoji string

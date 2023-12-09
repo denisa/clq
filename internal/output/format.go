@@ -1,3 +1,4 @@
+// Package output provides for a plugin mechanism through which multiple output formats are supported.
 package output
 
 import (

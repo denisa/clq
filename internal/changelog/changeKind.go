@@ -16,12 +16,12 @@ type config struct {
 }
 type changeKindToConfig map[string]config
 
-// Collects information about the supported change headers
+// ChangeKind collects information about the supported change headers
 type ChangeKind struct {
 	changes changeKindToConfig
 }
 
-// Loads a new ChangeKind from a file
+// NewChangeKind loads a new ChangeKind from a file
 func NewChangeKind(fileName string) (*ChangeKind, error) {
 	if fileName == "" {
 		return &ChangeKind{changes: changeKindToConfig{"Added": {semver.Major, ""}, "Removed": {semver.Major, ""}, "Changed": {semver.Minor, ""}, "Deprecated": {semver.Minor, ""}, "Fixed": {semver.Patch, ""}, "Security": {semver.Patch, ""}}}, nil
@@ -39,7 +39,7 @@ func NewChangeKind(fileName string) (*ChangeKind, error) {
 	return c, nil
 }
 
-// Returns the increment kind to apply for a set of change kinds and the reason for it.
+// IncrementFor returns the increment kind to apply for a set of change kinds and the reason for it.
 func (ck ChangeKind) IncrementFor(c ChangeMap) (semver.Identifier, string) {
 	increment := semver.Build
 	trigger := ""

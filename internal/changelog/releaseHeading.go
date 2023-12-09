@@ -10,7 +10,7 @@ import (
 	semverConstants "github.com/denisa/clq/internal/semver"
 )
 
-// Level 2, release
+// ChangeMap is a level 2 heaading indicating a release
 type ChangeMap map[string]bool
 
 func (c ChangeMap) String() string {
@@ -88,7 +88,7 @@ func (h Release) String() string {
 	return asPath(h.title)
 }
 
-// Version returns the release date if this has been released, an empty string otherwise.
+// Date returns the release date if this has been released, an empty string otherwise.
 func (h Release) Date() string {
 	if h.HasBeenReleased() {
 		return h.date.Format("2006-01-02")
@@ -96,7 +96,7 @@ func (h Release) Date() string {
 	return ""
 }
 
-// Version returns the optional label of this release.
+// Label returns the optional label of this release.
 func (h Release) Label() string {
 	return h.label
 }
