@@ -103,21 +103,21 @@ func TestScenarios(t *testing.T) {
 	}
 }
 
-func (scenario Scenario) executeClq(assertions *assert.Assertions) {
+func (s Scenario) executeClq(assertions *assert.Assertions) {
 	var actualOutput strings.Builder
 	var actualErr strings.Builder
-	clq := &Clq{stdin: strings.NewReader(scenario.Input), stdout: &actualOutput, stderr: &actualErr}
+	clq := &Clq{stdin: strings.NewReader(s.Input), stdout: &actualOutput, stderr: &actualErr}
 
-	var actualCode = clq.entryPoint("clq", scenario.Arguments...)
+	var actualCode = clq.entryPoint("clq", s.Arguments...)
 
-	assertions.Equal(scenario.Result, actualCode)
-	switch scenario.OutputFormat {
+	assertions.Equal(s.Result, actualCode)
+	switch s.OutputFormat {
 	case "json":
-		assertions.JSONEq(scenario.Output, actualOutput.String())
+		assertions.JSONEq(s.Output, actualOutput.String())
 	default:
-		assertions.Equal(scenario.Output, actualOutput.String())
+		assertions.Equal(s.Output, actualOutput.String())
 	}
-	assertions.Equal(scenario.Error, actualErr.String())
+	assertions.Equal(s.Error, actualErr.String())
 }
 
 func allTestFiles(t *testing.T) map[string]bool {
