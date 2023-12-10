@@ -3,23 +3,11 @@ package changelog
 import (
 	"fmt"
 	"regexp"
-	"strings"
 	"time"
 
 	"github.com/blang/semver/v4"
 	semverConstants "github.com/denisa/clq/internal/semver"
 )
-
-// ChangeMap is a level 2 heaading indicating a release
-type ChangeMap map[string]bool
-
-func (c ChangeMap) String() string {
-	var changes []string
-	for k := range c {
-		changes = append(changes, k)
-	}
-	return strings.Join(changes, ", ")
-}
 
 type Release struct {
 	heading
