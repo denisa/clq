@@ -25,7 +25,7 @@ Run `make superlinter` to lint the complete project.
 
 ## Architecture
 
-![Class diagram](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/denisa/clq/main/docs/class_diagram.puml)
+![Class diagram](https://denisa.github.io/clq/class_diagram.png)
 
 ## Processes
 

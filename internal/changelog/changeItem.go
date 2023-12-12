@@ -2,7 +2,7 @@ package changelog
 
 import "fmt"
 
-// A single change item description
+// ChangeItem is a list item, a single change under a Change heading
 type ChangeItem struct {
 	heading
 }

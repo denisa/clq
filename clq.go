@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"errors"
 	"flag"
 	"fmt"
 	"io"
@@ -127,8 +128,9 @@ func (clq *Clq) withFileName() bool {
 }
 
 func (clq *Clq) error(document string, err error) {
-	if err, ok := err.(*os.PathError); ok {
-		_, _ = fmt.Fprintf(clq.stderr, "❗️ %v: %v\n", err.Path, err.Err.Error())
+	var pathErr *os.PathError
+	if errors.As(err, &pathErr) {
+		_, _ = fmt.Fprintf(clq.stderr, "❗️ %v: %v\n", pathErr.Path, pathErr.Err.Error())
 		return
 	}
 

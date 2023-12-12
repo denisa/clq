@@ -1,0 +1,31 @@
+---
+name: plantuml
+
+on: [ push, pull_request ]
+
+jobs:
+  plantuml:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: docker://plantuml/plantuml:1.2023.13
+        env:
+          GIT_REPO_URL: ${{ github.server_url }}/${{ github.repository }}/
+        with:
+          args: "-v -o /github/workspace/_site docs/"
+      - uses: actions/upload-pages-artifact@v1
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: plantuml
+    if: github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v1

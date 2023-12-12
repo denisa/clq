@@ -4,7 +4,7 @@ import (
 	"fmt"
 )
 
-// Level 1, introduction
+// Introduction is a level 1 heaading indicating the introduction
 type Introduction struct {
 	heading
 }

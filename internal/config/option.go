@@ -18,7 +18,7 @@ func (o *withChangeKind) SetValidationOption(c *Config) {
 	c.changeKind = o.value
 }
 
-// withChangeKind is a functional option that allow you to set the supported
+// WithChangeKind is a functional option that allow you to set the supported
 // change kinds.
 func WithChangeKind(changeKind *changelog.ChangeKind) interface {
 	Option
@@ -35,7 +35,7 @@ func (o *withListener) SetValidationOption(c *Config) {
 	c.listener = o.value
 }
 
-// withListener is a functional option that allow you to set the changelog event
+// WithListener is a functional option that allow you to set the changelog event
 // Listener.
 func WithListener(listener changelog.Listener) interface {
 	Option

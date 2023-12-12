@@ -1,3 +1,4 @@
+// Package config provides methods to track choices made on the command line
 package config
 
 import (

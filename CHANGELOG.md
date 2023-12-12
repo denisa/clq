@@ -18,6 +18,14 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
   - `Fixed` for any bugfixes.
   - `Security` in case of vulnerabilities.
 
+## [1.8.2] - 2023-12-12
+
+### Fixed
+
+- Renders puml to GitHub page
+- Resolve more warnings raised by Fleet
+- Bumps actions/setup-go from 4 to 5
+
 ## [1.8.1] - 2023-12-04
 
 ### Fixed

@@ -1,4 +1,4 @@
-// query is a simple streaming query language to identify parts of a CHANGELOG.
+// Package query implements a simple streaming query language to identify parts of a CHANGELOG.
 // The query language is inspired by xpath: it consists of a sequence of individual
 // queries, one for each Heading traversed from the root, the changelog itself, to the
 // desired element.
@@ -11,13 +11,13 @@ import (
 
 // Query is the query for a single heading.
 type Query interface {
-	// enter returns true if this query element accepts this kind of heading.
+	// Accept returns true if this query element accepts this kind of heading.
 	Accept(heading changelog.Heading) bool
-	// enter returns true if the given heading fulfils the query expression.
-	// enter might write to the buffer part of the query result.
+	// Enter returns true if the given heading fulfils the query expression.
+	// Enter might write to the buffer part of the query result.
 	Enter(heading changelog.Heading) (bool, project)
-	// exit returns true if the given heading fulfils the query expression.
-	// exit might write to the buffer part of the query result.
+	// Exit returns true if the given heading fulfils the query expression.
+	// Exit might write to the buffer part of the query result.
 	Exit(heading changelog.Heading) (bool, project)
 	// isCollection returns true is this query produces a collection of results
 	isCollection() bool
