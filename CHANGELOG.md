@@ -22,7 +22,7 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
 
 ### Fixed
 
-- Renders puml to github page
+- Renders puml to GitHub page
 - Resolve more warnings raised by Fleet
 
 ## [1.8.1] - 2023-12-04
