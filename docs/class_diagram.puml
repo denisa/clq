@@ -5,20 +5,23 @@ hide empty members
 "github.com/yuin/goldmark/renderer.NodeValidator" <|-- validator.Validator
 
 validator.Validator *-- changelog.Changelog
+validator.Validator *-- changelog.ChangeMap
+validator.Validator *-- changelog.Release
 
-changelog.Changelog "1" *-- "1" changelog.ChangeKind
+changelog.HeadingFactory "1" *-- "1" changelog.ChangeKind
 changelog.Changelog "1" *-- "*" changelog.Heading
+changelog.Changelog "1" *-- "*" changelog.HeadingFactory
 changelog.Changelog "1" *-- "*" changelog.Listener
 changelog.Heading <|.. changelog.changeHeading
 changelog.Heading <|.. changelog.changeItem
 changelog.Heading <|.. changelog.introductionHeading
 changelog.Heading <|.. changelog.releaseHeading
-changelog.Listener <|.. query.QueryEngine
+changelog.Listener <|.. query.Engine
 interface changelog.Heading
 interface changelog.Listener
 
-query.QueryEngine *-- output.OutputFormat
-query.QueryEngine "1" *-- "*" query.Query
+query.Engine *-- output.Format
+query.Engine "1" *-- "*" query.Query
 query.Query <|.. query.changelogQuery
 query.Query <|.. query.releaseQuery
 query.Query <|.. query.changeQuery
