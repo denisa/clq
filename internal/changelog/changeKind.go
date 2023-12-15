@@ -54,7 +54,7 @@ func (ck ChangeKind) IncrementFor(c ChangeMap) (semver.Identifier, string) {
 
 func (ck ChangeKind) add(name string, increment semver.Identifier, emoji string) error {
 	if strings.TrimSpace(name) == "" {
-		return fmt.Errorf("Validation error: \"name\" is blank")
+		return fmt.Errorf("validation error: \"name\" is blank")
 	}
 
 	ck.changes[name] = config{semver: increment, emoji: emoji}
@@ -85,5 +85,5 @@ func (ck ChangeKind) emojiFor(title string) (string, error) {
 	if c, ok := ck.changes[title]; ok {
 		return c.emoji, nil
 	}
-	return "", fmt.Errorf("Validation error: Unknown change heading %q is not one of [%v]", title, ck.keysOf())
+	return "", fmt.Errorf("validation error: Unknown change heading %q is not one of [%v]", title, ck.keysOf())
 }

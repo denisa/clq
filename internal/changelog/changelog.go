@@ -59,7 +59,7 @@ func (c *Changelog) Close() {
 // Section creates and returns the section’s Heading
 func (c *Changelog) Section(kind HeadingKind, title string) (Heading, error) {
 	if kind > HeadingKind(len(c.headings)) {
-		return nil, fmt.Errorf("Attempting to roll-back a changelog at %v to %v", len(c.headings), kind)
+		return nil, fmt.Errorf("attempting to roll-back a changelog at %v to %v", len(c.headings), kind)
 	}
 
 	h, err := c.headingsFactory.NewHeading(kind, title)

@@ -38,6 +38,6 @@ func TestForEach(t *testing.T) {
 
 func TestForEachReturnsError(t *testing.T) {
 	require.Error(t, ForEach(func(arg1 Identifier) error {
-		return fmt.Errorf("Dummy error")
+		return fmt.Errorf("dummy error")
 	}))
 }

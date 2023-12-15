@@ -18,6 +18,12 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
   - `Fixed` for any bugfixes.
   - `Security` in case of vulnerabilities.
 
+## [1.8.3] - 2023-12-15
+
+### Fixed
+
+- Error strings should not be capitalized or end with punctuation.
+
 ## [1.8.2] - 2023-12-12
 
 ### Fixed

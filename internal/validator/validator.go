@@ -58,10 +58,10 @@ func (r *Validator) RegisterFuncs(reg renderer.NodeRendererFuncRegisterer) {
 func (r *Validator) visitDocument(_ util.BufWriter, _ []byte, _ ast.Node, entering bool) (ast.WalkStatus, error) {
 	if !entering {
 		if !r.h1Released && !r.h1Unreleased {
-			return ast.WalkStop, fmt.Errorf("Validation error: No release defined in changelog")
+			return ast.WalkStop, fmt.Errorf("validation error: No release defined in changelog")
 		}
 		if (r.headers.Release() || r.headers.Change()) && !r.hasChangeDescriptions {
-			return ast.WalkStop, fmt.Errorf("No change descriptions for %v", r.headers)
+			return ast.WalkStop, fmt.Errorf("no change descriptions for %v", r.headers)
 		}
 		r.headers.Close()
 	}
@@ -76,7 +76,7 @@ func (r *Validator) visitHeading(_ util.BufWriter, _ []byte, node ast.Node, ente
 
 	n := node.(*ast.Heading)
 	if !r.hasIntroductionHeading && n.Level > 1 {
-		return ast.WalkStop, fmt.Errorf("Validation error: Introduction’s title must be defined")
+		return ast.WalkStop, fmt.Errorf("validation error: Introduction’s title must be defined")
 	}
 
 	switch n.Level {
@@ -88,7 +88,7 @@ func (r *Validator) visitHeading(_ util.BufWriter, _ []byte, node ast.Node, ente
 		r.hasIntroductionHeading = true
 	case 2:
 		if (r.headers.Release() || r.headers.Change()) && !r.hasChangeDescriptions {
-			if err := fmt.Errorf("No change descriptions for %v", r.headers); err != nil {
+			if err := fmt.Errorf("no change descriptions for %v", r.headers); err != nil {
 				return ast.WalkStop, err
 			}
 		} else {
@@ -107,7 +107,7 @@ func (r *Validator) visitHeading(_ util.BufWriter, _ []byte, node ast.Node, ente
 				increment, trigger := changeKind.IncrementFor(r.changes)
 				nextRelease := release.NextRelease(increment)
 				if !r.previousRelease.ReleaseIs(nextRelease) {
-					return ast.WalkStop, fmt.Errorf("Release %q should have version %v because of %q", r.previousRelease.Title(), nextRelease, trigger)
+					return ast.WalkStop, fmt.Errorf("release %q should have version %v because of %q", r.previousRelease.Title(), nextRelease, trigger)
 				}
 			}
 
@@ -122,10 +122,10 @@ func (r *Validator) visitHeading(_ util.BufWriter, _ []byte, node ast.Node, ente
 		}
 	case 3:
 		if r.headers.Introduction() {
-			return ast.WalkStop, fmt.Errorf("Changes must be in a release %v", r.headers)
+			return ast.WalkStop, fmt.Errorf("changes must be in a release %v", r.headers)
 		}
 		if r.headers.Change() && !r.hasChangeDescriptions {
-			return ast.WalkStop, fmt.Errorf("No change descriptions for %v", r.headers)
+			return ast.WalkStop, fmt.Errorf("no change descriptions for %v", r.headers)
 		}
 
 		h, err := r.headers.Section(changelog.ChangeHeading, r.text.String())
@@ -145,18 +145,18 @@ func (r *Validator) visitHeading(_ util.BufWriter, _ []byte, node ast.Node, ente
 func (r *Validator) validateReleaseHeading(release changelog.Release) error {
 	if !release.HasBeenReleased() {
 		if r.release {
-			return fmt.Errorf("Validation error: \"[Unreleased]\" not supported in release mode %v", r.headers)
+			return fmt.Errorf("validation error: \"[Unreleased]\" not supported in release mode %v", r.headers)
 		}
 		if r.h1Unreleased {
-			return fmt.Errorf("Validation error: Multiple \"[Unreleased]\" not supported %v", r.headers)
+			return fmt.Errorf("validation error: Multiple \"[Unreleased]\" not supported %v", r.headers)
 		}
 		if r.h1Released {
-			return fmt.Errorf("Validation error: \"[Unreleased]\" must come before any release %v", r.headers)
+			return fmt.Errorf("validation error: \"[Unreleased]\" must come before any release %v", r.headers)
 		}
 	} else {
 		if release.HasBeenYanked() {
 			if !r.h1Released && !r.h1Unreleased {
-				return fmt.Errorf("Validation error: Changelog cannot start with a \"[YANKED]\" release, insert a release or a \"[Unreleased]\" first %v", r.headers)
+				return fmt.Errorf("validation error: Changelog cannot start with a \"[YANKED]\" release, insert a release or a \"[Unreleased]\" first %v", r.headers)
 			}
 		}
 		if r.previousRelease.HasBeenReleased() {
@@ -170,7 +170,7 @@ func (r *Validator) validateReleaseHeading(release changelog.Release) error {
 
 func (r *Validator) validateChangeHeading(change changelog.Change) error {
 	if r.changes[change.Title()] {
-		return fmt.Errorf("Validation error: Multiple headings %q not supported %v", change.Title(), r.headers)
+		return fmt.Errorf("validation error: Multiple headings %q not supported %v", change.Title(), r.headers)
 	}
 	r.changes[change.Title()] = true
 	return nil

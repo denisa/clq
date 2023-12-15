@@ -104,17 +104,17 @@ func parseName(element string) (name, selector string, isList, isRecursive bool,
 	closeBracketIndex := strings.Index(element, "]")
 	if openBracketIndex != -1 {
 		if closeBracketIndex < openBracketIndex {
-			err = fmt.Errorf("Missing closing bracket in %q", element)
+			err = fmt.Errorf("missing closing bracket in %q", element)
 			return
 		}
 		isList = true
 	} else if closeBracketIndex != -1 {
-		err = fmt.Errorf("Missing opening bracket in %q", element)
+		err = fmt.Errorf("missing opening bracket in %q", element)
 		return
 	}
 	isRecursive = strings.HasSuffix(element, "/")
 	if !isList && isRecursive {
-		err = fmt.Errorf("Missing closing bracket in %q", element)
+		err = fmt.Errorf("missing closing bracket in %q", element)
 		return
 	}
 	if isList {
@@ -131,7 +131,7 @@ func elementIsFinal(name string, isList bool, elements []string) error {
 		return fmt.Errorf("%q is a scalar attribute", name)
 	}
 	if len(elements) != 0 {
-		return fmt.Errorf("No further query element allowed after %q", name)
+		return fmt.Errorf("no further query element allowed after %q", name)
 	}
 	return nil
 }
