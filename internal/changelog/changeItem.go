@@ -9,7 +9,7 @@ type ChangeItem struct {
 
 func (h HeadingsFactory) newChangeItem(title string) (Heading, error) {
 	if title == "" {
-		return nil, fmt.Errorf("Validation error: change description cannot stay empty")
+		return nil, fmt.Errorf("validation error: change description cannot stay empty")
 	}
 	return ChangeItem{heading{title: title, kind: ChangeDescription}}, nil
 }

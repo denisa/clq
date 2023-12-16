@@ -9,7 +9,7 @@ import (
 
 func (qe *Engine) newChangeQuery(selector string, isRecursive bool, queryElements []string) error {
 	if selector != "" {
-		return fmt.Errorf("Query change selector %q not yet supported", selector)
+		return fmt.Errorf("query change selector %q not yet supported", selector)
 	}
 
 	queryMe := &changeQuery{}
@@ -42,7 +42,7 @@ func (qe *Engine) newChangeQuery(selector string, isRecursive bool, queryElement
 
 	switch elementName {
 	default:
-		return fmt.Errorf("Query attribute not recognized %q for a \"change\"", elementName)
+		return fmt.Errorf("query attribute not recognized %q for a \"change\"", elementName)
 	case "descriptions":
 		if err := elementIsCollection(elementName, elementIsList); err != nil {
 			return err

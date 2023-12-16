@@ -22,7 +22,7 @@ type Validator struct {
 	h1Released, h1Unreleased bool
 	changes                  changelog.ChangeMap
 	hasChangeDescriptions    bool
-	headers                  changelog.Changelog
+	changelog                *changelog.Changelog
 	previousRelease          changelog.Release
 }
 
@@ -33,11 +33,11 @@ func NewValidator(config config.Config) renderer.NodeRenderer {
 		release:    config.IsRelease(),
 		changeKind: config.ChangeKind(),
 		changes:    make(changelog.ChangeMap),
-		headers:    changelog.NewChangelog(hf),
+		changelog:  changelog.NewChangelog(hf),
 	}
 
 	if ok, listeners := config.Listeners(); ok {
-		r.headers.Listener(listeners)
+		r.changelog.Listener(listeners)
 	}
 
 	return r
@@ -58,12 +58,12 @@ func (r *Validator) RegisterFuncs(reg renderer.NodeRendererFuncRegisterer) {
 func (r *Validator) visitDocument(_ util.BufWriter, _ []byte, _ ast.Node, entering bool) (ast.WalkStatus, error) {
 	if !entering {
 		if !r.h1Released && !r.h1Unreleased {
-			return ast.WalkStop, fmt.Errorf("Validation error: No release defined in changelog")
+			return ast.WalkStop, fmt.Errorf("validation error: No release defined in changelog")
 		}
-		if (r.headers.Release() || r.headers.Change()) && !r.hasChangeDescriptions {
-			return ast.WalkStop, fmt.Errorf("No change descriptions for %v", r.headers)
+		if (r.changelog.Release() || r.changelog.Change()) && !r.hasChangeDescriptions {
+			return ast.WalkStop, fmt.Errorf("no change descriptions for %v", r.changelog)
 		}
-		r.headers.Close()
+		r.changelog.Close()
 	}
 	return ast.WalkContinue, nil
 }
@@ -76,23 +76,21 @@ func (r *Validator) visitHeading(_ util.BufWriter, _ []byte, node ast.Node, ente
 
 	n := node.(*ast.Heading)
 	if !r.hasIntroductionHeading && n.Level > 1 {
-		return ast.WalkStop, fmt.Errorf("Validation error: Introduction’s title must be defined")
+		return ast.WalkStop, fmt.Errorf("validation error: Introduction’s title must be defined")
 	}
 
 	switch n.Level {
 	case 1:
-		_, err := r.headers.Section(changelog.IntroductionHeading, r.text.String())
+		_, err := r.changelog.Section(changelog.IntroductionHeading, r.text.String())
 		if err != nil {
 			return ast.WalkStop, err
 		}
 		r.hasIntroductionHeading = true
 	case 2:
-		if (r.headers.Release() || r.headers.Change()) && !r.hasChangeDescriptions {
-			if err := fmt.Errorf("No change descriptions for %v", r.headers); err != nil {
-				return ast.WalkStop, err
-			}
+		if (r.changelog.Release() || r.changelog.Change()) && !r.hasChangeDescriptions {
+			return ast.WalkStop, fmt.Errorf("no change descriptions for %v", r.changelog)
 		} else {
-			h, err := r.headers.Section(changelog.ReleaseHeading, r.text.String())
+			h, err := r.changelog.Section(changelog.ReleaseHeading, r.text.String())
 			if err != nil {
 				return ast.WalkStop, err
 			}
@@ -107,7 +105,7 @@ func (r *Validator) visitHeading(_ util.BufWriter, _ []byte, node ast.Node, ente
 				increment, trigger := changeKind.IncrementFor(r.changes)
 				nextRelease := release.NextRelease(increment)
 				if !r.previousRelease.ReleaseIs(nextRelease) {
-					return ast.WalkStop, fmt.Errorf("Release %q should have version %v because of %q", r.previousRelease.Title(), nextRelease, trigger)
+					return ast.WalkStop, fmt.Errorf("release %q should have version %v because of %q", r.previousRelease.Title(), nextRelease, trigger)
 				}
 			}
 
@@ -121,14 +119,14 @@ func (r *Validator) visitHeading(_ util.BufWriter, _ []byte, node ast.Node, ente
 			r.previousRelease = release
 		}
 	case 3:
-		if r.headers.Introduction() {
-			return ast.WalkStop, fmt.Errorf("Changes must be in a release %v", r.headers)
+		if r.changelog.Introduction() {
+			return ast.WalkStop, fmt.Errorf("changes must be in a release %v", r.changelog)
 		}
-		if r.headers.Change() && !r.hasChangeDescriptions {
-			return ast.WalkStop, fmt.Errorf("No change descriptions for %v", r.headers)
+		if r.changelog.Change() && !r.hasChangeDescriptions {
+			return ast.WalkStop, fmt.Errorf("no change descriptions for %v", r.changelog)
 		}
 
-		h, err := r.headers.Section(changelog.ChangeHeading, r.text.String())
+		h, err := r.changelog.Section(changelog.ChangeHeading, r.text.String())
 		if err != nil {
 			return ast.WalkStop, err
 		}
@@ -145,18 +143,18 @@ func (r *Validator) visitHeading(_ util.BufWriter, _ []byte, node ast.Node, ente
 func (r *Validator) validateReleaseHeading(release changelog.Release) error {
 	if !release.HasBeenReleased() {
 		if r.release {
-			return fmt.Errorf("Validation error: \"[Unreleased]\" not supported in release mode %v", r.headers)
+			return fmt.Errorf("validation error: \"[Unreleased]\" not supported in release mode %v", r.changelog)
 		}
 		if r.h1Unreleased {
-			return fmt.Errorf("Validation error: Multiple \"[Unreleased]\" not supported %v", r.headers)
+			return fmt.Errorf("validation error: Multiple \"[Unreleased]\" not supported %v", r.changelog)
 		}
 		if r.h1Released {
-			return fmt.Errorf("Validation error: \"[Unreleased]\" must come before any release %v", r.headers)
+			return fmt.Errorf("validation error: \"[Unreleased]\" must come before any release %v", r.changelog)
 		}
 	} else {
 		if release.HasBeenYanked() {
 			if !r.h1Released && !r.h1Unreleased {
-				return fmt.Errorf("Validation error: Changelog cannot start with a \"[YANKED]\" release, insert a release or a \"[Unreleased]\" first %v", r.headers)
+				return fmt.Errorf("validation error: Changelog cannot start with a \"[YANKED]\" release, insert a release or a \"[Unreleased]\" first %v", r.changelog)
 			}
 		}
 		if r.previousRelease.HasBeenReleased() {
@@ -170,7 +168,7 @@ func (r *Validator) validateReleaseHeading(release changelog.Release) error {
 
 func (r *Validator) validateChangeHeading(change changelog.Change) error {
 	if r.changes[change.Title()] {
-		return fmt.Errorf("Validation error: Multiple headings %q not supported %v", change.Title(), r.headers)
+		return fmt.Errorf("validation error: Multiple headings %q not supported %v", change.Title(), r.changelog)
 	}
 	r.changes[change.Title()] = true
 	return nil
@@ -217,8 +215,8 @@ func (r *Validator) visitListItem(_ util.BufWriter, _ []byte, _ ast.Node, enteri
 		r.text.Reset()
 		return ast.WalkContinue, nil
 	}
-	if r.headers.Change() {
-		_, err := r.headers.Section(changelog.ChangeDescription, r.text.String())
+	if r.changelog.Change() {
+		_, err := r.changelog.Section(changelog.ChangeDescription, r.text.String())
 		if err != nil {
 			return ast.WalkStop, err
 		}

@@ -9,10 +9,10 @@ import (
 
 func (qe *Engine) newChangeItemQuery(selector string, _ bool, queryElements []string) error {
 	if selector != "" {
-		return fmt.Errorf("Query change selector %q not yet supported", selector)
+		return fmt.Errorf("query change selector %q not yet supported", selector)
 	}
 	if len(queryElements) > 0 {
-		return fmt.Errorf("Query attribute selector %v not yet supported", queryElements)
+		return fmt.Errorf("query attribute selector %v not yet supported", queryElements)
 	}
 	queryMe := &changeItemQuery{}
 	queryMe.collection = true

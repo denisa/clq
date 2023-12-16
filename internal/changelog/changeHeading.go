@@ -10,7 +10,7 @@ type Change struct {
 
 func (h HeadingsFactory) newChange(title string) (Heading, error) {
 	if title == "" {
-		return nil, fmt.Errorf("Validation error: change cannot stay empty")
+		return nil, fmt.Errorf("validation error: change cannot stay empty")
 	}
 
 	if emoji, err := h.changeKind.emojiFor(title); err != nil {

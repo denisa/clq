@@ -11,7 +11,7 @@ type Introduction struct {
 
 func (h HeadingsFactory) newIntroduction(title string) (Heading, error) {
 	if title == "" {
-		return nil, fmt.Errorf("Validation error: Introduction’s title cannot stay empty")
+		return nil, fmt.Errorf("validation error: Introduction’s title cannot stay empty")
 	}
 	return Introduction{heading{title: title, kind: IntroductionHeading}}, nil
 }

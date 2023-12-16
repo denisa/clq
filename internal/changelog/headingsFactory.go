@@ -24,5 +24,5 @@ func (h HeadingsFactory) NewHeading(kind HeadingKind, title string) (Heading, er
 	case ChangeDescription:
 		return h.newChangeItem(title)
 	}
-	return nil, fmt.Errorf("Unknown heading kind %v", kind)
+	return nil, fmt.Errorf("unknown heading kind %v", kind)
 }

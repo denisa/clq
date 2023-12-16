@@ -11,7 +11,7 @@ import (
 func (qe *Engine) newReleaseQuery(selector string, _ bool, queryElements []string) error {
 	i, err := strconv.Atoi(selector)
 	if err != nil {
-		return fmt.Errorf("Query release selector %q parsing error: %v", selector, err)
+		return fmt.Errorf("query release selector %q parsing error: %v", selector, err)
 	}
 
 	queryMe := &releaseQuery{index: i}
@@ -34,7 +34,7 @@ func (qe *Engine) newReleaseQuery(selector string, _ bool, queryElements []strin
 
 	switch elementName {
 	default:
-		return fmt.Errorf("Query attribute not recognized %q for a \"release\"", elementName)
+		return fmt.Errorf("query attribute not recognized %q for a \"release\"", elementName)
 	case "changes":
 		if err := elementIsCollection(elementName, elementIsList); err != nil {
 			return err

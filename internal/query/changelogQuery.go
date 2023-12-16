@@ -18,7 +18,7 @@ func (qe *Engine) newIntroductionQuery(queryElements []string) error {
 
 	switch elementName {
 	default:
-		return fmt.Errorf("Query attribute not recognized %q for a \"introduction\"", elementName)
+		return fmt.Errorf("query attribute not recognized %q for a \"introduction\"", elementName)
 	case "releases":
 		if err := elementIsCollection(elementName, elementIsList); err != nil {
 			return err

@@ -30,15 +30,15 @@ func (h HeadingsFactory) newRelease(title string) (Heading, error) {
 			groups := releaseRE.SubexpNames()
 			date, err := time.Parse("2006-01-02", subexp(groups, matches, "date"))
 			if err != nil {
-				return nil, fmt.Errorf("Validation error: Illegal date (%v) for %v", err, title)
+				return nil, fmt.Errorf("validation error: Illegal date (%v) for %v", err, title)
 			}
 			label := subexp(groups, matches, "label")
 			if matched, _ := regexp.MatchString(`\[\s*YANKED\s*]`, label); matched {
-				return nil, fmt.Errorf("Validation error: the version of a [YANKED] release cannot stand between [...] for %v", title)
+				return nil, fmt.Errorf("validation error: the version of a [YANKED] release cannot stand between [...] for %v", title)
 			}
 			version, err := semver.Make(subexp(groups, matches, "semver"))
 			if err != nil {
-				return nil, fmt.Errorf("Validation error: Illegal version (%v) for %v", err, title)
+				return nil, fmt.Errorf("validation error: Illegal version (%v) for %v", err, title)
 			}
 			return Release{heading: heading{title: title, kind: ReleaseHeading}, date: date, version: version, label: label}, nil
 		}
@@ -49,16 +49,16 @@ func (h HeadingsFactory) newRelease(title string) (Heading, error) {
 			groups := releaseRE.SubexpNames()
 			date, err := time.Parse("2006-01-02", subexp(groups, matches, "date"))
 			if err != nil {
-				return nil, fmt.Errorf("Validation error: Illegal date (%v) for %v", err, title)
+				return nil, fmt.Errorf("validation error: Illegal date (%v) for %v", err, title)
 			}
 			version, err := semver.Make(subexp(groups, matches, "semver"))
 			if err != nil {
-				return nil, fmt.Errorf("Validation error: Illegal version (%v) for %v", err, title)
+				return nil, fmt.Errorf("validation error: Illegal version (%v) for %v", err, title)
 			}
 			return Release{heading: heading{title: title, kind: ReleaseHeading}, date: date, version: version, yanked: true}, nil
 		}
 	}
-	return nil, fmt.Errorf("Validation error: Unknown release header for %q", title)
+	return nil, fmt.Errorf("validation error: Unknown release header for %q", title)
 }
 
 func (h Release) DisplayTitle() string {
@@ -141,10 +141,10 @@ func (h Release) NextRelease(semverIdentifier semverConstants.Identifier) semver
 // version has been incremented.
 func (h Release) IsNewerThan(other Release) error {
 	if h.date.Before(other.date) {
-		return fmt.Errorf("Validation error: release %q should be older than %q", other.Title(), h.Title())
+		return fmt.Errorf("validation error: release %q should be older than %q", other.Title(), h.Title())
 	}
 	if h.version.LTE(other.version) {
-		return fmt.Errorf("Validation error: release %q should sort before %q", other.Title(), h.Title())
+		return fmt.Errorf("validation error: release %q should sort before %q", other.Title(), h.Title())
 	}
 	return nil
 }

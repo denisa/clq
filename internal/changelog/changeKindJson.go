@@ -22,7 +22,7 @@ type ByName struct{ ChangeKindsDto }
 
 func (s ByName) Less(i, j int) bool { return s.ChangeKindsDto[i].Name < s.ChangeKindsDto[j].Name }
 
-func (ck ChangeKind) MarshalJSON() ([]byte, error) {
+func (ck *ChangeKind) MarshalJSON() ([]byte, error) {
 	var result ChangeKindsDto
 	for k, l := range ck.changes {
 		result = append(result, &ChangeKindDto{Name: k, Increment: l.semver.String(), Emoji: l.emoji})

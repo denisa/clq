@@ -15,8 +15,8 @@ type Changelog struct {
 }
 
 // NewChangelog creates a new empty changelog.
-func NewChangelog(headingsFactory HeadingsFactory) Changelog {
-	return Changelog{headingsFactory: headingsFactory}
+func NewChangelog(headingsFactory HeadingsFactory) *Changelog {
+	return &Changelog{headingsFactory: headingsFactory}
 }
 
 // Listener registers one or more listeners to this changelog.
@@ -59,7 +59,7 @@ func (c *Changelog) Close() {
 // Section creates and returns the section’s Heading
 func (c *Changelog) Section(kind HeadingKind, title string) (Heading, error) {
 	if kind > HeadingKind(len(c.headings)) {
-		return nil, fmt.Errorf("Attempting to roll-back a changelog at %v to %v", len(c.headings), kind)
+		return nil, fmt.Errorf("attempting to roll-back a changelog at %v to %v", len(c.headings), kind)
 	}
 
 	h, err := c.headingsFactory.NewHeading(kind, title)
@@ -80,7 +80,7 @@ func (c *Changelog) Section(kind HeadingKind, title string) (Heading, error) {
 	return h, nil
 }
 
-func (c Changelog) String() string {
+func (c *Changelog) String() string {
 	var path strings.Builder
 	for _, heading := range c.headings {
 		path.WriteString(heading.String())

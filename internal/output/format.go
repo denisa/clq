@@ -31,6 +31,6 @@ func NewFormat(formatName string) (Format, error) {
 	case "md":
 		return &mdResultCollector{}, nil
 	default:
-		return nil, fmt.Errorf("Unrecognized output format %q. Supported format: \"json\", \"md\"", formatName)
+		return nil, fmt.Errorf("unrecognized output format %q. Supported format: \"json\", \"md\"", formatName)
 	}
 }
