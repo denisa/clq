@@ -88,9 +88,7 @@ func (r *Validator) visitHeading(_ util.BufWriter, _ []byte, node ast.Node, ente
 		r.hasIntroductionHeading = true
 	case 2:
 		if (r.headers.Release() || r.headers.Change()) && !r.hasChangeDescriptions {
-			if err := fmt.Errorf("no change descriptions for %v", r.headers); err != nil {
-				return ast.WalkStop, err
-			}
+			return ast.WalkStop, fmt.Errorf("no change descriptions for %v", r.headers)
 		} else {
 			h, err := r.headers.Section(changelog.ReleaseHeading, r.text.String())
 			if err != nil {
