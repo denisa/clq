@@ -22,7 +22,7 @@ type Validator struct {
 	h1Released, h1Unreleased bool
 	changes                  changelog.ChangeMap
 	hasChangeDescriptions    bool
-	changelog                changelog.Changelog
+	changelog                *changelog.Changelog
 	previousRelease          changelog.Release
 }
 

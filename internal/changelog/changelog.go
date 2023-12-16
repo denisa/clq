@@ -15,8 +15,8 @@ type Changelog struct {
 }
 
 // NewChangelog creates a new empty changelog.
-func NewChangelog(headingsFactory HeadingsFactory) Changelog {
-	return Changelog{headingsFactory: headingsFactory}
+func NewChangelog(headingsFactory HeadingsFactory) *Changelog {
+	return &Changelog{headingsFactory: headingsFactory}
 }
 
 // Listener registers one or more listeners to this changelog.
@@ -80,7 +80,7 @@ func (c *Changelog) Section(kind HeadingKind, title string) (Heading, error) {
 	return h, nil
 }
 
-func (c Changelog) String() string {
+func (c *Changelog) String() string {
 	var path strings.Builder
 	for _, heading := range c.headings {
 		path.WriteString(heading.String())
