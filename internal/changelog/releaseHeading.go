@@ -137,7 +137,7 @@ func (h Release) NextRelease(semverIdentifier semverConstants.Identifier) semver
 }
 
 // IsNewerThan returns an error if this release if not newer than another release.
-// A release is newer if it has the same or a more recent data and one its
+// A release is newer if it has the same or a more recent date and one its
 // version has been incremented.
 func (h Release) IsNewerThan(other Release) error {
 	if h.date.Before(other.date) {

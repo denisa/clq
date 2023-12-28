@@ -414,6 +414,62 @@
     "output": "### 🗑️ Removed\n- foo\n- bar\n"
   },
   {
+    "title": "translated change kinds",
+    "arguments": [
+      "-changeMap",
+      "docs/changemap/changedIsMajorWithEmoji_fr.json",
+      "-output",
+      "md",
+      "-query",
+      "releases[1].changes[]/"
+    ],
+    "input": "# Change log\n## [Unreleased]\n### Ajouté\n- waldo\n- fred\n## [1.0.0] - 2020-06-20\n### Enlevé\n- foo\n- bar",
+    "result": 0,
+    "output": "### 🗑️ Enlevé\n- foo\n- bar\n"
+  },
+  {
+    "title": "build allowed by itself in initial release",
+    "arguments": [
+      "-changeMap",
+      "docs/changemap/withDocumentation.json",
+      "-output",
+      "md",
+      "-query",
+      "releases[1].changes[]/"
+    ],
+    "input": "# Change log\n## [2.0.0] - 2023-12-15\n### Added\n- waldo\n- fred\n## [1.0.0] - 2020-06-20\n### Documentation\n- Wallace\n- Groomit",
+    "result": 0,
+    "output": "### Documentation\n- Wallace\n- Groomit\n"
+  },
+  {
+    "title": "build allowed with others after initial release",
+    "arguments": [
+      "-changeMap",
+      "docs/changemap/withDocumentation.json",
+      "-output",
+      "md",
+      "-query",
+      "releases[0].changes[]/"
+    ],
+    "input": "# Change log\n## [2.0.0] - 2023-12-15\n### Added\n- waldo\n- fred\n### Documentation\n- Wallace\n- Groomit\n## [1.0.0] - 2020-06-20\n### Removed\n- foo\n- bar",
+    "result": 0,
+    "output": "### Added\n- waldo\n- fred\n### Documentation\n- Wallace\n- Groomit\n"
+  },
+  {
+    "title": "build not allowed by itself after initial release",
+    "arguments": [
+      "-changeMap",
+      "docs/changemap/withDocumentation.json",
+      "-output",
+      "md",
+      "-query",
+      "releases[0].changes[]/"
+    ],
+    "input": "# Change log\n## [1.0.0] - 2023-12-15\n### Documentation\n- Wallace\n- Groomit\n## [1.0.0] - 2020-06-20\n### Added\n- foo\n- bar",
+    "result": 1,
+    "error": "❗️ release \"[1.0.0] - 2023-12-15\" cannot have only build-level changes because it is not the initial release\n"
+  },
+  {
     "title": "format auto link",
     "arguments": [
       "-output",

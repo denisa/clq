@@ -207,6 +207,12 @@ json file. The example extend on the previous one and define emoji for each chan
 ]
 ```
 
+## Experimental Extension to the standard
+
+It is possible to use the change map file to define other change kinds, be they translation of the standard one, or new ones.
+It is also possible to assign change kinds to the 'build' SemVer though those cannot be the single contribution of a release, as they would not increment the release number.
+Please see [a French translation](docs/changemap/changedIsMajorWithEmoji_fr.json) and [using build for documentation](docs/changemap/withDocumentation.json).
+
 ## Query Expression Language
 
 A query is a sequence of *query elements* leading through the structure of the changelog to the desired field.

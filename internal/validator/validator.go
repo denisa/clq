@@ -7,6 +7,7 @@ import (
 
 	"github.com/denisa/clq/internal/changelog"
 	"github.com/denisa/clq/internal/config"
+	"github.com/denisa/clq/internal/semver"
 	"github.com/yuin/goldmark/ast"
 	"github.com/yuin/goldmark/renderer"
 	"github.com/yuin/goldmark/util"
@@ -89,35 +90,40 @@ func (r *Validator) visitHeading(_ util.BufWriter, _ []byte, node ast.Node, ente
 	case 2:
 		if (r.changelog.Release() || r.changelog.Change()) && !r.hasChangeDescriptions {
 			return ast.WalkStop, fmt.Errorf("no change descriptions for %v", r.changelog)
-		} else {
-			h, err := r.changelog.Section(changelog.ReleaseHeading, r.text.String())
-			if err != nil {
-				return ast.WalkStop, err
-			}
-
-			release := h.(changelog.Release)
-			if err := r.validateReleaseHeading(release); err != nil {
-				return ast.WalkStop, err
-			}
-
-			if r.previousRelease.IsRelease() && release.IsRelease() {
-				changeKind := r.changeKind
-				increment, trigger := changeKind.IncrementFor(r.changes)
-				nextRelease := release.NextRelease(increment)
-				if !r.previousRelease.ReleaseIs(nextRelease) {
-					return ast.WalkStop, fmt.Errorf("release %q should have version %v because of %q", r.previousRelease.Title(), nextRelease, trigger)
-				}
-			}
-
-			if !release.HasBeenReleased() {
-				r.h1Unreleased = true
-			} else if !release.HasBeenYanked() {
-				r.h1Released = true
-			}
-			r.hasChangeDescriptions = false
-			r.changes = make(changelog.ChangeMap)
-			r.previousRelease = release
 		}
+		h, err := r.changelog.Section(changelog.ReleaseHeading, r.text.String())
+		if err != nil {
+			return ast.WalkStop, err
+		}
+
+		release := h.(changelog.Release)
+		if err := r.validateReleaseHeading(release); err != nil {
+			return ast.WalkStop, err
+		}
+
+		if r.previousRelease.IsRelease() && release.IsRelease() {
+			changeKind := r.changeKind
+			increment, trigger := changeKind.IncrementFor(r.changes)
+			if increment == semver.Build {
+				return ast.WalkStop, fmt.Errorf("release %q cannot have only build-level changes because it is not the initial release", r.previousRelease.Title())
+			}
+			if err := r.previousRelease.IsNewerThan(release); err != nil {
+				return ast.WalkStop, err
+			}
+			nextRelease := release.NextRelease(increment)
+			if !r.previousRelease.ReleaseIs(nextRelease) {
+				return ast.WalkStop, fmt.Errorf("release %q should have version %v because of %q", r.previousRelease.Title(), nextRelease, trigger)
+			}
+		}
+
+		if !release.HasBeenReleased() {
+			r.h1Unreleased = true
+		} else if !release.HasBeenYanked() {
+			r.h1Released = true
+		}
+		r.hasChangeDescriptions = false
+		r.changes = make(changelog.ChangeMap)
+		r.previousRelease = release
 	case 3:
 		if r.changelog.Introduction() {
 			return ast.WalkStop, fmt.Errorf("changes must be in a release %v", r.changelog)
@@ -141,7 +147,13 @@ func (r *Validator) visitHeading(_ util.BufWriter, _ []byte, node ast.Node, ente
 }
 
 func (r *Validator) validateReleaseHeading(release changelog.Release) error {
-	if !release.HasBeenReleased() {
+	if release.HasBeenReleased() {
+		if release.HasBeenYanked() {
+			if !r.h1Released && !r.h1Unreleased {
+				return fmt.Errorf("validation error: Changelog cannot start with a \"[YANKED]\" release, insert a release or a \"[Unreleased]\" first %v", r.changelog)
+			}
+		}
+	} else {
 		if r.release {
 			return fmt.Errorf("validation error: \"[Unreleased]\" not supported in release mode %v", r.changelog)
 		}
@@ -150,17 +162,6 @@ func (r *Validator) validateReleaseHeading(release changelog.Release) error {
 		}
 		if r.h1Released {
 			return fmt.Errorf("validation error: \"[Unreleased]\" must come before any release %v", r.changelog)
-		}
-	} else {
-		if release.HasBeenYanked() {
-			if !r.h1Released && !r.h1Unreleased {
-				return fmt.Errorf("validation error: Changelog cannot start with a \"[YANKED]\" release, insert a release or a \"[Unreleased]\" first %v", r.changelog)
-			}
-		}
-		if r.previousRelease.HasBeenReleased() {
-			if err := r.previousRelease.IsNewerThan(release); err != nil {
-				return err
-			}
 		}
 	}
 	return nil
