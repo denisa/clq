@@ -18,6 +18,12 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
   - `Fixed` for any bugfixes.
   - `Security` in case of vulnerabilities.
 
+## [1.8.5] - 2023-12-30
+
+### Fixed
+
+- Bump github/codeql-action from 2 to 3
+
 ## [1.8.4] - 2023-12-28
 
 ### Fixed
