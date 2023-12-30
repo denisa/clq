@@ -23,6 +23,7 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
 ### Fixed
 
 - Bump github/codeql-action from 2 to 3
+- Bump actions/checkout from 3 to 4 — the plantuml action was still on an old version
 
 ## [1.8.4] - 2023-12-28
 
