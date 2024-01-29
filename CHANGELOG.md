@@ -18,6 +18,12 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
   - `Fixed` for any bugfixes.
   - `Security` in case of vulnerabilities.
 
+## [1.8.6] - 2024-03-12
+
+### Fixed
+
+- Bump peter-evans/dockerhub-description from 3 to 4
+
 ## [1.8.5] - 2023-12-30
 
 ### Fixed
