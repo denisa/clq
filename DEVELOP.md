@@ -48,3 +48,10 @@ tool dependencies, for example `gcov2lcov`.
 Dependabot will update only the base image for `denisa/clq:slim`.
 Manually update the alpine version used by the *builder* for [alpine](build/docker/alpine/Dockerfile)
 and [slim](build/docker/slim/Dockerfile).
+
+### Updating Super Linter
+
+Dependabot will update the version in [linter.yaml](.github/workflows/linter.yaml), ensure that the
+`superlinter` target in [Makefile](Makefile) is correct.
+
+Also runs `make superlinter` to see if new fixes are needed.
