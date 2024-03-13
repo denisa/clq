@@ -5,7 +5,7 @@ go 1.20
 require (
 	github.com/blang/semver/v4 v4.0.0
 	github.com/stretchr/testify v1.8.4
-	github.com/yuin/goldmark v1.6.0
+	github.com/yuin/goldmark v1.7.0
 )
 
 require (

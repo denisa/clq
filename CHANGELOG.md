@@ -26,6 +26,7 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
 - Bump super-linter/super-linter from 5 to 6 while disabling go_modules and checkov;
   Created [394](https://github.com/denisa/clq/issues/394), [395](https://github.com/denisa/clq/issues/395)
   to address this later.
+- Bump github.com/yuin/goldmark from 1.6.0 to 1.7.0
 
 ## [1.8.5] - 2023-12-30
 
