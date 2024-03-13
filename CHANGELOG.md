@@ -18,6 +18,19 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
   - `Fixed` for any bugfixes.
   - `Security` in case of vulnerabilities.
 
+## [1.8.6] - 2024-03-12
+
+### Fixed
+
+- Bump peter-evans/dockerhub-description from 3 to 4
+- Bump super-linter/super-linter from 5 to 6 while disabling go_modules and checkov;
+  Created [394](https://github.com/denisa/clq/issues/394), [395](https://github.com/denisa/clq/issues/395)
+  to address this later.
+- Bump github.com/yuin/goldmark from 1.6.0 to 1.7.0
+- Bump github.com/stretchr/testify from 1.8.4 to 1.9.0
+- Requires golang 1.22.0
+- Bumps alpine from 3.18.5 to 3.19.1
+
 ## [1.8.5] - 2023-12-30
 
 ### Fixed

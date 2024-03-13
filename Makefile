@@ -12,6 +12,7 @@ lcov: test bin/gcov2lcov
 
 superlinter:
 	docker run --rm \
+		--platform linux/amd64 \
 		-e RUN_LOCAL=true \
 		--env-file ".github/super-linter.env" \
 		-w /tmp/lint -v "$$PWD":/tmp/lint \
