@@ -1,4 +1,4 @@
-FROM golang:1.22.1-alpine3.18 AS builder
+FROM golang:1.22.1-alpine3.19 AS builder
 ARG DOCKER_TAG=latest
 
 RUN apk update && apk add --no-cache git ca-certificates tzdata && update-ca-certificates
@@ -11,6 +11,6 @@ RUN \
       -ldflags="-X main.version=${DOCKER_TAG} -w -s -extldflags '-static'" -a \
       -o /go/bin/clq .
 
-FROM alpine:3.18.5
+FROM alpine:3.19.1
 COPY --from=builder /go/bin/clq /usr/bin/clq
 ENTRYPOINT ["/usr/bin/clq"]
