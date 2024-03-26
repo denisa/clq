@@ -33,7 +33,7 @@ jobs:
     - name: Send coverage
       uses: coverallsapp/github-action@v2
       with:
-        file: coverage.lcov
+        file: out/coverage.lcov
   test-docker:
     runs-on: ubuntu-latest
     steps:
@@ -53,7 +53,7 @@ jobs:
       id: clq-extract
       run: |
         make build
-        release_version=$(dist/clq -changeMap .github/clq/changemap.json -release -query 'releases[0].version' CHANGELOG.md)
+        release_version=$(out/dist/clq -changeMap .github/clq/changemap.json -release -query 'releases[0].version' CHANGELOG.md)
         echo "tag=v${release_version}" >> "${GITHUB_OUTPUT}"
     - uses: denisa/semantic-tag-helper@v1
       with:
@@ -87,16 +87,16 @@ jobs:
     - name: Extract release information
       id: clq-extract
       run: |
-        release_version=$(dist/clq -changeMap .github/clq/changemap.json -release -query 'releases[0].version' CHANGELOG.md)
+        release_version=$(out/dist/clq -changeMap .github/clq/changemap.json -release -query 'releases[0].version' CHANGELOG.md)
 
-        release_name=$(dist/clq -changeMap .github/clq/changemap.json -release -query 'releases[0].label' CHANGELOG.md)
+        release_name=$(out/dist/clq -changeMap .github/clq/changemap.json -release -query 'releases[0].label' CHANGELOG.md)
         if [ -z "${release_name}" ]; then
           release_name="Release ${release_version}"
         fi
 
-        release_status=$(dist/clq -changeMap .github/clq/changemap.json -release -query 'releases[0].status' CHANGELOG.md)
+        release_status=$(out/dist/clq -changeMap .github/clq/changemap.json -release -query 'releases[0].status' CHANGELOG.md)
 
-        release_changes=$(dist/clq -changeMap .github/clq/changemap.json -release -output md -query 'releases[0].changes[]/' CHANGELOG.md)
+        release_changes=$(out/dist/clq -changeMap .github/clq/changemap.json -release -output md -query 'releases[0].changes[]/' CHANGELOG.md)
 
         EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
         {
@@ -111,7 +111,7 @@ jobs:
     - run: |
         release_version=${{ steps.clq-extract.outputs.version }}
         VERSION=$release_version make clean assertVersionDefined build-all
-        test "$(dist/clq-linux-amd64 -changeMap .github/clq/changemap.json -version)" = "clq $release_version"
+        test "$(out/dist/clq-linux-amd64 -changeMap .github/clq/changemap.json -version)" = "clq $release_version"
         VERSION=${release_version} make assertVersionDefined docker-test
     - uses: docker/build-push-action@v5
       with:
@@ -154,4 +154,4 @@ jobs:
         name: ${{ steps.clq-extract.outputs.name }}
         body: ${{ steps.clq-extract.outputs.changes }}
         artifactContentType: application/octet-stream
-        artifacts: "dist/*"
+        artifacts: "out/dist/*"
