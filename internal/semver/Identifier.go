@@ -30,7 +30,7 @@ func (id Identifier) String() string {
 	case Build:
 		return "build"
 	default:
-		panic(fmt.Sprintf("${id} not defined"))
+		panic(fmt.Sprintf("\"%d\" not defined", id))
 	}
 }
 

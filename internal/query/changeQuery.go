@@ -7,6 +7,11 @@ import (
 	"github.com/denisa/clq/internal/output"
 )
 
+const (
+	jsonNameDescriptions string = "descriptions"
+	jsonNameTitle        string = "title"
+)
+
 func (qe *Engine) newChangeQuery(selector string, isRecursive bool, queryElements []string) error {
 	if selector != "" {
 		return fmt.Errorf("query change selector %q not yet supported", selector)
@@ -21,14 +26,14 @@ func (qe *Engine) newChangeQuery(selector string, isRecursive bool, queryElement
 			_ = qe.newChangeItemQuery("", true, nil)
 			queryMe.enter = func(of output.Format, h changelog.Heading) {
 				if h, ok := h.(changelog.Change); ok {
-					of.SetField("title", h.DisplayTitle())
-					of.Array("descriptions")
+					of.SetField(jsonNameTitle, h.DisplayTitle())
+					of.Array(jsonNameDescriptions)
 				}
 			}
 		} else {
 			queryMe.enter = func(of output.Format, h changelog.Heading) {
 				if h, ok := h.(changelog.Change); ok {
-					of.SetField("title", h.DisplayTitle())
+					of.SetField(jsonNameTitle, h.DisplayTitle())
 				}
 			}
 		}
@@ -43,14 +48,14 @@ func (qe *Engine) newChangeQuery(selector string, isRecursive bool, queryElement
 	switch elementName {
 	default:
 		return fmt.Errorf("query attribute not recognized %q for a \"change\"", elementName)
-	case "descriptions":
+	case jsonNameDescriptions:
 		if err := elementIsCollection(elementName, elementIsList); err != nil {
 			return err
 		}
 		if err := qe.newChangeItemQuery(elementSelector, elementIsRecursive, queryElements[1:]); err != nil {
 			return err
 		}
-	case "title":
+	case jsonNameTitle:
 		if err := elementIsFinal(elementName, elementIsList, queryElements[1:]); err != nil {
 			return err
 		}

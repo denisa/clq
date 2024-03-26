@@ -18,6 +18,13 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
   - `Fixed` for any bugfixes.
   - `Security` in case of vulnerabilities.
 
+## [1.8.7] - 2024-03-26
+
+### Fixed
+
+- Enable golint in module mode and provide the Makefile target `golint`
+- Created [399](https://github.com/denisa/clq/issues/399) to investigate the suppressed cyclomatic complexity warning.
+
 ## [1.8.6] - 2024-03-12
 
 ### Fixed

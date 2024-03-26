@@ -10,6 +10,7 @@ cov: test
 lcov: test bin/gcov2lcov
 	@bin/gcov2lcov -infile=coverage.out -outfile=coverage.lcov
 
+.PHONY: superlinter
 superlinter:
 	docker run --rm \
 		--platform linux/amd64 \
@@ -17,6 +18,14 @@ superlinter:
 		--env-file ".github/super-linter.env" \
 		-w /tmp/lint -v "$$PWD":/tmp/lint \
 		ghcr.io/super-linter/super-linter:v5
+
+.PHONY: golint
+golint:
+	docker run -t --rm \
+		-v "$$PWD":/app \
+		-w /app \
+		golangci/golangci-lint:v1.57.1 golangci-lint \
+		run --config .github/linters/.golangci.yml --verbose --fast
 
 .PHONY: assertVersionDefined
 assertVersionDefined:

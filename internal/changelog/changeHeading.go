@@ -13,11 +13,11 @@ func (h HeadingsFactory) newChange(title string) (Heading, error) {
 		return nil, fmt.Errorf("validation error: change cannot stay empty")
 	}
 
-	if emoji, err := h.changeKind.emojiFor(title); err != nil {
+	emoji, err := h.changeKind.emojiFor(title)
+	if err != nil {
 		return nil, err
-	} else {
-		return Change{heading{title: title, kind: ChangeHeading}, emoji}, nil
 	}
+	return Change{heading{title: title, kind: ChangeHeading}, emoji}, nil
 }
 
 func (h Change) DisplayTitle() string {

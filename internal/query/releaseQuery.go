@@ -8,6 +8,7 @@ import (
 	"github.com/denisa/clq/internal/output"
 )
 
+//gocyclo:ignore
 func (qe *Engine) newReleaseQuery(selector string, _ bool, queryElements []string) error {
 	i, err := strconv.Atoi(selector)
 	if err != nil {
@@ -66,13 +67,14 @@ func (qe *Engine) newReleaseQuery(selector string, _ bool, queryElements []strin
 		}
 		queryMe.enter = func(of output.Format, h changelog.Heading) {
 			if h, ok := h.(changelog.Release); ok {
-				if !h.HasBeenReleased() {
+				switch {
+				case !h.HasBeenReleased():
 					of.Set("unreleased")
-				} else if h.HasBeenYanked() {
+				case h.HasBeenYanked():
 					of.Set("yanked")
-				} else if h.IsPrerelease() {
+				case h.IsPrerelease():
 					of.Set("prereleased")
-				} else {
+				default:
 					of.Set("released")
 				}
 			}

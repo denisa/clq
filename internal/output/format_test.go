@@ -86,9 +86,9 @@ func newHeading(kind changelog.HeadingKind, text string) changelog.Heading {
 	ck, _ := changelog.NewChangeKind("")
 	hf := changelog.NewHeadingFactory(ck)
 
-	if h, err := hf.NewHeading(kind, text); err != nil {
+	h, err := hf.NewHeading(kind, text)
+	if err != nil {
 		panic(err)
-	} else {
-		return h
 	}
+	return h
 }

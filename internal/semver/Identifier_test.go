@@ -11,7 +11,7 @@ import (
 func TestAllValues(t *testing.T) {
 	assertions := require.New(t)
 	_ = ForEach(func(i Identifier) error {
-		t.Run(strconv.Itoa(int(i)), func(t *testing.T) {
+		t.Run(strconv.Itoa(int(i)), func(_ *testing.T) {
 			val, err := NewIdentifier(i.String())
 			assertions.NoError(err)
 			assertions.Equal(i, val)
@@ -29,7 +29,7 @@ func TestUndefinedValue(t *testing.T) {
 
 func TestForEach(t *testing.T) {
 	count := 0
-	_ = ForEach(func(arg1 Identifier) error {
+	_ = ForEach(func(_ Identifier) error {
 		count++
 		return nil
 	})
@@ -37,7 +37,7 @@ func TestForEach(t *testing.T) {
 }
 
 func TestForEachReturnsError(t *testing.T) {
-	require.Error(t, ForEach(func(arg1 Identifier) error {
+	require.Error(t, ForEach(func(_ Identifier) error {
 		return fmt.Errorf("dummy error")
 	}))
 }
