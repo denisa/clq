@@ -24,6 +24,7 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
 
 - Enable golint in module mode and provide the Makefile target `golint`
 - Created [399](https://github.com/denisa/clq/issues/399) to investigate the suppressed cyclomatic complexity warning.
+- Updated plantuml to 1.2024.2 and provide the Makefile target `plantuml`
 
 ## [1.8.6] - 2024-03-12
 

@@ -16,16 +16,22 @@ superlinter:
 		--platform linux/amd64 \
 		-e RUN_LOCAL=true \
 		--env-file ".github/super-linter.env" \
-		-w /tmp/lint -v "$$PWD":/tmp/lint \
+		-w /workspace -v "$$PWD":/workspace \
 		ghcr.io/super-linter/super-linter:v5
 
 .PHONY: golint
 golint:
 	docker run -t --rm \
-		-v "$$PWD":/app \
-		-w /app \
+		-w /workspace -v "$$PWD":/workspace \
 		golangci/golangci-lint:v1.57.1 golangci-lint \
 		run --config .github/linters/.golangci.yml --verbose --fast
+
+.PHONY: plantuml
+plantuml:
+	docker run -t --rm \
+		-w /workspace -v "$$PWD":/workspace \
+		plantuml/plantuml:1.2024.2 \
+		-v -o /workspace/_site docs/
 
 .PHONY: assertVersionDefined
 assertVersionDefined:
@@ -62,7 +68,7 @@ install: test
 .PHONY: clean
 clean:
 	go clean -i ./...
-	rm -fr *.out *.lcov ${DIST} bin/
+	rm -fr *.out *.lcov ${DIST} bin/ _site/
 
 DOCKER=alpine slim
 TARGET_DOCKER_BUILD:=$(addprefix docker-build-,${DOCKER})

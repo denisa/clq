@@ -2,6 +2,7 @@
 coverage.*
 bin/
 dist/
+_site/
 vet: .
 /.idea/
 /*.bbprojectd/
