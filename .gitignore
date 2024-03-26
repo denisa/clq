@@ -1,7 +1,6 @@
 *.test
-coverage.*
 bin/
-dist/
+out/
 vet: .
 /.idea/
 /*.bbprojectd/

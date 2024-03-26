@@ -69,6 +69,7 @@ func (r *Validator) visitDocument(_ util.BufWriter, _ []byte, _ ast.Node, enteri
 	return ast.WalkContinue, nil
 }
 
+//gocyclo:ignore
 func (r *Validator) visitHeading(_ util.BufWriter, _ []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
 	if entering {
 		r.text.Reset()

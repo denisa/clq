@@ -142,13 +142,14 @@ func (clq *Clq) error(document string, err error) {
 }
 
 func (clq *Clq) output(document string, result string) {
-	if result == "" {
+	switch {
+	case result == "":
 		if clq.verbose {
 			_, _ = fmt.Fprintf(clq.stdout, "✅ %v\n", document)
 		}
-	} else if clq.withFileName() {
+	case clq.withFileName():
 		_, _ = fmt.Fprintf(clq.stdout, "✅ %v: %v\n", document, result)
-	} else {
+	default:
 		_, _ = fmt.Fprintln(clq.stdout, result)
 	}
 }

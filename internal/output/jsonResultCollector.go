@@ -61,8 +61,8 @@ func (rc *jsonResultCollector) Close(_ changelog.Heading) {
 	rc.results = rc.results[:i]
 	i--
 
-	if r, ok := (rc.results[i].value).([]interface{}); ok && rc.collection {
-		rc.results[i].value = append(r, newValue)
+	if _, ok := (rc.results[i].value).([]interface{}); ok && rc.collection {
+		rc.results[i].value = append((rc.results[i].value).([]interface{}), newValue)
 		return
 	}
 

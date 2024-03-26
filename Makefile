@@ -1,33 +1,62 @@
+VERSION ?= latest
+DIST=${OUT}dist/
+OUT=out/
+SITE=${OUT}site
+
+${DIST}:
+	mkdir -p ${DIST}
+
+${OUT}:
+	mkdir -p ${OUT}
+
+${SITE}:
+	mkdir -p ${SITE}
+
+.PHONY: clean
+clean:
+	go clean -i ./...
+	rm -fr ${OUT}
+
 .PHONY: test
-test:
-	go test -v ./... -covermode=count -coverprofile=coverage.out -coverpkg=./...
+test: ${OUT}
+	go test -v ./... -covermode=count -coverprofile=${OUT}coverage.out -coverpkg=./...
 
 .PHONY: cov
 cov: test
-	go tool cover -html=coverage.out
+	go tool cover -html=${OUT}coverage.out
 
 .PHONY: lcov
 lcov: test bin/gcov2lcov
-	@bin/gcov2lcov -infile=coverage.out -outfile=coverage.lcov
+	@bin/gcov2lcov -infile=${OUT}coverage.out -outfile=${OUT}coverage.lcov
 
+.PHONY: superlinter
 superlinter:
 	docker run --rm \
 		--platform linux/amd64 \
 		-e RUN_LOCAL=true \
 		--env-file ".github/super-linter.env" \
-		-w /tmp/lint -v "$$PWD":/tmp/lint \
+		-w /workspace -v "$$PWD":/workspace \
 		ghcr.io/super-linter/super-linter:v5
+
+.PHONY: golint
+golint:
+	docker run -t --rm \
+		-w /workspace -v "$$PWD":/workspace \
+		golangci/golangci-lint:v1.57.1 golangci-lint \
+		run --config .github/linters/.golangci.yml --verbose --fast
+
+.PHONY: plantuml
+plantuml: ${SITE}
+	docker run -t --rm \
+		-w /workspace -v "$$PWD":/workspace \
+		plantuml/plantuml:1.2024.2 \
+		-v -o /workspace/${SITE} docs/
 
 .PHONY: assertVersionDefined
 assertVersionDefined:
 	test -n "${VERSION}" -a "${VERSION}" != "latest"
 
-VERSION ?= latest
-DIST=dist/
 LDFLAGS=-ldflags="-w -s -extldflags '-static' -X main.version=${VERSION}"
-
-${DIST}:
-	mkdir -p ${DIST}
 
 .PHONY: build
 build: ${DIST}
@@ -49,11 +78,6 @@ ${TARGET_ARM64}:build-arm64-%:
 .PHONY: install
 install: test
 	go install ./...
-
-.PHONY: clean
-clean:
-	go clean -i ./...
-	rm -fr *.out *.lcov ${DIST} bin/
 
 DOCKER=alpine slim
 TARGET_DOCKER_BUILD:=$(addprefix docker-build-,${DOCKER})

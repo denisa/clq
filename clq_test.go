@@ -54,14 +54,10 @@ func TestScenarios(t *testing.T) {
 	for {
 		if err := dec.Decode(&scenarios); err == io.EOF {
 			break
-		} else {
-			require.NoErrorf(t, err, "Error reading %v", file.Name())
 		}
+		require.NoErrorf(t, err, "Error reading %v", file.Name())
 		for _, scenario := range scenarios {
 			t.Run(scenario.name(), func(t *testing.T) {
-				if scenario.Platform == "skip" {
-
-				}
 				switch scenario.Platform {
 				case "skip":
 					t.SkipNow()
