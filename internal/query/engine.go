@@ -1,7 +1,6 @@
 package query
 
 import (
-	"fmt"
 	"strings"
 
 	"github.com/denisa/clq/internal/changelog"
@@ -19,15 +18,26 @@ type Engine struct {
 // It is not an error for the query to be empty.
 func NewEngine(query string, outputFormat output.Format) (*Engine, error) {
 	qe := &Engine{output: outputFormat}
-	if len(query) > 0 {
-		if err := qe.newIntroductionQuery(strings.Split(query, ".")); err != nil {
-			return nil, err
-		}
-		for _, q := range qe.queries {
+	if query == "" {
+		return qe, nil
+	}
+
+	var queryFactory = introductionQueryFactory
+	var selector = ""
+	var isRecursive = false
+	queryElements := strings.Split(query, ".")
+	for i := 0; queryFactory != nil; {
+		if q, parsedElement, err := queryFactory(selector, isRecursive, queryElements[i:]); err == nil {
+			qe.queries = append(qe.queries, q)
 			if q.isCollection() {
 				outputFormat.SetCollection()
-				break
 			}
+			isRecursive = parsedElement.isRecursive
+			queryFactory = parsedElement.queryFactory
+			selector = parsedElement.selector
+			i = min(i+1, len(queryElements))
+		} else {
+			return nil, err
 		}
 	}
 	return qe, nil
@@ -97,48 +107,4 @@ func (qe *Engine) Exit(heading changelog.Heading) {
 	}
 
 	qe.output.Close(heading)
-}
-
-func parseName(element string) (name, selector string, isList, isRecursive bool, err error) {
-	openBracketIndex := strings.Index(element, "[")
-	closeBracketIndex := strings.Index(element, "]")
-	if openBracketIndex != -1 {
-		if closeBracketIndex < openBracketIndex {
-			err = fmt.Errorf("missing closing bracket in %q", element)
-			return
-		}
-		isList = true
-	} else if closeBracketIndex != -1 {
-		err = fmt.Errorf("missing opening bracket in %q", element)
-		return
-	}
-	isRecursive = strings.HasSuffix(element, "/")
-	if !isList && isRecursive {
-		err = fmt.Errorf("missing closing bracket in %q", element)
-		return
-	}
-	if isList {
-		name = element[:openBracketIndex]
-		selector = element[openBracketIndex+1 : closeBracketIndex]
-	} else {
-		name = element
-	}
-	return
-}
-
-func elementIsFinal(name string, isList bool, elements []string) error {
-	if isList {
-		return fmt.Errorf("%q is a scalar attribute", name)
-	}
-	if len(elements) != 0 {
-		return fmt.Errorf("no further query element allowed after %q", name)
-	}
-	return nil
-}
-
-func elementIsCollection(name string, isList bool) error {
-	if !isList {
-		return fmt.Errorf("%q is a collection attribute", name)
-	}
-	return nil
 }

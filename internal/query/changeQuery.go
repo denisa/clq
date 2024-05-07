@@ -12,24 +12,26 @@ const (
 	jsonNameTitle        string = "title"
 )
 
-func (qe *Engine) newChangeQuery(selector string, isRecursive bool, queryElements []string) error {
+func changeQueryFactory(selector string, isRecursive bool, queryElements []string) (Query, parsedElement, error) {
 	if selector != "" {
-		return fmt.Errorf("query change selector %q not yet supported", selector)
+		return nil, parsedElement{}, fmt.Errorf("query change selector %q not yet supported", selector)
 	}
 
 	queryMe := &changeQuery{}
 	queryMe.collection = true
-	qe.queries = append(qe.queries, queryMe)
+
+	parsedElement := parsedElement{}
 
 	if len(queryElements) == 0 {
 		if isRecursive {
-			_ = qe.newChangeItemQuery("", true, nil)
 			queryMe.enter = func(of output.Format, h changelog.Heading) {
 				if h, ok := h.(changelog.Change); ok {
 					of.SetField(jsonNameTitle, h.DisplayTitle())
 					of.Array(jsonNameDescriptions)
 				}
 			}
+			parsedElement.queryFactory = changeItemQueryFactory
+			parsedElement.isRecursive = true
 		} else {
 			queryMe.enter = func(of output.Format, h changelog.Heading) {
 				if h, ok := h.(changelog.Change); ok {
@@ -37,35 +39,25 @@ func (qe *Engine) newChangeQuery(selector string, isRecursive bool, queryElement
 				}
 			}
 		}
-		return nil
+		return queryMe, parsedElement, nil
 	}
 
-	elementName, elementSelector, elementIsList, elementIsRecursive, err := parseName(queryElements[0])
+	parsedElement, projection, err := changeParserConfiguration().parseElement(queryElements)
 	if err != nil {
-		return err
+		return nil, parsedElement, err
 	}
 
-	switch elementName {
-	default:
-		return fmt.Errorf("query attribute not recognized %q for a \"change\"", elementName)
-	case jsonNameDescriptions:
-		if err := elementIsCollection(elementName, elementIsList); err != nil {
-			return err
-		}
-		if err := qe.newChangeItemQuery(elementSelector, elementIsRecursive, queryElements[1:]); err != nil {
-			return err
-		}
-	case jsonNameTitle:
-		if err := elementIsFinal(elementName, elementIsList, queryElements[1:]); err != nil {
-			return err
-		}
-		queryMe.enter = func(of output.Format, h changelog.Heading) {
+	return &changeQuery{projection}, parsedElement, nil
+}
+
+func changeParserConfiguration() parserConfiguration {
+	return parserConfiguration{"change", expectedElements{
+		jsonNameDescriptions: {false, nil, nil, changeItemQueryFactory},
+		jsonNameTitle: {true, func(of output.Format, h changelog.Heading) {
 			if h, ok := h.(changelog.Change); ok {
 				of.Set(h.DisplayTitle())
 			}
-		}
-	}
-	return nil
+		}, nil, nil}}}
 }
 
 type changeQuery struct {

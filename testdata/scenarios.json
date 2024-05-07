@@ -331,13 +331,31 @@
     "output": "clq \n"
   },
   {
-    "title": "unsupported query attribute",
+    "title": "unsupported release query attribute",
     "arguments": [
       "-query",
       "releases[0].foobar"
     ],
     "result": 2,
     "error": "❗️ query attribute not recognized \"foobar\" for a \"release\"\n"
+  },
+  {
+    "title": "unsupported change introduction attribute",
+    "arguments": [
+      "-query",
+      "foobar"
+    ],
+    "result": 2,
+    "error": "❗️ query attribute not recognized \"foobar\" for a \"introduction\"\n"
+  },
+  {
+    "title": "unsupported change query attribute",
+    "arguments": [
+      "-query",
+      "releases[0].changes[].foobar"
+    ],
+    "result": 2,
+    "error": "❗️ query attribute not recognized \"foobar\" for a \"change\"\n"
   },
   {
     "name": "query_release_version.md",

@@ -7,12 +7,12 @@ import (
 	"github.com/denisa/clq/internal/output"
 )
 
-func (qe *Engine) newChangeItemQuery(selector string, _ bool, queryElements []string) error {
+func changeItemQueryFactory(selector string, _ bool, queryElements []string) (Query, parsedElement, error) {
 	if selector != "" {
-		return fmt.Errorf("query change selector %q not yet supported", selector)
+		return nil, parsedElement{}, fmt.Errorf("query change selector %q not yet supported", selector)
 	}
 	if len(queryElements) > 0 {
-		return fmt.Errorf("query attribute selector %v not yet supported", queryElements)
+		return nil, parsedElement{}, fmt.Errorf("query attribute selector %v not yet supported", queryElements)
 	}
 	queryMe := &changeItemQuery{}
 	queryMe.collection = true
@@ -21,8 +21,7 @@ func (qe *Engine) newChangeItemQuery(selector string, _ bool, queryElements []st
 			of.Set(h.DisplayTitle())
 		}
 	}
-	qe.queries = append(qe.queries, queryMe)
-	return nil
+	return queryMe, parsedElement{}, nil
 }
 
 type changeItemQuery struct {

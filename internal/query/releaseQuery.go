@@ -8,64 +8,46 @@ import (
 	"github.com/denisa/clq/internal/output"
 )
 
-//gocyclo:ignore
-func (qe *Engine) newReleaseQuery(selector string, _ bool, queryElements []string) error {
+func releaseQueryFactory(selector string, _ bool, queryElements []string) (Query, parsedElement, error) {
 	i, err := strconv.Atoi(selector)
 	if err != nil {
-		return fmt.Errorf("query release selector %q parsing error: %v", selector, err)
+		return nil, parsedElement{}, fmt.Errorf("query release selector %q parsing error: %v", selector, err)
 	}
-
-	queryMe := &releaseQuery{index: i}
-	qe.queries = append(qe.queries, queryMe)
 
 	if len(queryElements) == 0 {
-		queryMe.enter = func(of output.Format, h changelog.Heading) {
-			if h, ok := h.(changelog.Release); ok {
-				of.SetField("version", h.Version())
-				of.SetField("date", h.Date())
-			}
-		}
-		return nil
+		return &releaseQuery{
+			projections{func(of output.Format, h changelog.Heading) {
+				if h, ok := h.(changelog.Release); ok {
+					of.SetField("version", h.Version())
+					of.SetField("date", h.Date())
+				}
+			}, nil, false,
+			}, 0, i,
+		}, parsedElement{}, nil
 	}
 
-	elementName, elementSelector, elementIsList, elementIsRecursive, err := parseName(queryElements[0])
+	pe, projection, err := releaseParserConfiguration().parseElement(queryElements)
 	if err != nil {
-		return err
+		return nil, parsedElement{}, err
 	}
 
-	switch elementName {
-	default:
-		return fmt.Errorf("query attribute not recognized %q for a \"release\"", elementName)
-	case "changes":
-		if err := elementIsCollection(elementName, elementIsList); err != nil {
-			return err
-		}
-		if err := qe.newChangeQuery(elementSelector, elementIsRecursive, queryElements[1:]); err != nil {
-			return err
-		}
-	case "date":
-		if err := elementIsFinal(elementName, elementIsList, queryElements[1:]); err != nil {
-			return err
-		}
-		queryMe.enter = func(of output.Format, h changelog.Heading) {
+	return &releaseQuery{projection, 0, i}, pe, nil
+}
+
+func releaseParserConfiguration() parserConfiguration {
+	return parserConfiguration{"release", expectedElements{
+		"changes": {false, nil, nil, changeQueryFactory},
+		"date": {true, func(of output.Format, h changelog.Heading) {
 			if h, ok := h.(changelog.Release); ok {
 				of.Set(h.Date())
 			}
-		}
-	case "label":
-		if err := elementIsFinal(elementName, elementIsList, queryElements[1:]); err != nil {
-			return err
-		}
-		queryMe.enter = func(of output.Format, h changelog.Heading) {
+		}, nil, nil},
+		"label": {true, func(of output.Format, h changelog.Heading) {
 			if h, ok := h.(changelog.Release); ok {
 				of.Set(h.Label())
 			}
-		}
-	case "status":
-		if err := elementIsFinal(elementName, elementIsList, queryElements[1:]); err != nil {
-			return err
-		}
-		queryMe.enter = func(of output.Format, h changelog.Heading) {
+		}, nil, nil},
+		"status": {true, func(of output.Format, h changelog.Heading) {
 			if h, ok := h.(changelog.Release); ok {
 				switch {
 				case !h.HasBeenReleased():
@@ -78,28 +60,18 @@ func (qe *Engine) newReleaseQuery(selector string, _ bool, queryElements []strin
 					of.Set("released")
 				}
 			}
-		}
-	case "title":
-		if err := elementIsFinal(elementName, elementIsList, queryElements[1:]); err != nil {
-			return err
-		}
-		queryMe.enter = func(of output.Format, h changelog.Heading) {
+		}, nil, nil},
+		"title": {true, func(of output.Format, h changelog.Heading) {
 			if h, ok := h.(changelog.Release); ok {
 				of.Set(h.DisplayTitle())
 			}
-		}
-	case "version":
-		if err := elementIsFinal(elementName, elementIsList, queryElements[1:]); err != nil {
-			return err
-		}
-		queryMe.enter = func(of output.Format, h changelog.Heading) {
+		}, nil, nil},
+		"version": {true, func(of output.Format, h changelog.Heading) {
 			if h, ok := h.(changelog.Release); ok {
 				of.Set(h.Version())
 			}
-		}
-	}
-
-	return nil
+		}, nil, nil},
+	}}
 }
 
 type releaseQuery struct {
