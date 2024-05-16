@@ -69,7 +69,6 @@ func (r *Validator) visitDocument(_ util.BufWriter, _ []byte, _ ast.Node, enteri
 	return ast.WalkContinue, nil
 }
 
-//gocyclo:ignore
 func (r *Validator) visitHeading(_ util.BufWriter, _ []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
 	if entering {
 		r.text.Reset()
@@ -82,68 +81,63 @@ func (r *Validator) visitHeading(_ util.BufWriter, _ []byte, node ast.Node, ente
 	}
 
 	switch n.Level {
+	default:
+		return ast.WalkStop, fmt.Errorf("validation error: Heading level %d not supported", n.Level)
 	case 1:
-		_, err := r.changelog.Section(changelog.IntroductionHeading, r.text.String())
-		if err != nil {
-			return ast.WalkStop, err
-		}
-		r.hasIntroductionHeading = true
+		return r.visitHeading1()
 	case 2:
-		if (r.changelog.Release() || r.changelog.Change()) && !r.hasChangeDescriptions {
-			return ast.WalkStop, fmt.Errorf("no change descriptions for %v", r.changelog)
-		}
-		h, err := r.changelog.Section(changelog.ReleaseHeading, r.text.String())
-		if err != nil {
-			return ast.WalkStop, err
-		}
-
-		release := h.(changelog.Release)
-		if err := r.validateReleaseHeading(release); err != nil {
-			return ast.WalkStop, err
-		}
-
-		if r.previousRelease.IsRelease() && release.IsRelease() {
-			changeKind := r.changeKind
-			increment, trigger := changeKind.IncrementFor(r.changes)
-			if increment == semver.Build {
-				return ast.WalkStop, fmt.Errorf("release %q cannot have only build-level changes because it is not the initial release", r.previousRelease.Title())
-			}
-			if err := r.previousRelease.IsNewerThan(release); err != nil {
-				return ast.WalkStop, err
-			}
-			nextRelease := release.NextRelease(increment)
-			if !r.previousRelease.ReleaseIs(nextRelease) {
-				return ast.WalkStop, fmt.Errorf("release %q should have version %v because of %q", r.previousRelease.Title(), nextRelease, trigger)
-			}
-		}
-
-		if !release.HasBeenReleased() {
-			r.h1Unreleased = true
-		} else if !release.HasBeenYanked() {
-			r.h1Released = true
-		}
-		r.hasChangeDescriptions = false
-		r.changes = make(changelog.ChangeMap)
-		r.previousRelease = release
+		return r.visitHeading2()
 	case 3:
-		if r.changelog.Introduction() {
-			return ast.WalkStop, fmt.Errorf("changes must be in a release %v", r.changelog)
-		}
-		if r.changelog.Change() && !r.hasChangeDescriptions {
-			return ast.WalkStop, fmt.Errorf("no change descriptions for %v", r.changelog)
-		}
-
-		h, err := r.changelog.Section(changelog.ChangeHeading, r.text.String())
-		if err != nil {
-			return ast.WalkStop, err
-		}
-
-		change := h.(changelog.Change)
-		if err := r.validateChangeHeading(change); err != nil {
-			return ast.WalkStop, err
-		}
-		r.hasChangeDescriptions = false
+		return r.visitHeading3()
 	}
+}
+
+func (r *Validator) visitHeading1() (ast.WalkStatus, error) {
+	_, err := r.changelog.Section(changelog.IntroductionHeading, r.text.String())
+	if err != nil {
+		return ast.WalkStop, err
+	}
+	r.hasIntroductionHeading = true
+	return ast.WalkContinue, nil
+}
+
+func (r *Validator) visitHeading2() (ast.WalkStatus, error) {
+	if (r.changelog.Release() || r.changelog.Change()) && !r.hasChangeDescriptions {
+		return ast.WalkStop, fmt.Errorf("no change descriptions for %v", r.changelog)
+	}
+	h, err := r.changelog.Section(changelog.ReleaseHeading, r.text.String())
+	if err != nil {
+		return ast.WalkStop, err
+	}
+
+	release := h.(changelog.Release)
+	if err := r.validateReleaseHeading(release); err != nil {
+		return ast.WalkStop, err
+	}
+
+	if r.previousRelease.IsRelease() && release.IsRelease() {
+		changeKind := r.changeKind
+		increment, trigger := changeKind.IncrementFor(r.changes)
+		if increment == semver.Build {
+			return ast.WalkStop, fmt.Errorf("release %q cannot have only build-level changes because it is not the initial release", r.previousRelease.Title())
+		}
+		if err := r.previousRelease.IsNewerThan(release); err != nil {
+			return ast.WalkStop, err
+		}
+		nextRelease := release.NextRelease(increment)
+		if !r.previousRelease.ReleaseIs(nextRelease) {
+			return ast.WalkStop, fmt.Errorf("release %q should have version %v because of %q", r.previousRelease.Title(), nextRelease, trigger)
+		}
+	}
+
+	if !release.HasBeenReleased() {
+		r.h1Unreleased = true
+	} else if !release.HasBeenYanked() {
+		r.h1Released = true
+	}
+	r.hasChangeDescriptions = false
+	r.changes = make(changelog.ChangeMap)
+	r.previousRelease = release
 	return ast.WalkContinue, nil
 }
 
@@ -166,6 +160,27 @@ func (r *Validator) validateReleaseHeading(release changelog.Release) error {
 		}
 	}
 	return nil
+}
+
+func (r *Validator) visitHeading3() (ast.WalkStatus, error) {
+	if r.changelog.Introduction() {
+		return ast.WalkStop, fmt.Errorf("changes must be in a release %v", r.changelog)
+	}
+	if r.changelog.Change() && !r.hasChangeDescriptions {
+		return ast.WalkStop, fmt.Errorf("no change descriptions for %v", r.changelog)
+	}
+
+	h, err := r.changelog.Section(changelog.ChangeHeading, r.text.String())
+	if err != nil {
+		return ast.WalkStop, err
+	}
+
+	change := h.(changelog.Change)
+	if err := r.validateChangeHeading(change); err != nil {
+		return ast.WalkStop, err
+	}
+	r.hasChangeDescriptions = false
+	return ast.WalkContinue, nil
 }
 
 func (r *Validator) validateChangeHeading(change changelog.Change) error {
