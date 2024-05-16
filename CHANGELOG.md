@@ -22,8 +22,9 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
 
 ### Fixed
 
-- Bump super-linter/super-linter from 5 to 6 in the Makefile
 - resolve cyclomatic complexity
+- Bump super-linter/super-linter from 5 to 6 in the Makefile
+- Bump github.com/yuin/goldmark from 1.7.0 to 1.7.1
 
 ## [1.8.7] - 2024-03-26
 
