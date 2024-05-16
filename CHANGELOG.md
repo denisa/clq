@@ -18,6 +18,13 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
   - `Fixed` for any bugfixes.
   - `Security` in case of vulnerabilities.
 
+=======
+## [Unreleased]
+
+### Fixed
+
+- Bump super-linter/super-linter from 5 to 6 in the Makefile
+
 ## [1.8.7] - 2024-03-26
 
 ### Fixed
