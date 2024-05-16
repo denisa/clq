@@ -18,6 +18,14 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
   - `Fixed` for any bugfixes.
   - `Security` in case of vulnerabilities.
 
+## [1.8.8] - 2024-05-15
+
+### Fixed
+
+- resolve cyclomatic complexity
+- Bump super-linter/super-linter from 5 to 6 in the Makefile
+- Bump github.com/yuin/goldmark from 1.7.0 to 1.7.1
+
 ## [1.8.7] - 2024-03-26
 
 ### Fixed

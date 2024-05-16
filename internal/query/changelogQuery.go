@@ -1,42 +1,28 @@
 package query
 
 import (
-	"fmt"
-
 	"github.com/denisa/clq/internal/changelog"
 	"github.com/denisa/clq/internal/output"
 )
 
-func (qe *Engine) newIntroductionQuery(queryElements []string) error {
-	queryMe := &changelogQuery{}
-	qe.queries = append(qe.queries, queryMe)
-
-	elementName, elementSelector, elementIsList, elementIsRecursive, err := parseName(queryElements[0])
+func introductionQueryFactory(_ string, _ bool, queryElements []string) (Query, parsedElement, error) {
+	pe, projection, err := changelogParserConfiguration().parseElement(queryElements)
 	if err != nil {
-		return err
+		return nil, parsedElement{}, err
 	}
 
-	switch elementName {
-	default:
-		return fmt.Errorf("query attribute not recognized %q for a \"introduction\"", elementName)
-	case "releases":
-		if err := elementIsCollection(elementName, elementIsList); err != nil {
-			return err
-		}
-		if err := qe.newReleaseQuery(elementSelector, elementIsRecursive, queryElements[1:]); err != nil {
-			return err
-		}
-	case "title":
-		if err := elementIsFinal(elementName, elementIsList, queryElements[1:]); err != nil {
-			return err
-		}
-		queryMe.enter = func(of output.Format, h changelog.Heading) {
+	return &changelogQuery{projection}, pe, nil
+}
+
+func changelogParserConfiguration() parserConfiguration {
+	return parserConfiguration{"introduction", expectedElements{
+		"releases": {false, nil, nil, releaseQueryFactory},
+		"title": {true, func(of output.Format, h changelog.Heading) {
 			if h, ok := h.(changelog.Introduction); ok {
 				of.Set(h.DisplayTitle())
 			}
-		}
-	}
-	return nil
+		}, nil, nil},
+	}}
 }
 
 type changelogQuery struct {

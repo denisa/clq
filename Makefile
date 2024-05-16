@@ -36,7 +36,7 @@ superlinter:
 		-e RUN_LOCAL=true \
 		--env-file ".github/super-linter.env" \
 		-w /workspace -v "$$PWD":/workspace \
-		ghcr.io/super-linter/super-linter:v5
+		ghcr.io/super-linter/super-linter:v6
 
 .PHONY: golint
 golint:
