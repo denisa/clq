@@ -35,7 +35,7 @@ Run `make superlinter` to lint the complete project.
 - `go.mod`
 - `.github/workflows/ci.yaml`
 - base images in `build/docker/alpine/Dockerfile`,  `build/docker/slim/Dockerfile`
-Finally, run `make clean lcov`.
+Finally, run `make clean lcov docker-test`.
 
 ### Updating Dependencies
 
