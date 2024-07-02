@@ -18,6 +18,17 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
   - `Fixed` for any bugfixes.
   - `Security` in case of vulnerabilities.
 
+## [1.8.9] - 2024-07-02
+
+### Fixed
+
+- Bump github.com/yuin/goldmark from 1.7.1 to 1.7.4
+- Bump docker/build-push-action from 5 to 6
+- Requires golang 1.22.4
+- Bump alpine from 3.19.1 to 3.20.1
+- superlinter expects the code ase to be mounted at `/tmp/lint`
+- superlinter expects bash ([5339](https://github.com/super-linter/super-linter/issues/5339))
+
 ## [1.8.8] - 2024-05-15
 
 ### Fixed
@@ -215,7 +226,7 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
 
 ### Fixed
 
-- Dockerfile had hard-coded the target architecture, rely instead on Docker’s
+- Dockerfile had hardcoded the target architecture, rely instead on Docker’s
   own `TARGETOS` and `TARGETARCH`
 
 ## [1.7.1] - 2022-08-30
