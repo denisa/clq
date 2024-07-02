@@ -43,6 +43,9 @@ When merging a Dependabot change of dependency, run `make clean test lcov` to
 ensure that *all* dependencies have been preserved. Dependabot tends to suppress
 tool dependencies, for example `gcov2lcov`.
 
+*Note* dependencies are cached in a shared `pkg` directory and it might currently be useful
+to manually delete this first. Or push and see the build fail… [See 418]()
+
 ### Docker: updating Alpine
 
 Dependabot will update only the base image for `denisa/clq:slim`.
