@@ -44,7 +44,7 @@ ensure that *all* dependencies have been preserved. Dependabot tends to suppress
 tool dependencies, for example `gcov2lcov`.
 
 *Note* dependencies are cached in a shared `pkg` directory and it might currently be useful
-to manually delete this first. Or push and see the build fail… [See 418]()
+to manually delete this first. Or push and see the build fail… [See 418](https://github.com/denisa/clq/issues/418)
 
 ### Docker: updating Alpine
 
