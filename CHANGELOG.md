@@ -23,6 +23,7 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
 ### Fixed
 
 - Bump github.com/yuin/goldmark from 1.7.1 to 1.7.4
+- Bump docker/build-push-action from 5 to 6
 
 ## [1.8.8] - 2024-05-15
 
