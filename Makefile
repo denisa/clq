@@ -33,9 +33,11 @@ lcov: test bin/gcov2lcov
 superlinter:
 	docker run --rm \
 		--platform linux/amd64 \
+		--rm \
 		-e RUN_LOCAL=true \
+		-e SHELL=/bin/bash \
 		--env-file ".github/super-linter.env" \
-		-w /workspace -v "$$PWD":/workspace \
+		-v "$$PWD":/tmp/lint \
 		ghcr.io/super-linter/super-linter:v6
 
 .PHONY: golint
