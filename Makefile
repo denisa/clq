@@ -25,10 +25,6 @@ test: ${OUT}
 cov: test
 	go tool cover -html=${OUT}coverage.out
 
-.PHONY: lcov
-lcov: test bin/gcov2lcov
-	@bin/gcov2lcov -infile=${OUT}coverage.out -outfile=${OUT}coverage.lcov
-
 .PHONY: superlinter
 superlinter:
 	docker run --rm \
@@ -95,6 +91,3 @@ TARGET_DOCKER_TEST:=$(addprefix docker-test-,${DOCKER})
 docker-test: ${TARGET_DOCKER_TEST}
 
 ${TARGET_DOCKER_TEST}:docker-test-%:docker-build-%
-
-bin/gcov2lcov:
-	env GOBIN=$$PWD/bin GO111MODULE=on go install github.com/jandelgado/gcov2lcov

@@ -29,7 +29,11 @@ jobs:
     - uses: actions/setup-go@v5
       with:
         go-version: ${{ env.GO }}
-    - run: make lcov
+    - run: make cov
+    - uses: jandelgado/gcov2lcov-action@v1
+      with:
+        infile: out/coverage.out
+        outfile: out/coverage.lcov
     - name: Send coverage
       uses: coverallsapp/github-action@v2
       with:
