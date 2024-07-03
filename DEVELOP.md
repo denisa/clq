@@ -35,16 +35,7 @@ Run `make superlinter` to lint the complete project.
 - `go.mod`
 - `.github/workflows/ci.yaml`
 - base images in `build/docker/alpine/Dockerfile`,  `build/docker/slim/Dockerfile`
-Finally, run `make clean lcov docker-test`.
-
-### Updating Dependencies
-
-When merging a Dependabot change of dependency, run `make clean test lcov` to
-ensure that *all* dependencies have been preserved. Dependabot tends to suppress
-tool dependencies, for example `gcov2lcov`.
-
-*Note* dependencies are cached in a shared `pkg` directory and it might currently be useful
-to manually delete this first. Or push and see the build fail… [See 418](https://github.com/denisa/clq/issues/418)
+Finally, run `make clean test docker-test`.
 
 ### Docker: updating Alpine
 

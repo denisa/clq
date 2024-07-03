@@ -18,6 +18,13 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
   - `Fixed` for any bugfixes.
   - `Security` in case of vulnerabilities.
 
+## [1.8.10] - 2024-07-03
+
+### Fixed
+
+- Rely on the GitHub action `jandelgado/gcov2lcov-action`. Runing the tool through the Makefile
+  created conflict with tools wanting to tidy up the go.mod/go.sum files.
+
 ## [1.8.9] - 2024-07-02
 
 ### Fixed
@@ -26,7 +33,7 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
 - Bump docker/build-push-action from 5 to 6
 - Requires golang 1.22.4
 - Bump alpine from 3.19.1 to 3.20.1
-- superlinter expects the code ase to be mounted at `/tmp/lint`
+- superlinter expects the codebase to be mounted at `/tmp/lint`
 - superlinter expects bash ([5339](https://github.com/super-linter/super-linter/issues/5339))
 
 ## [1.8.8] - 2024-05-15
