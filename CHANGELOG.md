@@ -18,6 +18,13 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
   - `Fixed` for any bugfixes.
   - `Security` in case of vulnerabilities.
 
+## [1.8.11] - 2024-07-04
+
+### Fixed
+
+- `go build` will download dependencies listed in `go.mod` when neededl remove the explicit
+  `go get` in the `Dockefilw`
+
 ## [1.8.10] - 2024-07-03
 
 ### Fixed
