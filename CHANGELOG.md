@@ -23,6 +23,7 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
 ### Fixed
 
 - Use a single parametrized `compose.yml` to define the tests for the docker images.
+- CodeQL requires the `security-events: write` permission
 
 ## [1.8.12] - 2024-08-15
 
