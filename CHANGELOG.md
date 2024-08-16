@@ -23,7 +23,9 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
 ### Fixed
 
 - Various natural language correction; use code (block) to not validate language.
-- Restore CHEKOV while ignoring some Docker rules
+- Restore checkov while ignoring some Docker rules
+- the default path for a Compose file is `compose.yaml` (preferred) or
+  `compose.yml` that is placed in the working directory.
 
 ## [1.8.11] - 2024-07-04
 
