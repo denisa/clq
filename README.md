@@ -65,7 +65,7 @@ can be validated with a simple `clq CHANGELOG.md` or `clq */CHANGELOG.md`.
 The project also generates a 2nd docker image whose label ends wih `-alpine`, for example: `1.2.3-alpine`.
 This image, larger, is for use by the [clq-action](https://github.com/denisa/clq-action).
 
-### GitHub action
+### GitHub Action
 
 [clq-action](https://github.com/denisa/clq-action) documents how to integrate clq in a GitHub workflow.
 

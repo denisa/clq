@@ -18,6 +18,12 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
   - `Fixed` for any bugfixes.
   - `Security` in case of vulnerabilities.
 
+## [1.8.12] - 2024-08-15
+
+### Fixed
+
+- Various natural language correction; use code (block) to not validate language.
+
 ## [1.8.11] - 2024-07-04
 
 ### Fixed
@@ -30,17 +36,17 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
 
 ### Fixed
 
-- Rely on the GitHub action `jandelgado/gcov2lcov-action`. Runing the tool through the Makefile
-  created conflict with tools wanting to tidy up the go.mod/go.sum files.
+- Rely on the GitHub Action `jandelgado/gcov2lcov-action`. Runing the tool through the Makefile
+  created conflict with tools wanting to tidy up the `go.mod`/`go.sum` files.
 
 ## [1.8.9] - 2024-07-02
 
 ### Fixed
 
-- Bump github.com/yuin/goldmark from 1.7.1 to 1.7.4
-- Bump docker/build-push-action from 5 to 6
+- Bump `github.com/yuin/goldmark` from 1.7.1 to 1.7.4
+- Bump `docker/build-push-action` from 5 to 6
 - Requires golang 1.22.4
-- Bump alpine from 3.19.1 to 3.20.1
+- Bump `alpine` from 3.19.1 to 3.20.1
 - superlinter expects the codebase to be mounted at `/tmp/lint`
 - superlinter expects bash ([5339](https://github.com/super-linter/super-linter/issues/5339))
 
@@ -49,8 +55,8 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
 ### Fixed
 
 - resolve cyclomatic complexity
-- Bump super-linter/super-linter from 5 to 6 in the Makefile
-- Bump github.com/yuin/goldmark from 1.7.0 to 1.7.1
+- Bump `super-linter/super-linter` from 5 to 6 in the Makefile
+- Bump `github.com/yuin/goldmark` from 1.7.0 to 1.7.1
 
 ## [1.8.7] - 2024-03-26
 
@@ -65,29 +71,29 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
 
 ### Fixed
 
-- Bump peter-evans/dockerhub-description from 3 to 4
-- Bump super-linter/super-linter from 5 to 6 while disabling go_modules and checkov;
+- Bump `peter-evans/dockerhub-description` from 3 to 4
+- Bump `super-linter/super-linter` from 5 to 6 while disabling go_modules and checkov;
   Created [394](https://github.com/denisa/clq/issues/394), [395](https://github.com/denisa/clq/issues/395)
   to address this later.
-- Bump github.com/yuin/goldmark from 1.6.0 to 1.7.0
-- Bump github.com/stretchr/testify from 1.8.4 to 1.9.0
+- Bump `github.com/yuin/goldmark` from 1.6.0 to 1.7.0
+- Bump `github.com/stretchr/testify` from 1.8.4 to 1.9.0
 - Requires golang 1.22.0
-- Bumps alpine from 3.18.5 to 3.19.1
+- Bump `alpine` from 3.18.5 to 3.19.1
 
 ## [1.8.5] - 2023-12-30
 
 ### Fixed
 
-- Bump github/codeql-action from 2 to 3
-- Bump actions/checkout from 3 to 4 — the plantuml action was still on an old version
-- Bump actions/upload-pages-artifact from 1 to 3
-- Bump actions/deploy-pages from 1 to 4
+- Bump `github/codeql-action` from 2 to 3
+- Bump `actions/checkout` from 3 to 4 — the plantuml action was still on an old version
+- Bump `actions/upload-pages-artifact` from 1 to 3
+- Bump `actions/deploy-pages` from 1 to 4
 
 ## [1.8.4] - 2023-12-28
 
 ### Fixed
 
-- Clarify handling of 'build' change kinds (out of spec!)
+- Clarify handling of `build` change kinds (out of spec!)
 
 ## [1.8.3] - 2023-12-15
 
@@ -102,14 +108,14 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
 
 - Renders puml to GitHub page
 - Resolve more warnings raised by Fleet
-- Bumps actions/setup-go from 4 to 5
+- Bump `actions/setup-go` from 4 to 5
 
 ## [1.8.1] - 2023-12-04
 
 ### Fixed
 
-- Bumps golang from 1.20 to 1.21
-- Bumps alpine from 3.18.4 to 3.18.5
+- Bump `golang` from 1.20 to 1.21
+- Bump `alpine` from 3.18.4 to 3.18.5
 - Resolve various warnings raised by Fleet
 
 ## [1.8.0] - 2023-10-17
@@ -122,8 +128,8 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
 
 - `ioutil.ReadAll`, `ioutil.ReadFile` deprecated since golanmg 1.16
 - Fix variables (config, require) that comflict with a package import
-- Bump github.com/yuin/goldmark from 1.5.6 to 1.6.0
-- Bumps alpine from 3.18.2 to 3.18.4.
+- Bump `github.com/yuin/goldmark` from 1.5.6 to 1.6.0
+- Bump `alpine` from 3.18.2 to 3.18.4.
 
 ## [1.7.16] - 2023-10-17
 
@@ -145,33 +151,33 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
 
 ### Fixed
 
-- Use peter-evans/dockerhub-description to keep the description in DockerHub up-to-date
+- Use `peter-evans/dockerhub-description` to keep the description in DockerHub up-to-date
 
 ## [1.7.13] - 2023-10-07
 
 ### Fixed
 
-- Update from github/super-linter@v5 to super-linter/super-linter@v5
+- Update from `github/super-linter@v5` to `super-linter/super-linter@v5`
 
 ## [1.7.12] - 2023-10-07
 
 ### Fixed
 
-- Bump docker/login-action from 2 to 3
-- Bump docker/setup-buildx-action from 2 to 3
-- Bump docker/setup-qemu-action from 2 to 3
-- Bump docker/build-push-action from 4 to 5
-- Bump github.com/yuin/goldmark from 1.5.4 to 1.5.6
+- Bump `docker/login-action` from 2 to 3
+- Bump `docker/setup-buildx-action` from 2 to 3
+- Bump `docker/setup-qemu-action` from 2 to 3
+- Bump `docker/build-push-action` from 4 to 5
+- Bump `github.com/yuin/goldmark` from 1.5.4 to 1.5.6
 
 ## [1.7.11] - 2023-09-04
 
 ### Fixed
 
-- Bumps github/super-linter from 4 to 5
-- Bumps actions/checkout from 3 to 4
-- Bump github.com/stretchr/testify from 1.8.2 to 1.8.4
-- Bump alpine from 3.17.2 to 3.18.2
-- Bump golang from 1.20.2 to 1.20.5
+- Bump `github/super-linter` from 4 to 5
+- Bump `actions/checkout` from 3 to 4
+- Bump `github.com/stretchr/testify` from 1.8.2 to 1.8.4
+- Bump `alpine` from 3.17.2 to 3.18.2
+- Bump `golang` from 1.20.2 to 1.20.5
 
 ## [1.7.10] - 2023-04-03
 
@@ -204,18 +210,18 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
 
 ### Fixed
 
-- Bump golang from 1.19 to 1.20
+- Bump `golang` from 1.19 to 1.20
 
 ## [1.7.5] - 2023-03-19
 
 ### Fixed
 
-- Bump actions/setup-go from 3 to 4
-- Bump docker/build-push-action from 3 to 4
-- Bump coverallsapp/github-action from 1.1.3 to 2
-- Bump github.com/stretchr/testify from 1.8.1 to 1.8.2
-- Bump github.com/yuin/goldmark from 1.5.3 to 1.5.4
-- Bump alpine from 3.17.0 to 3.17.2 in /build/docker/alpine
+- Bump `actions/setup-go` from 3 to 4
+- Bump `docker/build-push-action` from 3 to 4
+- Bump `coverallsapp/github-action` from 1.1.3 to 2
+- Bump `github.com/stretchr/testify` from 1.8.1 to 1.8.2
+- Bump `github.com/yuin/goldmark` from 1.5.3 to 1.5.4
+- Bump `alpine` from 3.17.0 to 3.17.2 in `/build/docker/alpine`
 - Always checkout the repository first, this allows setup actions to uses info from the  
   repository. Looking at you, setup-go
 
@@ -223,7 +229,7 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
 
 ### Fixed
 
-- Ask dependabot to only check for major version changes in GitHub actions.
+- Ask dependabot to only check for major version changes in GitHub Actions.
 - Properly handles soft and hard line breaks
 
 ## [1.7.3] - 2022-12-25
@@ -231,11 +237,11 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
 ### Fixed
 
 - Better error message when the changelog omits the Introduction’s title.
-- Uses ncipollo/release-action v1, do not specify complete version
-- Bump alpine from 3.16.2 to 3.17.0
-- Bump github.com/stretchr/testify from 1.8.0 to 1.8.1
-- Bump github.com/yuin/goldmark from 1.4.13 to 1.5.3
-- Bump golang from 1.19.0-alpine3.16 to 1.19.4-alpine3.17
+- Uses `ncipollo/release-action` v1, do not specify complete version
+- Bump `alpine` from 3.16.2 to 3.17.0
+- Bump `github.com/stretchr/testify` from 1.8.0 to 1.8.1
+- Bump `github.com/yuin/goldmark` from 1.4.13 to 1.5.3
+- Bump `golang` from 1.19.0-alpine3.16 to 1.19.4-alpine3.17
 
 ## [1.7.2] - 2022-09-05
 
@@ -268,31 +274,31 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
 ### Fixed
 
 - Release job was failing to upload artifacts because workflows had both
-  ncipollo/release-action and actions/create-release
-- Retire actions/upload-release-asset and let ncipollo/release-action upload artifacts
+  `ncipollo/release-action` and `actions/create-release`
+- Retire `actions/upload-release-asset` and let `ncipollo/release-action` upload artifacts
 - Produce arm64 binaries for darwin and linux
-- Bumps actions/setup-go from 3.2.1 to 3.3.0
+- Bump `actions/setup-go` from 3.2.1 to 3.3.0
 
 ## [1.6.5] - 2022-08-27
 
 ### Fixed
 
-- Bump github.com/stretchr/testify from 1.7.1 to 1.8.0
-- Bump github.com/yuin/goldmark from 1.4.12 to 1.4.13
-- Bump actions/setup-go from 3.1.0 to 3.2.1
-- Bump alpine from 3.15.4 to 3.16.2 in /build/docker/alpine
-- Bump golang from 1.18.2 to 1.19.0
+- Bump `github.com/stretchr/testify` from 1.7.1 to 1.8.0
+- Bump `github.com/yuin/goldmark` from 1.4.12 to 1.4.13
+- Bump `actions/setup-go` from 3.1.0 to 3.2.1
+- Bump `alpine` from 3.15.4 to 3.16.2 in `/build/docker/alpine`
+- Bump `golang` from 1.18.2 to 1.19.0
 
 ## [1.6.4] - 2022-05-15
 
 ### Fixed
 
-- Uses denisa/semantic-tag-helper@v1
-- Uses ncipollo/release-action
-- Bump docker/login-action from 1 to 2
-- Bump docker/setup-buildx-action from 1 to 2
-- Bumps golang from 1.18.1-alpine3.15 to 1.18.2-alpine3.15.
-- Bump actions/setup-go from 3.0.0 to 3.1.0
+- Uses `denisa/semantic-tag-helper@v1`
+- Uses `ncipollo/release-action`
+- Bump `docker/login-action` from 1 to 2
+- Bump `docker/setup-buildx-action` from 1 to 2
+- Bump `golang` from 1.18.1-alpine3.15 to 1.18.2-alpine3.15.
+- Bump `actions/setup-go` from 3.0.0 to 3.1.0
 - Use a custom changemap in which Changes implies change to existing functionality, hence
   a major version bump.
 
@@ -308,45 +314,45 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
 
 - When clq disagrees with the version change, it now shows the correct version
   and the change kind responsible for it.
-- Bump actions/checkout from 3.0.1 to 3.0.2
-- Bump github.com/yuin/goldmark from 1.4.11 to 1.4.12
-- Bump github/codeql-action from 1 to 2
-- Bump alpine from 3.15.0 to 3.15.4 in /build/docker/alpine
+- Bump `actions/checkout` from 3.0.1 to 3.0.2
+- Bump `github.com/yuin/goldmark` from 1.4.11 to 1.4.12
+- Bump `github/codeql-action` from 1 to 2
+- Bump `alpine` from 3.15.0 to 3.15.4 in `/build/docker/alpine`
 
 ## [1.6.1] - 2022-04-23
 
 ### Fixed
 
-- Bump github.com/yuin/goldmark from 1.4.4 to 1.4.11
-- Bump github.com/stretchr/testify from 1.7.0 to 1.7.1
-- Bump actions/setup-go from 2.1.4 to 3.0.0
-- Bump actions/checkout from 2.4.0 to 3.0.1
-- Bump golang from 1.17.4 to 1.18.1
+- Bump `github.com/yuin/goldmark` from 1.4.4 to 1.4.11
+- Bump `github.com/stretchr/testify` from 1.7.0 to 1.7.1
+- Bump `actions/setup-go` from 2.1.4 to 3.0.0
+- Bump `actions/checkout` from 2.4.0 to 3.0.1
+- Bump `golang` from 1.17.4 to 1.18.1
 
 ## [1.6.0] - 2021-12-09
 
 ### Added
 
 - Upgrade to go 1.17
-- Bump golang in /build/docker/alpine
-- Bump golang in /build/docker/slim
+- Bump `golang` in `/build/docker/alpine`
+- Bump `golang` in `/build/docker/slim`
 
 ## [1.5.0] - 2021-12-04
 
 ### Added
 
 - Upgrade to go 1.16
-- Bump golang in /build/docker/alpine
-- Bump golang in /build/docker/slim
-- Bump github.com/yuin/goldmark from 1.3.1 to 1.4.4
+- Bump `golang` in `/build/docker/alpine`
+- Bump `golang` in `/build/docker/slim`
+- Bump `github.com/yuin/goldmark` from 1.3.1 to 1.4.4
 - Stop using Docker Content Trust (the golang images aren’t signed)
 
 ### Fixed
 
-- Bump actions/setup-go from 2.1.3 to 2.1.4
-- Bump alpine from 3.12 to 3.15.0 in /build/docker/alpine, /build/docker/slim
-- Bump actions/checkout from 2.3.4 to 2.4.0
-- Bump github.com/stretchr/testify from 1.6.1 to 1.7.0
+- Bump `actions/setup-go` from 2.1.3 to 2.1.4
+- Bump `alpine` from 3.12 to 3.15.0 in `/build/docker/alpine,` `/build/docker/slim`
+- Bump `actions/checkout` from 2.3.4 to 2.4.0
+- Bump `github.com/stretchr/testify` from 1.6.1 to 1.7.0
 
 ## [1.4.1] - 2021-11-28
 
@@ -364,22 +370,22 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
 
 ### Fixed
 
-- Bump github.com/yuin/goldmark from 1.2.1 to 1.3.1
-- Bumps golang base image from 1.15.0-alpine3.12 to 1.15.6-alpine3.12
-- Bump actions/checkout from v2.3.2 to v2.3.4
-- Bump actions/create-release from v1.1.3 to v1.1.4
-- Bump actions/setup-go from v2.1.2 to v2.1.3
-- Bump coverallsapp/github-action from v1.1.1 to v1.1.
+- Bump `github.com/yuin/goldmark` from 1.2.1 to 1.3.1
+- Bump `golang` base image from 1.15.0-alpine3.12 to 1.15.6-alpine3.12
+- Bump `actions/checkout` from v2.3.2 to v2.3.4
+- Bump `actions/create-release` from v1.1.3 to v1.1.4
+- Bump `actions/setup-go` from v2.1.2 to v2.1.3
+- Bump `coverallsapp/github-action` from v1.1.1 to v1.1.
 - workflow converted from set-env to set-output
 
 ## [1.3.4] - 2020-08-17
 
 ### Fixed
 
-- Bump golang to 1.15
-- Update actions/checkout requirement to v2.3.2
-- Bump actions/create-release from v1.1.2 to v1.1.3
-- Bump actions/setup-go from v2.1.1 to v2.1.2
+- Bump `golang` to 1.15
+- Update `actions/checkout` requirement to v2.3.2
+- Bump `actions/create-release` from v1.1.2 to v1.1.3
+- Bump `actions/setup-go` from v2.1.1 to v2.1.2
 
 ## [1.3.3] - 2020-08-04
 
@@ -391,15 +397,15 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
 
 ### Fixed
 
-- Bump github.com/yuin/goldmark from 1.2.0 to 1.2.1
+- Bump `github.com/yuin/goldmark` from 1.2.0 to 1.2.1
 
 ## [1.3.1] - 2020-07-28
 
 ### Fixed
 
-- Create codeql-analysis.yml
-- Bump actions/setup-go from v2.1.0 to v2.1.1
-- Bump github.com/yuin/goldmark from 1.1.32 to 1.2.0
+- Create `codeql-analysis.yml`
+- Bump `actions/setup-go` from v2.1.0 to v2.1.1
+- Bump `github.com/yuin/goldmark` from 1.1.32 to 1.2.0
 
 ## [1.3.0] - 2020-07-23
 
@@ -412,7 +418,7 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
 ### Fixed
 
 - Add class diagram
-- Use CHANGELOG.md to fill in GitHub release information
+- Use `CHANGELOG.md` to fill in GitHub release information
 
 ## [1.2.0] - 2020-07-19
 
@@ -424,9 +430,9 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
 
 ### Fixed
 
-- Bump actions/checkout from v2.2.0 to v2.3.1
-- Bump actions/create-release from v1.1.0 to v1.1.2
-- Bump actions/setup-go from v2.0.3 to v2.1.0
+- Bump `actions/checkout` from v2.2.0 to v2.3.1
+- Bump `actions/create-release` from v1.1.0 to v1.1.2
+- Bump `actions/setup-go` from v2.0.3 to v2.1.0
 
 ## [1.1.2] - 2020-06-09
 
@@ -452,8 +458,8 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
 ### Fixed
 
 - Now set the version in the released binaries
-- Bump github.com/stretchr/testify from 1.6.0 to 1.6.1
-- Bump github.com/yuin/goldmark from 1.1.31 to 1.1.32
+- Bump `github.com/stretchr/testify` from 1.6.0 to 1.6.1
+- Bump `github.com/yuin/goldmark` from 1.1.31 to 1.1.32
 
 ## [1.0.1] - 2020-06-07
 
