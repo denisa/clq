@@ -1,0 +1,9 @@
+{
+  "rules": {
+    "terminology": {
+      "skip": [
+        "BlockQuote", "Code", "CodeBlock"
+      ]
+    }
+  }
+}

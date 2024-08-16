@@ -91,4 +91,4 @@ TARGET_DOCKER_TEST:=$(addprefix docker-test-,${DOCKER})
 docker-test: ${TARGET_DOCKER_TEST}
 
 ${TARGET_DOCKER_TEST}:docker-test-%:docker-build-%
-	docker compose --file build/docker/$*/Dockerfile.test.yml up --exit-code-from sut
+	docker compose --file build/docker/$*/compose.yaml up --exit-code-from sut

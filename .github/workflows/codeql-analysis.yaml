@@ -13,10 +13,12 @@ on:
       - '**/*.yaml'
       - '**/*.yml'
       - '**/Dockerfile'
-
+permissions: {}
 jobs:
   analyse:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
 
     steps:
     - uses: actions/checkout@v4

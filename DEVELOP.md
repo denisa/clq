@@ -14,7 +14,7 @@ A succesful push to main tags the commit and creates a GitHub release.
 
 A succesful push to main builds and publishes the *latest* docker image on Docker Hub.
 
-The GitHub Action attaches binaries for unix, macOS, and windows to the GitHub release
+The GitHub Action attaches binaries for Unix, macOS, and windows to the GitHub release
 as well as builds and publishes docker images to Docker Hub with the tagged version.
 
 ## Local Build
