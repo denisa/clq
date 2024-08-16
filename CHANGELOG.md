@@ -23,6 +23,7 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
 ### Fixed
 
 - Various natural language correction; use code (block) to not validate language.
+- Restore CHEKOV while ignoring some Docker rules
 
 ## [1.8.11] - 2024-07-04
 
