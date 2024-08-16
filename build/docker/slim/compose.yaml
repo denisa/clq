@@ -1,9 +1,0 @@
-version: '3'
-
-services:
-  sut:
-    image: denisa/clq:slim
-    volumes:
-      - ../../../.github/clq/changemap.json:/home/changemap.json:ro
-      - ../../../CHANGELOG.md:/home/CHANGELOG.md:ro
-    command: [ "-changeMap", "/home/changemap.json", "-with-filename", "/home/CHANGELOG.md" ]
