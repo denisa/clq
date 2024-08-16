@@ -7,6 +7,8 @@ on:
     tags-ignore:
       - '*'
   pull_request:
+permissions:
+  contents: read
 env:
   GO: 1.22.4
 jobs:
@@ -16,6 +18,7 @@ jobs:
       matrix:
         platform: [macos-latest, windows-latest]
     runs-on: ${{ matrix.platform }}
+
     steps:
     - uses: actions/checkout@v4
     - uses: actions/setup-go@v5
@@ -74,6 +77,9 @@ jobs:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     needs: test
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      deployments: write
     environment: dockerhub
     steps:
     - uses: actions/checkout@v4

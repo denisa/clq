@@ -26,6 +26,7 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
 - Restore checkov while ignoring some Docker rules
 - the default path for a Compose file is `compose.yaml` (preferred) or
   `compose.yml` that is placed in the working directory.
+- reduce permissions in the various workflows
 
 ## [1.8.11] - 2024-07-04
 
