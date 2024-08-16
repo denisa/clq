@@ -2,7 +2,7 @@
 name: "CodeQL"
 on:
   push:
-    branches: [ main ]
+    branches: [ main, protected ]
   pull_request:
     branches: [ main ]
     paths-ignore:
@@ -13,12 +13,14 @@ on:
       - '**/*.yaml'
       - '**/*.yml'
       - '**/Dockerfile'
+      - '**/Makefile'
 permissions: {}
 jobs:
   analyse:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+      security-events: write
 
     steps:
     - uses: actions/checkout@v4

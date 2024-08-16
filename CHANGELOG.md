@@ -18,6 +18,13 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
   - `Fixed` for any bugfixes.
   - `Security` in case of vulnerabilities.
 
+## [1.8.13] - 2024-08-16
+
+### Fixed
+
+- Use a single parametrized `compose.yml` to define the tests for the docker images.
+- CodeQL requires the `security-events: write` permission
+
 ## [1.8.12] - 2024-08-15
 
 ### Fixed
