@@ -1,6 +1,6 @@
 ---
 name: plantuml
-on: [ push, pull_request ]
+on: [push, pull_request]
 permissions: {}
 jobs:
   plantuml:

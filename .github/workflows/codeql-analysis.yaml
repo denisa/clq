@@ -2,18 +2,18 @@
 name: "CodeQL"
 on:
   push:
-    branches: [ main, protected ]
+    branches: [main, protected]
   pull_request:
-    branches: [ main ]
+    branches: [main]
     paths-ignore:
-      - '**/*.json'
-      - '**/*.md'
-      - '**/*.puml'
-      - '**/*.txt'
-      - '**/*.yaml'
-      - '**/*.yml'
-      - '**/Dockerfile'
-      - '**/Makefile'
+      - "**/*.json"
+      - "**/*.md"
+      - "**/*.puml"
+      - "**/*.txt"
+      - "**/*.yaml"
+      - "**/*.yml"
+      - "**/Dockerfile"
+      - "**/Makefile"
 permissions: {}
 jobs:
   analyse:
@@ -23,7 +23,7 @@ jobs:
       security-events: write
 
     steps:
-    - uses: actions/checkout@v4
-    - uses: github/codeql-action/init@v3
-    - uses: github/codeql-action/autobuild@v3
-    - uses: github/codeql-action/analyze@v3
+      - uses: actions/checkout@v4
+      - uses: github/codeql-action/init@v3
+      - uses: github/codeql-action/autobuild@v3
+      - uses: github/codeql-action/analyze@v3
