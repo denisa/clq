@@ -34,7 +34,7 @@ superlinter:
 		-e SHELL=/bin/bash \
 		--env-file ".github/super-linter.env" \
 		-v "$$PWD":/tmp/lint \
-		ghcr.io/super-linter/super-linter:v6
+		ghcr.io/super-linter/super-linter:v7
 
 .PHONY: golint
 golint:

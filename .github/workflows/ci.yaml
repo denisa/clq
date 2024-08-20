@@ -3,9 +3,9 @@ name: "ci"
 on:
   push:
     branches:
-      - '**'
+      - "**"
     tags-ignore:
-      - '*'
+      - "*"
   pull_request:
 permissions:
   contents: read
@@ -20,59 +20,59 @@ jobs:
     runs-on: ${{ matrix.platform }}
 
     steps:
-    - uses: actions/checkout@v4
-    - uses: actions/setup-go@v5
-      with:
-        go-version: ${{ env.GO }}
-    - run: make test
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: ${{ env.GO }}
+      - run: make test
   test-ubuntu:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
-    - uses: actions/setup-go@v5
-      with:
-        go-version: ${{ env.GO }}
-    - run: make cov
-    - uses: jandelgado/gcov2lcov-action@v1
-      with:
-        infile: out/coverage.out
-        outfile: out/coverage.lcov
-    - name: Send coverage
-      uses: coverallsapp/github-action@v2
-      with:
-        file: out/coverage.lcov
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: ${{ env.GO }}
+      - run: make cov
+      - uses: jandelgado/gcov2lcov-action@v1
+        with:
+          infile: out/coverage.out
+          outfile: out/coverage.lcov
+      - name: Send coverage
+        uses: coverallsapp/github-action@v2
+        with:
+          file: out/coverage.lcov
   test-docker:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
-    - id: buildx
-      uses: docker/setup-buildx-action@v3
-    - run: make docker-test
+      - uses: actions/checkout@v4
+      - id: buildx
+        uses: docker/setup-buildx-action@v3
+      - run: make docker-test
   test-version:
     if: (github.event_name == 'pull_request') || (github.event_name == 'push' && github.ref == 'refs/heads/main')
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
-    - uses: actions/setup-go@v5
-      with:
-        go-version: ${{ env.GO }}
-    - name: Release validation of the CHANGELOG.md
-      id: clq-extract
-      run: |
-        make build
-        release_version=$(out/dist/clq -changeMap .github/clq/changemap.json -release -query 'releases[0].version' CHANGELOG.md)
-        echo "tag=v${release_version}" >> "${GITHUB_OUTPUT}"
-    - uses: denisa/semantic-tag-helper@v1
-      with:
-        mode: test
-        tag: ${{ steps.clq-extract.outputs.tag }}
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: ${{ env.GO }}
+      - name: Release validation of the CHANGELOG.md
+        id: clq-extract
+        run: |
+          make build
+          release_version=$(out/dist/clq -changeMap .github/clq/changemap.json -release -query 'releases[0].version' CHANGELOG.md)
+          echo "tag=v${release_version}" >> "${GITHUB_OUTPUT}"
+      - uses: denisa/semantic-tag-helper@v1
+        with:
+          mode: test
+          tag: ${{ steps.clq-extract.outputs.tag }}
   test:
     needs: [test-os, test-ubuntu, test-docker, test-version]
     runs-on: ubuntu-latest
     steps:
-    - name: Release validation of the CHANGELOG.md
-      run: |
-        echo "All tests passed"
+      - name: Release validation of the CHANGELOG.md
+        run: |
+          echo "All tests passed"
   release:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     needs: test
@@ -82,86 +82,86 @@ jobs:
       deployments: write
     environment: dockerhub
     steps:
-    - uses: actions/checkout@v4
-    - uses: actions/setup-go@v5
-      with:
-        go-version: ${{ env.GO }}
-    - uses: docker/setup-qemu-action@v3
-    - uses: docker/setup-buildx-action@v3
-      id: buildx
-    - uses: docker/login-action@v3
-      with:
-        username: ${{ secrets.DOCKER_HUB_USERNAME }}
-        password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
-    - run: make build
-    - name: Extract release information
-      id: clq-extract
-      run: |
-        release_version=$(out/dist/clq -changeMap .github/clq/changemap.json -release -query 'releases[0].version' CHANGELOG.md)
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: ${{ env.GO }}
+      - uses: docker/setup-qemu-action@v3
+      - uses: docker/setup-buildx-action@v3
+        id: buildx
+      - uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+      - run: make build
+      - name: Extract release information
+        id: clq-extract
+        run: |
+          release_version=$(out/dist/clq -changeMap .github/clq/changemap.json -release -query 'releases[0].version' CHANGELOG.md)
 
-        release_name=$(out/dist/clq -changeMap .github/clq/changemap.json -release -query 'releases[0].label' CHANGELOG.md)
-        if [ -z "${release_name}" ]; then
-          release_name="Release ${release_version}"
-        fi
+          release_name=$(out/dist/clq -changeMap .github/clq/changemap.json -release -query 'releases[0].label' CHANGELOG.md)
+          if [ -z "${release_name}" ]; then
+            release_name="Release ${release_version}"
+          fi
 
-        release_status=$(out/dist/clq -changeMap .github/clq/changemap.json -release -query 'releases[0].status' CHANGELOG.md)
+          release_status=$(out/dist/clq -changeMap .github/clq/changemap.json -release -query 'releases[0].status' CHANGELOG.md)
 
-        release_changes=$(out/dist/clq -changeMap .github/clq/changemap.json -release -output md -query 'releases[0].changes[]/' CHANGELOG.md)
+          release_changes=$(out/dist/clq -changeMap .github/clq/changemap.json -release -output md -query 'releases[0].changes[]/' CHANGELOG.md)
 
-        EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
-        {
-          echo "changes<<$EOF"
-          echo "${release_changes}"
-          echo "$EOF"
-          echo "name=${release_name}"
-          echo "status=${release_status}"
-          echo "tag=v${release_version}"
-          echo "version=${release_version}"
-        } >> "${GITHUB_OUTPUT}"
-    - run: |
-        release_version=${{ steps.clq-extract.outputs.version }}
-        VERSION=$release_version make clean assertVersionDefined build-all
-        test "$(out/dist/clq-linux-amd64 -changeMap .github/clq/changemap.json -version)" = "clq $release_version"
-        VERSION=${release_version} make assertVersionDefined docker-test
-    - uses: docker/build-push-action@v6
-      with:
-        builder: ${{ steps.buildx.outputs.name }}
-        build-args: |
-          DOCKER_TAG=${{ steps.clq-extract.outputs.version }}
-        context: .
-        file: build/docker/alpine/Dockerfile
-        platforms: linux/amd64,linux/arm64
-        push: true
-        tags: |
-          denisa/clq:${{ steps.clq-extract.outputs.version }}-alpine
-    - uses: docker/build-push-action@v6
-      with:
-        builder: ${{ steps.buildx.outputs.name }}
-        build-args: |
-          DOCKER_TAG=${{ steps.clq-extract.outputs.version }}
-        context: .
-        file: build/docker/slim/Dockerfile
-        platforms: linux/amd64,linux/arm64
-        push: true
-        tags: |
-          denisa/clq:${{ steps.clq-extract.outputs.version }}
-          denisa/clq:${{ steps.clq-extract.outputs.version }}-slim
-          denisa/clq:latest
-    - uses: peter-evans/dockerhub-description@v4
-      with:
-        username: ${{ secrets.DOCKER_HUB_USERNAME }}
-        password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
-        short-description: ${{ github.event.repository.description }}
-    - uses: denisa/semantic-tag-helper@v1
-      with:
-        mode: set
-        tag: ${{ steps.clq-extract.outputs.tag }}
-    - uses: ncipollo/release-action@v1
-      id: create_release
-      with:
-        tag: ${{ steps.clq-extract.outputs.tag }}
-        prerelease: ${{ steps.clq-extract.outputs.status == 'prereleased' }}
-        name: ${{ steps.clq-extract.outputs.name }}
-        body: ${{ steps.clq-extract.outputs.changes }}
-        artifactContentType: application/octet-stream
-        artifacts: "out/dist/*"
+          EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
+          {
+            echo "changes<<$EOF"
+            echo "${release_changes}"
+            echo "$EOF"
+            echo "name=${release_name}"
+            echo "status=${release_status}"
+            echo "tag=v${release_version}"
+            echo "version=${release_version}"
+          } >> "${GITHUB_OUTPUT}"
+      - run: |
+          release_version=${{ steps.clq-extract.outputs.version }}
+          VERSION=$release_version make clean assertVersionDefined build-all
+          test "$(out/dist/clq-linux-amd64 -changeMap .github/clq/changemap.json -version)" = "clq $release_version"
+          VERSION=${release_version} make assertVersionDefined docker-test
+      - uses: docker/build-push-action@v6
+        with:
+          builder: ${{ steps.buildx.outputs.name }}
+          build-args: |
+            DOCKER_TAG=${{ steps.clq-extract.outputs.version }}
+          context: .
+          file: build/docker/alpine/Dockerfile
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: |
+            denisa/clq:${{ steps.clq-extract.outputs.version }}-alpine
+      - uses: docker/build-push-action@v6
+        with:
+          builder: ${{ steps.buildx.outputs.name }}
+          build-args: |
+            DOCKER_TAG=${{ steps.clq-extract.outputs.version }}
+          context: .
+          file: build/docker/slim/Dockerfile
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: |
+            denisa/clq:${{ steps.clq-extract.outputs.version }}
+            denisa/clq:${{ steps.clq-extract.outputs.version }}-slim
+            denisa/clq:latest
+      - uses: peter-evans/dockerhub-description@v4
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+          short-description: ${{ github.event.repository.description }}
+      - uses: denisa/semantic-tag-helper@v1
+        with:
+          mode: set
+          tag: ${{ steps.clq-extract.outputs.tag }}
+      - uses: ncipollo/release-action@v1
+        id: create_release
+        with:
+          tag: ${{ steps.clq-extract.outputs.tag }}
+          prerelease: ${{ steps.clq-extract.outputs.status == 'prereleased' }}
+          name: ${{ steps.clq-extract.outputs.name }}
+          body: ${{ steps.clq-extract.outputs.changes }}
+          artifactContentType: application/octet-stream
+          artifacts: "out/dist/*"
