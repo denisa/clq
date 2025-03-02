@@ -23,6 +23,7 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
 ### Fixed
 
 - Bump golang from 1.22.4 to 1.24.0
+- Take advantage of actions/setup-go's go-version-file
 
 ## [1.8.16] - 2024-12-16
 
