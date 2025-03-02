@@ -33,7 +33,6 @@ Run `make superlinter` to lint the complete project.
 
 - `brew unpin go; brew upgrade go; brew pin go`
 - `go.mod`
-- `.github/workflows/ci.yaml`
 - base images in `build/docker/alpine/Dockerfile`,  `build/docker/slim/Dockerfile`
 Finally, run `make clean test docker-test`.
 

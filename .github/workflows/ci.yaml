@@ -9,8 +9,6 @@ on:
   pull_request:
 permissions:
   contents: read
-env:
-  GO: 1.22.4
 jobs:
   test-os:
     strategy:
@@ -23,7 +21,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-go@v5
         with:
-          go-version: ${{ env.GO }}
+          go-version-file: go.mod
       - run: make test
   test-ubuntu:
     runs-on: ubuntu-latest
@@ -31,7 +29,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-go@v5
         with:
-          go-version: ${{ env.GO }}
+          go-version-file: go.mod
       - run: make cov
       - uses: jandelgado/gcov2lcov-action@v1
         with:
@@ -55,7 +53,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-go@v5
         with:
-          go-version: ${{ env.GO }}
+          go-version-file: go.mod
       - name: Release validation of the CHANGELOG.md
         id: clq-extract
         run: |
@@ -85,7 +83,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-go@v5
         with:
-          go-version: ${{ env.GO }}
+          go-version-file: go.mod
       - uses: docker/setup-qemu-action@v3
       - uses: docker/setup-buildx-action@v3
         id: buildx
