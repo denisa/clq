@@ -101,6 +101,7 @@ func (r *Validator) visitHeading1() (ast.WalkStatus, error) {
 	return ast.WalkContinue, nil
 }
 
+//gocyclo:ignore
 func (r *Validator) visitHeading2() (ast.WalkStatus, error) {
 	if (r.changelog.Release() || r.changelog.Change()) && !r.hasChangeDescriptions {
 		return ast.WalkStop, fmt.Errorf("no change descriptions for %v", r.changelog)
@@ -126,7 +127,14 @@ func (r *Validator) visitHeading2() (ast.WalkStatus, error) {
 		}
 		nextRelease := release.NextRelease(increment)
 		if !r.previousRelease.ReleaseIs(nextRelease) {
-			return ast.WalkStop, fmt.Errorf("release %q should have version %v because of %q", r.previousRelease.Title(), nextRelease, trigger)
+			if release.IsMajorVersionZero() && increment == semver.Major {
+				nextMinorRelease := release.NextRelease(semver.Minor)
+				if !r.previousRelease.ReleaseIs(nextMinorRelease) {
+					return ast.WalkStop, fmt.Errorf("release %q should have version %v or %v because of %q", r.previousRelease.Title(), nextMinorRelease, nextRelease, trigger)
+				}
+			} else {
+				return ast.WalkStop, fmt.Errorf("release %q should have version %v because of %q", r.previousRelease.Title(), nextRelease, trigger)
+			}
 		}
 	}
 

@@ -132,7 +132,7 @@ func (h Release) NextRelease(semverIdentifier semverConstants.Identifier) semver
 	case semverConstants.Patch:
 		return semver.Version{Major: h.version.Major, Minor: h.version.Minor, Patch: h.version.Patch + 1}
 	default:
-		return h.version
+		return semver.Version{Major: h.version.Major, Minor: h.version.Minor, Patch: h.version.Patch}
 	}
 }
 
@@ -147,6 +147,10 @@ func (h Release) IsNewerThan(other Release) error {
 		return fmt.Errorf("validation error: release %q should sort before %q", other.Title(), h.Title())
 	}
 	return nil
+}
+
+func (h Release) IsMajorVersionZero() bool {
+	return h.version.Major == 0
 }
 
 func subexp(groups []string, matches []string, subexp string) string {
