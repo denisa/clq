@@ -124,10 +124,10 @@ func TestResetFilledChangelogToOneIsSameAsTwoPushToEmptyChangelog(t *testing.T) 
 	requireEventsEquals(assertions, &[]string{"Enter {title}", "Enter {[Unreleased]}", "Enter {Added}"}, &recorder.events)
 	assertions.Equal("{title}{[Unreleased]}{Added}", s.String())
 
-	_, err := s.Section(ReleaseHeading, "1.2.3 - 2020-04-15 [YANKED]")
+	_, err := s.Section(ReleaseHeading, "[1.2.3] - 2020-04-15 [YANKED]")
 	assertions.NoError(err)
-	requireEventsEquals(assertions, &[]string{"Enter {title}", "Enter {[Unreleased]}", "Enter {Added}", "Exit {Added}", "Exit {[Unreleased]}", "Enter {1.2.3 - 2020-04-15 [YANKED]}"}, &recorder.events)
-	assertions.Equal("{title}{1.2.3 - 2020-04-15 [YANKED]}", s.String())
+	requireEventsEquals(assertions, &[]string{"Enter {title}", "Enter {[Unreleased]}", "Enter {Added}", "Exit {Added}", "Exit {[Unreleased]}", "Enter {[1.2.3] - 2020-04-15 [YANKED]}"}, &recorder.events)
+	assertions.Equal("{title}{[1.2.3] - 2020-04-15 [YANKED]}", s.String())
 }
 
 func requireEventsEquals(assertions *require.Assertions, expected *[]string, actual *[]string) {

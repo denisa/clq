@@ -3,6 +3,6 @@ This changelog is good for development validation, but not for release validatio
 ## [Unreleased]
 ### Fixed
 - gizmo
-## 1.2.3 - 2020-02-29 [YANKED]
+## [1.2.3] - 2020-02-29 [YANKED]
 ### Added
 - gizmo

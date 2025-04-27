@@ -102,13 +102,6 @@ func TestReleaseReleasedDateNotInCalendar(t *testing.T) {
 	require.Error(t, err)
 }
 
-func TestReleaseReleasedAndYankedShouldFail(t *testing.T) {
-	ck, _ := NewChangeKind("")
-	hf := NewHeadingFactory(ck)
-	_, err := hf.newRelease("[1.2.3] - 2020-02-15 [YANKED]")
-	require.Error(t, err)
-}
-
 func TestReleaseReleasedVersionShouldFail(t *testing.T) {
 	ck, _ := NewChangeKind("")
 	hf := NewHeadingFactory(ck)
@@ -119,7 +112,7 @@ func TestReleaseReleasedVersionShouldFail(t *testing.T) {
 func TestReleaseYanked(t *testing.T) {
 	ck, _ := NewChangeKind("")
 	hf := NewHeadingFactory(ck)
-	h, _ := hf.newRelease("1.2.3 - 2020-04-15 [YANKED]")
+	h, _ := hf.newRelease("[1.2.3] - 2020-04-15 [YANKED]")
 	r, _ := h.(Release)
 
 	assertions := require.New(t)
@@ -134,14 +127,14 @@ func TestReleaseYanked(t *testing.T) {
 func TestReleaseYankedDateShouldFail(t *testing.T) {
 	ck, _ := NewChangeKind("")
 	hf := NewHeadingFactory(ck)
-	_, err := hf.newRelease("1.2.3 - 2020-02-30 [YANKED]")
+	_, err := hf.newRelease("[1.2.3] - 2020-02-30 [YANKED]")
 	require.Error(t, err)
 }
 
 func TestReleaseYankedVersionShouldFail(t *testing.T) {
 	ck, _ := NewChangeKind("")
 	hf := NewHeadingFactory(ck)
-	_, err := hf.newRelease("1.02 - 2020-02-15 [YANKED]")
+	_, err := hf.newRelease("[1.02] - 2020-02-15 [YANKED]")
 	require.Error(t, err)
 }
 

@@ -3,6 +3,6 @@ Releases must be sorted from the newest to the oldest, release and yanked releas
 ## [1.2.3] - 2020-02-29
 ### Fixed
 - gizmo
-## 1.2.3 - 2020-02-28 [YANKED]
+## [1.2.3] - 2020-02-28 [YANKED]
 ### Added
 - gizmo
