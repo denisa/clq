@@ -24,7 +24,9 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
 
 - Bump github.com/yuin/goldmark from 1.7.8 to 1.7.10
 - Major version zero (0.y.z) is for initial development.
-  Anything MAY change at any time. The public API SHOULD NOT be considered stable. THanks to @lnhrdt for reporting the issuse,
+  Anything MAY change at any time. The public API SHOULD NOT be considered stable. Thanks to @lnhrdt for reporting the issuse.
+- Build badge in the readme was not picking only builds from `main`, thus
+  sometimes showing errors.
 
 ## [1.8.17] - 2025-03-01
 
