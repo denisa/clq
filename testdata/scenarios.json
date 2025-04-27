@@ -16,6 +16,32 @@
     "result": 0
   },
   {
+    "name": "version_0_major_change_increments.md",
+    "result": 0
+  },
+  {
+    "name": "version_0_major_change_stays.md",
+    "result": 0
+  },
+  {
+    "name": "version_0_major_to_patch_fails.md",
+    "result": 1,
+    "error": "❗️ release \"[0.3.5] - 2020-02-29\" should have version 0.4.0 or 1.0.0 because of \"Removed\"\n"
+  },
+  {
+    "name": "version_0_minor_change_increments.md",
+    "result": 0
+  },
+  {
+    "name": "version_0_minor_to_patch_fails.md",
+    "result": 1,
+    "error": "❗️ release \"[0.3.5] - 2020-02-29\" should have version 0.4.0 because of \"Changed\"\n"
+  },
+  {
+    "name": "version_0_patch_change_increments.md",
+    "result": 0
+  },
+  {
     "name": "heading_change_empty_heading.md",
     "result": 1,
     "error": "❗️ validation error: change cannot stay empty\n"

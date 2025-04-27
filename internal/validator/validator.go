@@ -126,7 +126,14 @@ func (r *Validator) visitHeading2() (ast.WalkStatus, error) {
 		}
 		nextRelease := release.NextRelease(increment)
 		if !r.previousRelease.ReleaseIs(nextRelease) {
-			return ast.WalkStop, fmt.Errorf("release %q should have version %v because of %q", r.previousRelease.Title(), nextRelease, trigger)
+			if release.IsMajorVersionZero() && increment == semver.Major {
+				nextMinorRelease := release.NextRelease(semver.Minor)
+				if !r.previousRelease.ReleaseIs(nextMinorRelease) {
+					return ast.WalkStop, fmt.Errorf("release %q should have version %v or %v because of %q", r.previousRelease.Title(), nextMinorRelease, nextRelease, trigger)
+				}
+			} else {
+				return ast.WalkStop, fmt.Errorf("release %q should have version %v because of %q", r.previousRelease.Title(), nextRelease, trigger)
+			}
 		}
 	}
 
