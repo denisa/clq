@@ -158,7 +158,7 @@ func TestReleaseQuerySecondReleaseStatusYanked(t *testing.T) {
 	result, err := apply("releases[1].status", []changelog.Heading{
 		newHeading(changelog.IntroductionHeading, "changelog"),
 		newHeading(changelog.ReleaseHeading, "[1.2.3] - 2020-05-16"),
-		newHeading(changelog.ReleaseHeading, "1.2.2 - 2020-05-15 [YANKED]"),
+		newHeading(changelog.ReleaseHeading, "[1.2.2] - 2020-05-15 [YANKED]"),
 	})
 	assertions.NoError(err)
 	assertions.Equal("yanked", result)
@@ -170,10 +170,10 @@ func TestReleaseQuerySecondReleaseTitle(t *testing.T) {
 	result, err := apply("releases[1].title", []changelog.Heading{
 		newHeading(changelog.IntroductionHeading, "changelog"),
 		newHeading(changelog.ReleaseHeading, "[1.2.3] - 2020-05-16"),
-		newHeading(changelog.ReleaseHeading, "1.2.2 - 2020-05-15 [YANKED]"),
+		newHeading(changelog.ReleaseHeading, "[1.2.2] - 2020-05-15 [YANKED]"),
 	})
 	assertions.NoError(err)
-	assertions.Equal("1.2.2 - 2020-05-15 [YANKED]", result)
+	assertions.Equal("[1.2.2] - 2020-05-15 [YANKED]", result)
 }
 
 func TestReleaseQuerySecondRelease(t *testing.T) {

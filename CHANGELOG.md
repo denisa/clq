@@ -18,6 +18,12 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
   - `Fixed` for any bugfixes.
   - `Security` in case of vulnerabilities.
 
+## [1.8.19] - 2025-04-27
+
+### Fixed
+
+- As per [keep a changelog](https://keepachangelog.com/en/1.1.0/#yanked), the version of a release is always between square brackets, even if the release has been yanked.
+
 ## [1.8.18] - 2025-04-26
 
 ### Fixed

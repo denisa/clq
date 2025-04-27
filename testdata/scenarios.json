@@ -67,19 +67,14 @@
     "error": "❗️ validation error: Illegal date (parsing time \"2020-02-31\": day out of range) for [1.2.3] - 2020-02-31\n"
   },
   {
-    "name": "heading_release_yanked_version_brackets.md",
-    "result": 1,
-    "error": "❗️ validation error: the version of a [YANKED] release cannot stand between [...] for [1.2.3] - 2020-02-29 [YANKED]\n"
-  },
-  {
     "name": "heading_release_yanked_date_wrong.md",
     "result": 1,
-    "error": "❗️ validation error: Illegal date (parsing time \"2020-02-31\": day out of range) for 1.2.3 - 2020-02-31 [YANKED]\n"
+    "error": "❗️ validation error: Illegal date (parsing time \"2020-02-31\": day out of range) for [1.2.3] - 2020-02-31 [YANKED]\n"
   },
   {
     "name": "heading_release_yanked_version_wrong.md",
     "result": 1,
-    "error": "❗️ validation error: Illegal version (Minor number must not contain leading zeroes \"02\") for 1.02.3 - 2020-02-28 [YANKED]\n"
+    "error": "❗️ validation error: Illegal version (Minor number must not contain leading zeroes \"02\") for [1.02.3] - 2020-02-28 [YANKED]\n"
   },
   {
     "name": "heading_release_version_wrong.md",
@@ -116,7 +111,7 @@
   {
     "name": "sort_date_older_yanked_first.md",
     "result": 1,
-    "error": "❗️ validation error: release \"[1.2.2] - 2020-02-29\" should be older than \"1.2.3 - 2020-02-28 [YANKED]\"\n"
+    "error": "❗️ validation error: release \"[1.2.2] - 2020-02-29\" should be older than \"[1.2.3] - 2020-02-28 [YANKED]\"\n"
   },
   {
     "name": "sort_date_release_newer_than_yanked.md",
@@ -129,7 +124,7 @@
   {
     "name": "sort_date_release_older_than_yanked.md",
     "result": 1,
-    "error": "❗️ validation error: release \"1.2.2 - 2020-02-29 [YANKED]\" should be older than \"[1.2.3] - 2020-02-28\"\n"
+    "error": "❗️ validation error: release \"[1.2.2] - 2020-02-29 [YANKED]\" should be older than \"[1.2.3] - 2020-02-28\"\n"
   },
   {
     "name": "sort_version_increment_major_wrong.md",
@@ -161,7 +156,7 @@
   {
     "name": "sort_version_older_yanked_first.md",
     "result": 1,
-    "error": "❗️ validation error: release \"[1.2.3] - 2020-02-28\" should sort before \"1.2.2 - 2020-02-29 [YANKED]\"\n"
+    "error": "❗️ validation error: release \"[1.2.3] - 2020-02-28\" should sort before \"[1.2.2] - 2020-02-29 [YANKED]\"\n"
   },
   {
     "name": "sort_version_older_release_first.md",
@@ -214,7 +209,7 @@
   {
     "name": "initial_yanked.md",
     "result": 1,
-    "error": "❗️ validation error: Changelog cannot start with a \"[YANKED]\" release, insert a release or a \"[Unreleased]\" first {Initial Yanked}{1.2.3 - 2020-02-29 [YANKED]}\n"
+    "error": "❗️ validation error: Changelog cannot start with a \"[YANKED]\" release, insert a release or a \"[Unreleased]\" first {Initial Yanked}{[1.2.3] - 2020-02-29 [YANKED]}\n"
   },
   {
     "name": "same_version_two_releases.md",
@@ -224,7 +219,7 @@
   {
     "name": "same_version_release_and_yanked.md",
     "result": 1,
-    "error": "❗️ validation error: release \"1.2.3 - 2020-02-28 [YANKED]\" should sort before \"[1.2.3] - 2020-02-29\"\n"
+    "error": "❗️ validation error: release \"[1.2.3] - 2020-02-28 [YANKED]\" should sort before \"[1.2.3] - 2020-02-29\"\n"
   },
   {
     "name": "released_without_changes.md",
@@ -264,12 +259,12 @@
   {
     "name": "yanked_without_changes.md",
     "result": 1,
-    "error": "❗️ no change descriptions for {Yanked release without changes}{1.2.3 - 2020-02-29 [YANKED]}\n"
+    "error": "❗️ no change descriptions for {Yanked release without changes}{[1.2.3] - 2020-02-29 [YANKED]}\n"
   },
   {
     "name": "yanked_without_change_description.md",
     "result": 1,
-    "error": "❗️ no change descriptions for {Yanked release without change description}{1.2.3 - 2020-02-29 [YANKED]}{Added}\n"
+    "error": "❗️ no change descriptions for {Yanked release without change description}{[1.2.3] - 2020-02-29 [YANKED]}{Added}\n"
   },
   {
     "title": "cli CHANGELOG.md",
@@ -711,6 +706,6 @@
       "testdata/yanked_without_change_description.md"
     ],
     "result": 1,
-    "error": "❗️ testdata/yanked_without_changes.md: no change descriptions for {Yanked release without changes}{1.2.3 - 2020-02-29 [YANKED]}\n❗️ testdata/yanked_without_change_description.md: no change descriptions for {Yanked release without change description}{1.2.3 - 2020-02-29 [YANKED]}{Added}\n"
+    "error": "❗️ testdata/yanked_without_changes.md: no change descriptions for {Yanked release without changes}{[1.2.3] - 2020-02-29 [YANKED]}\n❗️ testdata/yanked_without_change_description.md: no change descriptions for {Yanked release without change description}{[1.2.3] - 2020-02-29 [YANKED]}{Added}\n"
   }
 ]

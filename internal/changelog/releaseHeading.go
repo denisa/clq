@@ -25,22 +25,18 @@ func (h HeadingsFactory) newRelease(title string) (Heading, error) {
 		return Release{heading: heading{title: title, kind: ReleaseHeading}}, nil
 	}
 	{
-		releaseRE := regexp.MustCompile(`^\[\s*` + semverPattern + `\s*\]\s+-\s+` + isoDatePattern + `(?:\s+(?P<label>.+))?$`)
+		releaseRE := regexp.MustCompile(`^\[\s*` + semverPattern + `\s*\]\s+-\s+` + isoDatePattern + `(?:\s+(?P<yanked>\[\s*YANKED\s*]))?` + `(?:\s+(?P<label>.+))?$`)
 		if matches := releaseRE.FindStringSubmatch(title); matches != nil {
 			groups := releaseRE.SubexpNames()
 			date, err := time.Parse("2006-01-02", subexp(groups, matches, "date"))
 			if err != nil {
 				return nil, fmt.Errorf("validation error: Illegal date (%v) for %v", err, title)
 			}
-			label := subexp(groups, matches, "label")
-			if matched, _ := regexp.MatchString(`\[\s*YANKED\s*]`, label); matched {
-				return nil, fmt.Errorf("validation error: the version of a [YANKED] release cannot stand between [...] for %v", title)
-			}
 			version, err := semver.Make(subexp(groups, matches, "semver"))
 			if err != nil {
 				return nil, fmt.Errorf("validation error: Illegal version (%v) for %v", err, title)
 			}
-			return Release{heading: heading{title: title, kind: ReleaseHeading}, date: date, version: version, label: label}, nil
+			return Release{heading: heading{title: title, kind: ReleaseHeading}, date: date, version: version, label: subexp(groups, matches, "label"), yanked: subexp(groups, matches, "yanked") != ""}, nil
 		}
 	}
 	{
