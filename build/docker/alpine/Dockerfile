@@ -1,4 +1,4 @@
-FROM golang:1.24.0-alpine3.20 AS builder
+FROM golang:1.24.3-alpine3.20 AS builder
 ARG DOCKER_TAG=latest
 
 RUN apk update && apk add --no-cache git ca-certificates tzdata && update-ca-certificates
