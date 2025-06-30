@@ -47,7 +47,7 @@ golint:
 plantuml: ${SITE}
 	docker run -t --rm \
 		-w /workspace -v "$$PWD":/workspace \
-		plantuml/plantuml:1.2024.2 \
+		plantuml/plantuml:1.2025.4 \
 		-v -o /workspace/${SITE} docs/
 
 .PHONY: assertVersionDefined

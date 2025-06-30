@@ -15,7 +15,7 @@ jobs:
       contents: read
     steps:
       - uses: actions/checkout@v4
-      - uses: docker://plantuml/plantuml:1.2024.2
+      - uses: docker://plantuml/plantuml:1.2025.4
         env:
           GIT_REPO_URL: ${{ github.server_url }}/${{ github.repository }}/
         with:
