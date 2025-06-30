@@ -26,6 +26,7 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
 - Rely on Rulesets, not branch name, to decide when to validate the changelog.
 - Skip builds on draft pull request
 - Updated plantuml to 1.2024.2 and provide the Makefile target `plantuml`
+- Bump github.com/yuin/goldmark from 1.7.10 to 1.7.12
 
 
 ## [1.8.19] - 2025-04-27
