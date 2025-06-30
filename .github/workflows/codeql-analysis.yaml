@@ -14,7 +14,7 @@ on:
       - "**/*.yml"
       - "**/Dockerfile"
       - "**/Makefile"
-    types: [ opened, ready_for_review, reopened, synchronize ]
+    types: [opened, ready_for_review, reopened, synchronize]
 
 permissions: {}
 

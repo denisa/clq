@@ -3,7 +3,7 @@ name: plantuml
 on:
   push:
   pull_request:
-    types: [ opened, ready_for_review, reopened, synchronize ]
+    types: [opened, ready_for_review, reopened, synchronize]
 
 permissions: {}
 

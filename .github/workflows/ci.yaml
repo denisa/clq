@@ -3,7 +3,7 @@ name: "ci"
 on:
   push:
   pull_request:
-    types: [ opened, ready_for_review, reopened, synchronize ]
+    types: [opened, ready_for_review, reopened, synchronize]
 
 permissions:
   contents: read
