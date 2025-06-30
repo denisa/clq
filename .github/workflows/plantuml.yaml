@@ -1,9 +1,15 @@
 ---
 name: plantuml
-on: [push, pull_request]
+on:
+  push:
+  pull_request:
+    types: [ opened, ready_for_review, reopened, synchronize ]
+
 permissions: {}
+
 jobs:
   plantuml:
+    if: ${{ ! github.event.pull_request.draft }}
     runs-on: ubuntu-latest
     permissions:
       contents: read

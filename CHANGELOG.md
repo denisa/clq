@@ -23,6 +23,8 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
 ### Fixed
 
 - In `README.md`, ensure that the badges relect the state of the main branch.
+- Rely on Rulesets, not branch name, to decide when to validate the changelog.
+- Skip builds on draft pull request
 
 ## [1.8.19] - 2025-04-27
 
