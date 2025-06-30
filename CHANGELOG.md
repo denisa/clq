@@ -27,7 +27,8 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
 - Skip builds on draft pull request
 - Updated plantuml to 1.2024.2 and provide the Makefile target `plantuml`
 - Bump github.com/yuin/goldmark from 1.7.10 to 1.7.12
-
+- Bump Alpine to 3.22.0
+- Bump golang to 1.24.4
 
 ## [1.8.19] - 2025-04-27
 
