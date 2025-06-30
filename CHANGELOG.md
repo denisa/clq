@@ -18,6 +18,12 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
   - `Fixed` for any bugfixes.
   - `Security` in case of vulnerabilities.
 
+## [1.8.20] - 2025-06-29
+
+### Fixed
+
+- In `README.md`, ensure that the badges relect the state of the main branch.
+
 ## [1.8.19] - 2025-04-27
 
 ### Fixed
