@@ -60,7 +60,7 @@ jobs:
           [ "${RUNNER_DEBUG}" == 1 ] && set -xv
           set -u
 
-          if gh ruleset check --repo "${GITHUB_REPOSITORY}" "${GITHUB_BASE_REF:-GITHUB_REF_NAME}" | grep -q context:validate-release; then
+          if gh ruleset check --repo "${GITHUB_REPOSITORY}" "${GITHUB_BASE_REF:-$GITHUB_REF_NAME}" | grep -q context:validate-release; then
             echo "validate_in_list=true" >>"${GITHUB_OUTPUT}"
           fi
   validate-release:
