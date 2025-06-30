@@ -1,11 +1,11 @@
 module github.com/denisa/clq
 
-go 1.24.0
+go 1.24.4
 
 require (
 	github.com/blang/semver/v4 v4.0.0
 	github.com/stretchr/testify v1.10.0
-	github.com/yuin/goldmark v1.7.10
+	github.com/yuin/goldmark v1.7.12
 )
 
 require (

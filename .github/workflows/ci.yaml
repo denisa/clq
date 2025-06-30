@@ -2,15 +2,14 @@
 name: "ci"
 on:
   push:
-    branches:
-      - "**"
-    tags-ignore:
-      - "*"
   pull_request:
+    types: [opened, ready_for_review, reopened, synchronize]
+
 permissions:
   contents: read
 jobs:
   test-os:
+    if: ${{ ! github.event.pull_request.draft }}
     strategy:
       fail-fast: false
       matrix:
@@ -24,6 +23,7 @@ jobs:
           go-version-file: go.mod
       - run: make test
   test-ubuntu:
+    if: ${{ ! github.event.pull_request.draft }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -40,14 +40,32 @@ jobs:
         with:
           file: out/coverage.lcov
   test-docker:
+    if: ${{ ! github.event.pull_request.draft }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - id: buildx
         uses: docker/setup-buildx-action@v3
       - run: make docker-test
-  test-version:
-    if: (github.event_name == 'pull_request') || (github.event_name == 'push' && github.ref == 'refs/heads/main')
+  is-target-branch-protected:
+    if: ${{ ! github.event.pull_request.draft }}
+    runs-on: ubuntu-latest
+    outputs:
+      yes: ${{ steps.gh-query.outputs.validate_in_list }}
+    steps:
+      - id: gh-query
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          [ "${RUNNER_DEBUG}" == 1 ] && set -xv
+          set -u
+
+          if gh ruleset check --repo "${GITHUB_REPOSITORY}" "${GITHUB_BASE_REF:-GITHUB_REF_NAME}" | grep -q context:validate-release; then
+            echo "validate_in_list=true" >>"${GITHUB_OUTPUT}"
+          fi
+  validate-release:
+    if: ${{ needs.is-target-branch-protected.outputs.yes }}
+    needs: is-target-branch-protected
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -65,14 +83,14 @@ jobs:
           mode: test
           tag: ${{ steps.clq-extract.outputs.tag }}
   test:
-    needs: [test-os, test-ubuntu, test-docker, test-version]
+    needs: [test-os, test-ubuntu, test-docker, validate-release]
     runs-on: ubuntu-latest
     steps:
       - name: Release validation of the CHANGELOG.md
         run: |
           echo "All tests passed"
   release:
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: github.event_name == 'push'
     needs: test
     runs-on: ubuntu-latest
     permissions:

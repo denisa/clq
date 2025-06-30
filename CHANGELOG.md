@@ -18,6 +18,19 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
   - `Fixed` for any bugfixes.
   - `Security` in case of vulnerabilities.
 
+## [1.8.20] - 2025-06-29
+
+### Fixed
+
+- In `README.md`, ensure that the badges relect the state of the main branch.
+- Rely on Rulesets, not branch name, to decide when to validate the changelog.
+- Skip builds on draft pull request
+- Updated plantuml to 1.2024.2 and provide the Makefile target `plantuml`
+- Bump github.com/yuin/goldmark from 1.7.10 to 1.7.12
+- Bump Alpine to 3.22.0
+- Bump golang to 1.24.4
+- Disable golang lint
+
 ## [1.8.19] - 2025-04-27
 
 ### Fixed

@@ -1,15 +1,21 @@
 ---
 name: plantuml
-on: [push, pull_request]
+on:
+  push:
+  pull_request:
+    types: [opened, ready_for_review, reopened, synchronize]
+
 permissions: {}
+
 jobs:
   plantuml:
+    if: ${{ ! github.event.pull_request.draft }}
     runs-on: ubuntu-latest
     permissions:
       contents: read
     steps:
       - uses: actions/checkout@v4
-      - uses: docker://plantuml/plantuml:1.2024.2
+      - uses: docker://plantuml/plantuml:1.2025.4
         env:
           GIT_REPO_URL: ${{ github.server_url }}/${{ github.repository }}/
         with:

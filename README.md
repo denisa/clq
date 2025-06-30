@@ -4,10 +4,10 @@
 [![version](https://img.shields.io/github/v/release/denisa/clq?include_prereleases&sort=semver)](https://github.com/denisa/clq/releases)
 [![Docker Image Version](https://img.shields.io/docker/v/denisa/clq?label=docker%20tag&sort=semver)](https://hub.docker.com/repository/docker/denisa/clq)
 
-[![ci](https://github.com/denisa/clq/workflows/ci/badge.svg?query=workflow%3Aci+branch%3Amain)](https://github.com/denisa/clq/actions?query=workflow%3Aci+branch%3Amain)
+[![ci](https://github.com/denisa/clq/actions/workflows/ci.yaml/badge.svg?branch=main)](https://github.com/denisa/clq/actions/workflows/ci.yaml?query=branch%3Amain)
 [![coverage status](https://coveralls.io/repos/github/denisa/clq/badge.svg?branch=main)](https://coveralls.io/github/denisa/clq?branch=main)
 [![Go Report Card](https://goreportcard.com/badge/github.com/denisa/clq)](https://goreportcard.com/report/github.com/denisa/clq)
-[![GitHub Super-Linter](https://github.com/denisa/clq/workflows/Lint%20Code%20Base/badge.svg)](https://github.com/marketplace/actions/super-linter)
+[![Super-Linter](https://github.com/denisa/clq/actions/workflows/linter.yaml/badge.svg)](https://github.com/denisa/clq/actions/workflows/linter.yaml)
 
 ## usage
 

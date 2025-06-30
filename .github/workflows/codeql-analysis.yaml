@@ -14,9 +14,13 @@ on:
       - "**/*.yml"
       - "**/Dockerfile"
       - "**/Makefile"
+    types: [opened, ready_for_review, reopened, synchronize]
+
 permissions: {}
+
 jobs:
   analyse:
+    if: ${{ ! github.event.pull_request.draft }}
     runs-on: ubuntu-latest
     permissions:
       contents: read
