@@ -23,13 +23,13 @@ clq writes validation error to standard error.
 When processing multiple files, clq prefixes every line on standard out and standard error with the filename.
 
 ```text
-Usage: clq { options } <path to changelog.md>
+Usage: clq { options } path_to_changelog.md
 
 Options are:
   -changeMap name
       name of a file defining the mapping from change kind to semantic version change
   -output format
-      the format to apply to the result of a (complex) query. Supports json and md (markdown); defaults to json
+      the format to apply to the result of a (complex) query. Supports `json` and `md` (markdown); defaults to `json`
   -query string
       A query to extract information out of the change log
   -release
@@ -50,7 +50,7 @@ Example:
 
 ### Execution with Docker
 
-A small minimal docker image offers a simple no-installation executable. This image’s label is the release version,
+A small minimal Docker image offers a simple no-installation executable. This image’s label is the release version,
 with a secondary label ending in `-slim`, for example: `1.2.3-slim`.
 
 A single changelog file can be validated with a simple `docker run -i denisa/clq < CHANGELOG.md`.
@@ -62,7 +62,7 @@ Alternatively, the image is compatible with [Whalebrew](https://github.com/whale
 After a one time installation `whalebrew install denisa/clq`, a one or more changelog files
 can be validated with a simple `clq CHANGELOG.md` or `clq */CHANGELOG.md`.
 
-The project also generates a 2nd docker image whose label ends wih `-alpine`, for example: `1.2.3-alpine`.
+The project also generates a 2nd Docker image whose label ends wih `-alpine`, for example: `1.2.3-alpine`.
 This image, larger, is for use by the [clq-action](https://github.com/denisa/clq-action).
 
 ### GitHub Action
@@ -125,7 +125,7 @@ By default, the rules are:
   - `Fixed` for any bugfixes.
   - `Security` in case of vulnerabilities.
 
-The `changeMap` option lets these rules be customized with a simple json file. In this example,
+The `changeMap` option lets these rules be customized with a simple JSON file. In this example,
 an *Added* section only triggers a minor version change:
 
 ```json
@@ -169,7 +169,7 @@ that the first entry in the changelog is an actual release entry.
 ## Emoji
 
 The `changeMap` option further lets emoji be assigned to the change kinds with the optional `emoji` attribute in the
-json file. The example extend on the previous one and define emoji for each change kinds:
+JSON file. The example extend on the previous one and define emoji for each change kinds:
 
 ```json
 [
@@ -289,6 +289,6 @@ For the sample changelog
 
 ## Reference
 
-- <https://keepachangelog.com/en/1.0.0/>
-- <https://semver.org>
-- <https://spec.commonmark.org/0.29/>
+- [keep a changelog](https://keepachangelog.com/en/1.0.0/)
+- [Semantic Versioning](https://semver.org)
+- [CommonMark Spec](https://spec.commonmark.org/0.29/)
