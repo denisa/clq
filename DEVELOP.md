@@ -6,22 +6,22 @@
 
 Push to main, push to any other branches and pull-requests trigger a GitHub Action.
 All these actions validate that the project conforms to our
-quality standards: all tests pass, the docker images build and code coverage is sufficient.
+quality standards: all tests pass, the Docker images build and code coverage is sufficient.
 
 A successful push to main tags the commit and creates a GitHub release.
 
 ### Continuous Delivery
 
-A successful push to main builds and publishes the *latest* docker image on Docker Hub.
+A successful push to main builds and publishes the *latest* Docker image on Docker Hub.
 
 The GitHub Action attaches binaries for Unix, macOS, and windows to the GitHub release
-as well as builds and publishes docker images to Docker Hub with the tagged version.
+as well as builds and publishes Docker images to Docker Hub with the tagged version.
 
 ## Local Build
 
 Run `make cov` to perform all the tests.
-Run `make docker-test` to build and test the docker images.
-Run `make superlinter` to lint the complete project.
+Run `make docker-test` to build and test the Docker images.
+Run `make super-linter` to lint the complete project.
 
 ## Architecture
 
@@ -29,11 +29,11 @@ Run `make superlinter` to lint the complete project.
 
 ## Processes
 
-### Updating the version of golang
+### Updating the version of Go
 
 - `brew unpin go; brew upgrade go; brew pin go`
 - `go.mod`
-- base images in `build/docker/alpine/Dockerfile`,  `build/docker/slim/Dockerfile`
+- base images in `build/docker/alpine/Dockerfile`, `build/docker/slim/Dockerfile`
 Finally, run `make clean test docker-test`.
 
 ### Docker: updating Alpine
@@ -45,6 +45,6 @@ and [slim](build/docker/slim/Dockerfile).
 ### Updating Super Linter
 
 Dependabot will update the version in [linter.yaml](.github/workflows/linter.yaml), ensure that the
-`superlinter` target in [Makefile](Makefile) is correct.
+`super-linter` target in [Makefile](Makefile) is correct.
 
-Also runs `make superlinter` to see if new fixes are needed.
+Also runs `make super-linter` to see if new fixes are needed.

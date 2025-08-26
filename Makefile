@@ -25,8 +25,8 @@ test: ${OUT}
 cov: test
 	go tool cover -html=${OUT}coverage.out
 
-.PHONY: superlinter
-superlinter:
+.PHONY: super-linter
+super-linter:
 	docker run --rm \
 		--platform linux/amd64 \
 		--rm \
@@ -34,7 +34,7 @@ superlinter:
 		-e SHELL=/bin/bash \
 		--env-file ".github/super-linter.env" \
 		-v "$$PWD":/tmp/lint \
-		ghcr.io/super-linter/super-linter:v7
+		ghcr.io/super-linter/super-linter:v8
 
 .PHONY: golint
 golint:

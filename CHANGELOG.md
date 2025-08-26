@@ -24,19 +24,20 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
 
 - Bump actions/checkout from 4 to 5
 - Bump actions/upload-pages-artifact from 3 to 4
+- Bump `super-linter/super-linter` from 7 to 8
 
 ## [1.8.20] - 2025-06-29
 
 ### Fixed
 
-- In `README.md`, ensure that the badges relect the state of the main branch.
+- In `README.md`, ensure that the badges reflect the state of the main branch.
 - Rely on Rulesets, not branch name, to decide when to validate the changelog.
 - Skip builds on draft pull request
 - Updated plantuml to 1.2024.2 and provide the Makefile target `plantuml`
-- Bump github.com/yuin/goldmark from 1.7.10 to 1.7.12
+- Bump `github.com/yuin/goldmark` from 1.7.10 to 1.7.12
 - Bump Alpine to 3.22.0
-- Bump golang to 1.24.4
-- Disable golang lint
+- Bump Go to 1.24.4
+- Disable Go lint
 
 ## [1.8.19] - 2025-04-27
 
@@ -58,8 +59,8 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
 
 ### Fixed
 
-- Bump golang from 1.22.4 to 1.24.0
-- Take advantage of actions/setup-go's go-version-file
+- Bump Go from 1.22.4 to 1.24.0
+- Take advantage of `actions/setup-go` go-version-file
 
 ## [1.8.16] - 2024-12-16
 
@@ -84,7 +85,7 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
 
 ### Fixed
 
-- Use a single parametrized `compose.yml` to define the tests for the docker images.
+- Use a single parametrized `compose.yml` to define the tests for the Docker images.
 - CodeQL requires the `security-events: write` permission
 
 ## [1.8.12] - 2024-08-15
@@ -103,7 +104,7 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
 
 - `go build` will download dependencies listed in `go.mod` when needed; remove the explicit
   `go get` in the `Dockefilw`
-- `make docker-test` now runs the docker compose file and fails upon error
+- `make docker-test` now runs the Docker compose file and fails upon error
 
 ## [1.8.10] - 2024-07-03
 
@@ -118,10 +119,10 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
 
 - Bump `github.com/yuin/goldmark` from 1.7.1 to 1.7.4
 - Bump `docker/build-push-action` from 5 to 6
-- Requires golang 1.22.4
+- Requires Go 1.22.4
 - Bump `alpine` from 3.19.1 to 3.20.1
-- superlinter expects the codebase to be mounted at `/tmp/lint`
-- superlinter expects bash ([5339](https://github.com/super-linter/super-linter/issues/5339))
+- `super-linter` expects the codebase to be mounted at `/tmp/lint`
+- `super-linter` expects Bash ([5339](https://github.com/super-linter/super-linter/issues/5339))
 
 ## [1.8.8] - 2024-05-15
 
@@ -150,7 +151,7 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
   to address this later.
 - Bump `github.com/yuin/goldmark` from 1.6.0 to 1.7.0
 - Bump `github.com/stretchr/testify` from 1.8.4 to 1.9.0
-- Requires golang 1.22.0
+- Requires Go 1.22.0
 - Bump `alpine` from 3.18.5 to 3.19.1
 
 ## [1.8.5] - 2023-12-30
@@ -187,7 +188,7 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
 
 ### Fixed
 
-- Bump `golang` from 1.20 to 1.21
+- Bump Go from 1.20 to 1.21
 - Bump `alpine` from 3.18.4 to 3.18.5
 - Resolve various warnings raised by Fleet
 
@@ -250,7 +251,7 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
 - Bump `actions/checkout` from 3 to 4
 - Bump `github.com/stretchr/testify` from 1.8.2 to 1.8.4
 - Bump `alpine` from 3.17.2 to 3.18.2
-- Bump `golang` from 1.20.2 to 1.20.5
+- Bump Go from 1.20.2 to 1.20.5
 
 ## [1.7.10] - 2023-04-03
 
@@ -263,7 +264,7 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
 ### Fixed
 
 - Provides better error message when the date is not correctly formatted
-- Multi-line output with HERE doc (<https://github.com/github/docs/issues/21529>)
+- Multi-line output with HERE doc [21529](https://github.com/github/docs/issues/21529)
 - GitHub Action runner advises against displaying the environment’s URL  
   `Warning: Skip setting environment url as environment 'dockerhub' may contain secret.`
 
@@ -283,7 +284,7 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
 
 ### Fixed
 
-- Bump `golang` from 1.19 to 1.20
+- Bump Go from 1.19 to 1.20
 
 ## [1.7.5] - 2023-03-19
 
@@ -314,7 +315,7 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
 - Bump `alpine` from 3.16.2 to 3.17.0
 - Bump `github.com/stretchr/testify` from 1.8.0 to 1.8.1
 - Bump `github.com/yuin/goldmark` from 1.4.13 to 1.5.3
-- Bump `golang` from 1.19.0-alpine3.16 to 1.19.4-alpine3.17
+- Bump Go from 1.19.0-alpine3.16 to 1.19.4-alpine3.17
 
 ## [1.7.2] - 2022-09-05
 
@@ -333,7 +334,7 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
 
 ### Added
 
-- The docker images now support both `linux/amd64` and `linux/arm64`.
+- The Docker images now support both `linux/amd64` and `linux/arm64`.
 - Uses `docker/build-push-action`, remove docker-push target from the Makefile
 
 ### Fixed
@@ -349,7 +350,7 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
 - Release job was failing to upload artifacts because workflows had both
   `ncipollo/release-action` and `actions/create-release`
 - Retire `actions/upload-release-asset` and let `ncipollo/release-action` upload artifacts
-- Produce arm64 binaries for darwin and linux
+- Produce arm64 binaries for darwin and Linux
 - Bump `actions/setup-go` from 3.2.1 to 3.3.0
 
 ## [1.6.5] - 2022-08-27
@@ -360,7 +361,7 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
 - Bump `github.com/yuin/goldmark` from 1.4.12 to 1.4.13
 - Bump `actions/setup-go` from 3.1.0 to 3.2.1
 - Bump `alpine` from 3.15.4 to 3.16.2 in `/build/docker/alpine`
-- Bump `golang` from 1.18.2 to 1.19.0
+- Bump Go from 1.18.2 to 1.19.0
 
 ## [1.6.4] - 2022-05-15
 
@@ -370,7 +371,7 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
 - Uses `ncipollo/release-action`
 - Bump `docker/login-action` from 1 to 2
 - Bump `docker/setup-buildx-action` from 1 to 2
-- Bump `golang` from 1.18.1-alpine3.15 to 1.18.2-alpine3.15.
+- Bump Go from 1.18.1-alpine3.15 to 1.18.2-alpine3.15.
 - Bump `actions/setup-go` from 3.0.0 to 3.1.0
 - Use a custom changemap in which Changes implies change to existing functionality, hence
   a major version bump.
@@ -400,25 +401,25 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
 - Bump `github.com/stretchr/testify` from 1.7.0 to 1.7.1
 - Bump `actions/setup-go` from 2.1.4 to 3.0.0
 - Bump `actions/checkout` from 2.4.0 to 3.0.1
-- Bump `golang` from 1.17.4 to 1.18.1
+- Bump Go from 1.17.4 to 1.18.1
 
 ## [1.6.0] - 2021-12-09
 
 ### Added
 
 - Upgrade to go 1.17
-- Bump `golang` in `/build/docker/alpine`
-- Bump `golang` in `/build/docker/slim`
+- Bump Go in `/build/docker/alpine`
+- Bump Go in `/build/docker/slim`
 
 ## [1.5.0] - 2021-12-04
 
 ### Added
 
 - Upgrade to go 1.16
-- Bump `golang` in `/build/docker/alpine`
-- Bump `golang` in `/build/docker/slim`
+- Bump Go in `/build/docker/alpine`
+- Bump Go in `/build/docker/slim`
 - Bump `github.com/yuin/goldmark` from 1.3.1 to 1.4.4
-- Stop using Docker Content Trust (the golang images aren’t signed)
+- Stop using Docker Content Trust (the Go images aren’t signed)
 
 ### Fixed
 
@@ -437,14 +438,14 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
 
 ### Added
 
-- Can read the mapping from categories to change from a json file
+- Can read the mapping from categories to change from a JSON file
 
 ## [1.3.5] - 2020-12-28
 
 ### Fixed
 
 - Bump `github.com/yuin/goldmark` from 1.2.1 to 1.3.1
-- Bump `golang` base image from 1.15.0-alpine3.12 to 1.15.6-alpine3.12
+- Bump Go base image from 1.15.0-alpine3.12 to 1.15.6-alpine3.12
 - Bump `actions/checkout` from v2.3.2 to v2.3.4
 - Bump `actions/create-release` from v1.1.3 to v1.1.4
 - Bump `actions/setup-go` from v2.1.2 to v2.1.3
@@ -455,7 +456,7 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
 
 ### Fixed
 
-- Bump `golang` to 1.15
+- Bump Go to 1.15
 - Update `actions/checkout` requirement to v2.3.2
 - Bump `actions/create-release` from v1.1.2 to v1.1.3
 - Bump `actions/setup-go` from v2.1.1 to v2.1.2
@@ -484,7 +485,7 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
 
 ### Added
 
-- Provide a new alpine-based docker image for use as a parent image by the clq-action
+- Provide a new alpine-based Docker image for use as a parent image by the clq-action
 
 ## [1.2.1] - 2020-07-21
 
@@ -497,8 +498,8 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
 
 ### Added
 
-- Option '-output md' will format the result of a query as Markdown.
-  There is an implied '-output json' if left unspecified.
+- Option `-output md` will format the result of a query as Markdown.
+  There is an implied `-output json` if left unspecified.
 - Query can return multiple results
 
 ### Fixed
@@ -546,5 +547,5 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
 
 - Basic validations
 - Basic queries
-- Docker image and (amd64) binaries for linux, macOS and windows
+- Docker image and (amd64) binaries for Linux, macOS and windows
 - Dependabot configuration
