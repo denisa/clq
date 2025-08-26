@@ -27,8 +27,9 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
 - Bump `super-linter/super-linter` from 7 to 8
 - Rename make target `superlinter` to `super-linter`
 - Bump [github.com/yuin/goldmark](https://github.com/yuin/goldmark) from 1.7.12 to 1.7.13.
-- Bump Go to 1.25.0
 - Bump `github.com/stretchr/testify` from 1.10.0 to 1.11.0
+- Bump Go to 1.25.0
+- Bumps alpine from 3.22.0 to 3.22.1.
 
 ## [1.8.20] - 2025-06-29
 
