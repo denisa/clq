@@ -20,7 +20,7 @@ jobs:
           GIT_REPO_URL: ${{ github.server_url }}/${{ github.repository }}/
         with:
           args: "-v -o /github/workspace/_site docs/"
-      - uses: actions/upload-pages-artifact@v3
+      - uses: actions/upload-pages-artifact@v4
 
   deploy:
     runs-on: ubuntu-latest
