@@ -18,6 +18,12 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
   - `Fixed` for any bugfixes.
   - `Security` in case of vulnerabilities.
 
+## [1.8.22] - 2025-09-01
+
+### Fixed
+
+- Bump `github.com/stretchr/testify` from 1.11.0 to 1.11.1
+
 ## [1.8.21] - 2025-08-25
 
 ### Fixed
