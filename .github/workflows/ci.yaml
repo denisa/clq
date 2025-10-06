@@ -163,7 +163,7 @@ jobs:
             denisa/clq:${{ steps.clq-extract.outputs.version }}
             denisa/clq:${{ steps.clq-extract.outputs.version }}-slim
             denisa/clq:latest
-      - uses: peter-evans/dockerhub-description@v4
+      - uses: peter-evans/dockerhub-description@v5
         with:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
