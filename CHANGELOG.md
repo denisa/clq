@@ -18,6 +18,16 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
   - `Fixed` for any bugfixes.
   - `Security` in case of vulnerabilities.
 
+## [1.8.23] - 2025-10-11
+
+### Fixed
+
+- Bump `actions/setup-go` from 5 to 6
+- Bump `peter-evans/dockerhub-description` from 4 to 5
+- Bump `plantuml/plantuml` from 1.2025.4 to 1.2025.8
+- Makefile reads the versions of plantuml and super-linter from the GitHub workflows.
+- Makefile runs super-linter with `--pull always` to ensure parity with GitHub.
+
 ## [1.8.22] - 2025-09-01
 
 ### Fixed

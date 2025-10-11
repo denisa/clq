@@ -2,6 +2,8 @@ VERSION ?= latest
 DIST=${OUT}dist/
 OUT=out/
 SITE=${OUT}site
+PLANTUML_VERSION := $(shell grep -e '- uses: docker://plantuml/plantuml:' .github/workflows/plantuml.yaml | cut -d':' -f4)
+SUPER_LINTER_VERSION := $(shell grep -e '- uses: super-linter/super-linter@' .github/workflows/linter.yaml | cut -d'@' -f2)
 
 ${DIST}:
 	mkdir -p ${DIST}
@@ -27,14 +29,15 @@ cov: test
 
 .PHONY: super-linter
 super-linter:
-	docker run --rm \
+	docker run \
+		--pull always \
 		--platform linux/amd64 \
 		--rm \
 		-e RUN_LOCAL=true \
 		-e SHELL=/bin/bash \
 		--env-file ".github/super-linter.env" \
 		-v "$$PWD":/tmp/lint \
-		ghcr.io/super-linter/super-linter:v8
+		ghcr.io/super-linter/super-linter:$(SUPER_LINTER_VERSION)
 
 .PHONY: golint
 golint:
@@ -47,7 +50,7 @@ golint:
 plantuml: ${SITE}
 	docker run -t --rm \
 		-w /workspace -v "$$PWD":/workspace \
-		plantuml/plantuml:1.2025.4 \
+		plantuml/plantuml:$(PLANTUML_VERSION) \
 		-v -o /workspace/${SITE} docs/
 
 .PHONY: assertVersionDefined
