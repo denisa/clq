@@ -30,6 +30,7 @@ cov: test
 .PHONY: super-linter
 super-linter:
 	docker run \
+		--pull always \
 		--platform linux/amd64 \
 		--rm \
 		-e RUN_LOCAL=true \
