@@ -23,6 +23,7 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
 ### Fixed
 
 - Bump `actions/setup-go` from 5 to 6
+- Bump `peter-evans/dockerhub-description` from 4 to 5
 - Bump `plantuml/plantuml` from 1.2025.4 to 1.2025.8
 - Makefile reads the versions of plantuml and super-linter from the GitHub workflows.
 
