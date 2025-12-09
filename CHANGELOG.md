@@ -23,6 +23,7 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
 ### Fixed
 
 - Removed remains of the unspecified YANKED implementation (see 1.8.19).
+- In `Makefile`, use built-in `$(CURDIR)` instead of `$$PWD`
 
 ## [1.8.23] - 2025-10-11
 
