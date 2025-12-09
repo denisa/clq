@@ -39,21 +39,6 @@ func (h HeadingsFactory) newRelease(title string) (Heading, error) {
 			return Release{heading: heading{title: title, kind: ReleaseHeading}, date: date, version: version, label: subexp(groups, matches, "label"), yanked: subexp(groups, matches, "yanked") != ""}, nil
 		}
 	}
-	{
-		releaseRE := regexp.MustCompile(`^` + semverPattern + `\s+-\s+` + isoDatePattern + `\s+\[\s*YANKED\s*]?$`)
-		if matches := releaseRE.FindStringSubmatch(title); matches != nil {
-			groups := releaseRE.SubexpNames()
-			date, err := time.Parse("2006-01-02", subexp(groups, matches, "date"))
-			if err != nil {
-				return nil, fmt.Errorf("validation error: Illegal date (%v) for %v", err, title)
-			}
-			version, err := semver.Make(subexp(groups, matches, "semver"))
-			if err != nil {
-				return nil, fmt.Errorf("validation error: Illegal version (%v) for %v", err, title)
-			}
-			return Release{heading: heading{title: title, kind: ReleaseHeading}, date: date, version: version, yanked: true}, nil
-		}
-	}
 	return nil, fmt.Errorf("validation error: Unknown release header for %q", title)
 }
 

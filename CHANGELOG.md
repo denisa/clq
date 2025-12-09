@@ -18,6 +18,12 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
   - `Fixed` for any bugfixes.
   - `Security` in case of vulnerabilities.
 
+## [1.8.24] - 2025-12-09
+
+### Fixed
+
+- Removed remains of the unspecified YANKED implementation (see 1.8.19).
+
 ## [1.8.23] - 2025-10-11
 
 ### Fixed
