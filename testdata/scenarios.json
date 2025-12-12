@@ -62,9 +62,34 @@
     "error": "❗️ validation error: Unknown release header for \"Information missing here\"\n"
   },
   {
+    "name": "heading_release_version_date_separator_missing.md",
+    "result": 1,
+    "error": "❗️ validation error: ` - ` missing between release and date for [1.2.3] 2020-02-03\n"
+  },
+  {
+    "name": "heading_release_date_missing.md",
+    "result": 1,
+    "error": "❗️ validation error: ` - ` missing between release and date for [1.2.3]\n"
+  },
+  {
     "name": "heading_release_date_wrong.md",
     "result": 1,
     "error": "❗️ validation error: Illegal date (parsing time \"2020-02-31\": day out of range) for [1.2.3] - 2020-02-31\n"
+  },
+  {
+    "name": "heading_release_date_us_format.md",
+    "result": 1,
+    "error": "❗️ validation error: Date missing or not YYYY-MM-DD for [1.2.3] - 02/14/2020\n"
+  },
+  {
+    "name": "heading_release_yanked_date_missing.md",
+    "result": 1,
+    "error": "❗️ validation error: Date missing or not YYYY-MM-DD for [1.2.3] - [YANKED]\n"
+  },
+  {
+    "name": "heading_release_yanked_date_wrong.md",
+    "result": 1,
+    "error": "❗️ validation error: Illegal date (parsing time \"2020-02-31\": day out of range) for [1.2.3] - 2020-02-31 [YANKED]\n"
   },
   {
     "name": "heading_release_yanked_date_wrong.md",
