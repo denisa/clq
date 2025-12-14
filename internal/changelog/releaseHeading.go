@@ -18,40 +18,40 @@ type Release struct {
 }
 
 const semverPattern string = `(?P<semver>\S+)`
-const isoDatePattern string = `(?P<date>\S+)`
+const isoDatePattern string = `(?:\s+(?P<date>\d{4}-\d{2}-\d{2}))?`
 
 func (h HeadingsFactory) newRelease(title string) (Heading, error) {
 	if matched, _ := regexp.MatchString(`^\[\s*Unreleased\s*]$`, title); matched {
 		return Release{heading: heading{title: title, kind: ReleaseHeading}}, nil
 	}
 	{
-		releaseRE := regexp.MustCompile(`^\[\s*` + semverPattern + `\s*\]\s+-\s+` + isoDatePattern + `(?:\s+(?P<yanked>\[\s*YANKED\s*]))?` + `(?:\s+(?P<label>.+))?$`)
+		releaseRE := regexp.MustCompile(`^\[\s*` + semverPattern + `\s*\](?P<versionDateSeparator>\s+-)?` + isoDatePattern + `(?:\s+(?P<yanked>\[\s*YANKED\s*]))?` + `(?:\s+(?P<label>.+))?$`)
 		if matches := releaseRE.FindStringSubmatch(title); matches != nil {
 			groups := releaseRE.SubexpNames()
-			date, err := time.Parse("2006-01-02", subexp(groups, matches, "date"))
-			if err != nil {
-				return nil, fmt.Errorf("validation error: Illegal date (%v) for %v", err, title)
+			index := subexp(groups, "semver")
+			if matches[index] == "" {
+				return nil, fmt.Errorf("validation error: Version missing for %v", title)
 			}
-			version, err := semver.Make(subexp(groups, matches, "semver"))
+			version, err := semver.Make(matches[index])
 			if err != nil {
 				return nil, fmt.Errorf("validation error: Illegal version (%v) for %v", err, title)
 			}
-			return Release{heading: heading{title: title, kind: ReleaseHeading}, date: date, version: version, label: subexp(groups, matches, "label"), yanked: subexp(groups, matches, "yanked") != ""}, nil
-		}
-	}
-	{
-		releaseRE := regexp.MustCompile(`^` + semverPattern + `\s+-\s+` + isoDatePattern + `\s+\[\s*YANKED\s*]?$`)
-		if matches := releaseRE.FindStringSubmatch(title); matches != nil {
-			groups := releaseRE.SubexpNames()
-			date, err := time.Parse("2006-01-02", subexp(groups, matches, "date"))
+
+			index = subexp(groups, "versionDateSeparator")
+			if matches[index] == "" {
+				return nil, fmt.Errorf("validation error: ` - ` missing between release and date for %v", title)
+			}
+
+			index = subexp(groups, "date")
+			if matches[index] == "" {
+				return nil, fmt.Errorf("validation error: Date missing or not YYYY-MM-DD for %v", title)
+			}
+			date, err := time.Parse("2006-01-02", matches[index])
 			if err != nil {
 				return nil, fmt.Errorf("validation error: Illegal date (%v) for %v", err, title)
 			}
-			version, err := semver.Make(subexp(groups, matches, "semver"))
-			if err != nil {
-				return nil, fmt.Errorf("validation error: Illegal version (%v) for %v", err, title)
-			}
-			return Release{heading: heading{title: title, kind: ReleaseHeading}, date: date, version: version, yanked: true}, nil
+
+			return Release{heading: heading{title: title, kind: ReleaseHeading}, date: date, version: version, label: matches[subexp(groups, "label")], yanked: matches[subexp(groups, "yanked")] != ""}, nil
 		}
 	}
 	return nil, fmt.Errorf("validation error: Unknown release header for %q", title)
@@ -149,12 +149,11 @@ func (h Release) IsMajorVersionZero() bool {
 	return h.version.Major == 0
 }
 
-func subexp(groups []string, matches []string, subexp string) string {
+func subexp(groups []string, groupName string) int {
 	for index, name := range groups {
-		if name == subexp {
-			return matches[index]
+		if name == groupName {
+			return index
 		}
 	}
-
-	return ""
+	panic(fmt.Sprintf("Group `%v` missing from regular expression", groupName))
 }

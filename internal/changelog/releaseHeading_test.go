@@ -1,8 +1,6 @@
 package changelog
 
 import (
-	"regexp"
-	"strconv"
 	"testing"
 
 	"github.com/blang/semver/v4"
@@ -79,6 +77,34 @@ func TestReleaseReleasedLabel(t *testing.T) {
 	assertions.False(r.IsPrerelease())
 	assertions.False(r.HasBeenYanked())
 	assertions.True(r.HasBeenReleased())
+}
+
+func TestReleaseEmptyVersionShouldFail(t *testing.T) {
+	ck, _ := NewChangeKind("")
+	hf := NewHeadingFactory(ck)
+	_, err := hf.newRelease("[] - 2020-02-15")
+	require.Error(t, err)
+}
+
+func TestReleaseNotaSemanticVersionShouldFail(t *testing.T) {
+	ck, _ := NewChangeKind("")
+	hf := NewHeadingFactory(ck)
+	_, err := hf.newRelease("[alpha-vingt-trois] - 2020-02-15")
+	require.Error(t, err)
+}
+
+func TestReleaseNoSeparatorShouldFail(t *testing.T) {
+	ck, _ := NewChangeKind("")
+	hf := NewHeadingFactory(ck)
+	_, err := hf.newRelease("[1.2.3] 2020-02-15")
+	require.Error(t, err)
+}
+
+func TestReleaseMissingDateShouldFail(t *testing.T) {
+	ck, _ := NewChangeKind("")
+	hf := NewHeadingFactory(ck)
+	_, err := hf.newRelease("[1.2.3] - ")
+	require.Error(t, err)
 }
 
 func TestReleaseNonIsoDateSeparatorShouldFail(t *testing.T) {
@@ -231,51 +257,9 @@ func TestNextRelease(t *testing.T) {
 }
 
 func TestSubexp(t *testing.T) {
-	testcases := []struct {
-		input  string
-		exp    string
-		subexp string
-		value  string
-	}{
-		{
-			`a b c`,
-			`(?P<foo>.)\s+(?P<blah>.*)`,
-			`foo`,
-			`a`,
-		},
-		{
-			`a b c`,
-			`(?P<foo>.)\s+(?P<blah>.*)`,
-			`blah`,
-			`b c`,
-		},
-		{
-			`a b c`,
-			`(?P<foo>.)\s+(?P<blah>.*)`,
-			`unknown`,
-			``,
-		},
-		{
-			`a b c`,
-			`(?P<foo>1)?a`,
-			`foo`,
-			``,
-		},
-	}
+	require.Equal(t, 1, subexp([]string { "group1", "group2" }, "group2") )
+}
 
-	for index, testcase := range testcases {
-		t.Run(strconv.Itoa(index), func(t *testing.T) {
-			assertions := require.New(t)
-			re, err := regexp.Compile(testcase.exp)
-			if err != nil {
-				assertions.Nil(err)
-				return
-			}
-
-			matches := re.FindStringSubmatch(testcase.input)
-
-			value := subexp(re.SubexpNames(), matches, testcase.subexp)
-			assertions.Equal(testcase.value, value)
-		})
-	}
+func TestSubexpPanic(t *testing.T) {
+	require.PanicsWithValue(t, "Group `groupNotPresent` missing from regular expression", func() { subexp([]string { "group1", "group2" }, "groupNotPresent") } )
 }

@@ -75,10 +75,9 @@ This image, larger, is for use by the [clq-action](https://github.com/denisa/clq
 CHANGELOG       = INTRODUCTION, RELEASES;
 INTRODUCTION    = TITLE, { ? markdown paragraph ? };
 TITLE           = "# ", ? inline content ?, LINE-ENDING;
-RELEASES        = [ UNRELEASED ], { RELEASED | YANKED };
+RELEASES        = [ UNRELEASED ], { RELEASED };
 UNRELEASED      = UNRELEASED-HEAD, { CHANGES };
 RELEASED        = RELEASED-HEAD, { CHANGES };
-YANKED          = YANKED-HEAD, { CHANGES };
 UNRELEASED-HEAD = "## [Unreleased]", LINE-ENDING;
 RELEASED-HEAD   = "## [", SEMVER, "] - ", ISO-DATE, [ " [YANKED]" ], [ LABEL ], LINE-ENDING;
 LABEL           = ? inline content, but not "[YANKED]" ?

@@ -29,27 +29,26 @@ cov: test
 
 .PHONY: super-linter
 super-linter:
-	docker run \
+	docker run --rm \
 		--pull always \
 		--platform linux/amd64 \
-		--rm \
 		-e RUN_LOCAL=true \
 		-e SHELL=/bin/bash \
 		--env-file ".github/super-linter.env" \
-		-v "$$PWD":/tmp/lint \
+		-v "$(CURDIR):/tmp/lint" \
 		ghcr.io/super-linter/super-linter:$(SUPER_LINTER_VERSION)
 
 .PHONY: golint
 golint:
 	docker run -t --rm \
-		-w /workspace -v "$$PWD":/workspace \
+		-w /workspace -v "$(CURDIR):/workspace" \
 		golangci/golangci-lint:v1.57.1 golangci-lint \
 		run --config .github/linters/.golangci.yml --verbose --fast
 
 .PHONY: plantuml
 plantuml: ${SITE}
 	docker run -t --rm \
-		-w /workspace -v "$$PWD":/workspace \
+		-w /workspace -v "$(CURDIR):/workspace" \
 		plantuml/plantuml:$(PLANTUML_VERSION) \
 		-v -o /workspace/${SITE} docs/
 

@@ -40,7 +40,7 @@ func (ck *ChangeKind) UnmarshalJSON(data []byte) error {
 	for _, val := range dto {
 		inc, err := semver.NewIdentifier(val.Increment)
 		if err != nil {
-			return fmt.Errorf("Error parsing  %q: %q", val.Name, err)
+			return fmt.Errorf("error parsing  %q: %q", val.Name, err)
 		}
 		if err := ck.add(val.Name, inc, val.Emoji); err != nil {
 			return err
