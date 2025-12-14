@@ -26,6 +26,7 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
 - In `Makefile`, use built-in `$(CURDIR)` instead of `$$PWD`
 - Better error messages when the Release header is misformatted
 - Bump `actions/checkout` from 5 to 6
+- Bump `github/codeql-action` from 3 to 4
 
 ## [1.8.23] - 2025-10-11
 
