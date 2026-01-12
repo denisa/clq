@@ -26,6 +26,7 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
 - Bump `docker/login-action` from 3 to 4
 - Bump `docker/setup-buildx-action` from 3 to 4
 - Bump `docker/build-push-action` from 6 to 7
+- Bump `github.com/yuin/goldmark` from 1.7.13 to 1.7.16
 
 ## [1.8.24] - 2025-12-09
 
