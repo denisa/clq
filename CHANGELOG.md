@@ -18,6 +18,12 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
   - `Fixed` for any bugfixes.
   - `Security` in case of vulnerabilities.
 
+## [1.8.25] - 2026-03-12
+
+### Fixed
+
+- Bump `docker/setup-qemu-action` from 3 to 4
+
 ## [1.8.24] - 2025-12-09
 
 ### Fixed
