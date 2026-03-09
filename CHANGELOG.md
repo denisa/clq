@@ -23,6 +23,7 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
 ### Fixed
 
 - Bump `docker/setup-qemu-action` from 3 to 4
+- Bump `docker/login-action` from 3 to 4
 
 ## [1.8.24] - 2025-12-09
 
