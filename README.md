@@ -62,7 +62,7 @@ Alternatively, the image is compatible with [Whalebrew](https://github.com/whale
 After a one time installation `whalebrew install denisa/clq`, a one or more changelog files
 can be validated with a simple `clq CHANGELOG.md` or `clq */CHANGELOG.md`.
 
-The project also generates a 2nd Docker image whose label ends wih `-alpine`, for example: `1.2.3-alpine`.
+The project also generates a 2nd Docker image whose label ends with `-alpine`, for example: `1.2.3-alpine`.
 This image, larger, is for use by the [clq-action](https://github.com/denisa/clq-action).
 
 ### GitHub Action

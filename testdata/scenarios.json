@@ -435,7 +435,7 @@
     "output": "[{\"title\":\"Added\", \"descriptions\":[\"waldo\", \"fred\"]}]\n"
   },
   {
-    "title": "cli unknow output format",
+    "title": "cli unknown output format",
     "arguments": [
       "-output",
       "ascii",

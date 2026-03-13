@@ -92,9 +92,9 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
 
 ### Fixed
 
-- Bump github.com/yuin/goldmark from 1.7.8 to 1.7.10
+- Bump `github.com/yuin/goldmark` from 1.7.8 to 1.7.10
 - Major version zero (0.y.z) is for initial development.
-  Anything MAY change at any time. The public API SHOULD NOT be considered stable. Thanks to @lnhrdt for reporting the issuse.
+  Anything MAY change at any time. The public API SHOULD NOT be considered stable. Thanks to @lnhrdt for reporting the issue.
 - Build badge in the readme was not picking only builds from `main`, thus
   sometimes showing errors.
 
@@ -223,7 +223,7 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
 
 ### Fixed
 
-- Renders puml to GitHub page
+- Renders `puml` to GitHub page
 - Resolve more warnings raised by Fleet
 - Bump `actions/setup-go` from 4 to 5
 
@@ -243,8 +243,8 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
 
 ### Fixed
 
-- `ioutil.ReadAll`, `ioutil.ReadFile` deprecated since golanmg 1.16
-- Fix variables (config, require) that comflict with a package import
+- `ioutil.ReadAll`, `ioutil.ReadFile` deprecated since `golang` 1.16
+- Fix variables (config, require) that conflict with a package import
 - Bump `github.com/yuin/goldmark` from 1.5.6 to 1.6.0
 - Bump `alpine` from 3.18.2 to 3.18.4.
 
@@ -253,7 +253,7 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
 ### Fixed
 
 - As per [GitHub Blog](https://github.blog/changelog/2021-09-27-showing-code-scanning-alerts-on-pull-requests/),
-  perform CodeQL analyses only for pushes to the `main` branch and pull requests agains the `main`.
+  perform CodeQL analyses only for pushes to `main` branch and pull requests against `main`.
 - As
   per [GitHub Docs](https://docs.github.com/en/code-security/code-scanning/creating-an-advanced-setup-for-code-scanning/customizing-your-advanced-setup-for-code-scanning#avoiding-unnecessary-scans-of-pull-requests),
   skip CodeQL analyses for text files.
