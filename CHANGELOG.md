@@ -6,7 +6,7 @@
 
 Keep the newest entry at top, format date according to ISO 8601: `YYYY-MM-DD`.
 
-Categories, defined in [changemap.json](.github/clq/changemap.json)):
+Categories, defined in [changemap.json](.github/clq/changemap.json):
 
 - *major* release trigger:
   - `Changed` for changes in existing functionality.
@@ -17,6 +17,18 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
 - *bugfix* release trigger:
   - `Fixed` for any bugfixes.
   - `Security` in case of vulnerabilities.
+
+## [1.8.25] - 2026-03-12
+
+### Fixed
+
+- Bump `docker/setup-qemu-action` from 3 to 4
+- Bump `docker/login-action` from 3 to 4
+- Bump `docker/setup-buildx-action` from 3 to 4
+- Bump `docker/build-push-action` from 6 to 7
+- Bump `github.com/yuin/goldmark` from 1.7.13 to 1.7.16
+- Bump `alpine` from 3.22 to 3.23
+- Bump `Go` from 1.25.0 to 1.26.1
 
 ## [1.8.24] - 2025-12-09
 
@@ -80,11 +92,10 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
 
 ### Fixed
 
-- Bump github.com/yuin/goldmark from 1.7.8 to 1.7.10
+- Bump `github.com/yuin/goldmark` from 1.7.8 to 1.7.10
 - Major version zero (0.y.z) is for initial development.
-  Anything MAY change at any time. The public API SHOULD NOT be considered stable. Thanks to @lnhrdt for reporting the issuse.
-- Build badge in the readme was not picking only builds from `main`, thus
-  sometimes showing errors.
+  Anything MAY change at any time. The public API SHOULD NOT be considered stable.
+- Build badge in the readme was not picking only builds from `main`, thus sometimes showing errors.
 
 ## [1.8.17] - 2025-03-01
 
@@ -97,14 +108,14 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
 
 ### Fixed
 
-- Bump github.com/yuin/goldmark from 1.7.4 to 1.7.8
-- Bump github.com/stretchr/testify from 1.9.0 to 1.10.0
+- Bump `github.com/yuin/goldmark` from 1.7.4 to 1.7.8
+- Bump `github.com/stretchr/testify` from 1.9.0 to 1.10.0
 
 ## [1.8.15] - 2024-11-03
 
 ### Fixed
 
-- Fixed typo in badge name. Thanks to @lnhrdt.
+- Fixed typo in badge name. Thanks to `@lnhrdt`.
 
 ## [1.8.14] - 2024-08-19
 
@@ -141,7 +152,7 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
 
 ### Fixed
 
-- Rely on the GitHub Action `jandelgado/gcov2lcov-action`. Runing the tool through the Makefile
+- Rely on the GitHub Action `jandelgado/gcov2lcov-action`. Running the tool through the Makefile
   created conflict with tools wanting to tidy up the `go.mod`/`go.sum` files.
 
 ## [1.8.9] - 2024-07-02
@@ -190,7 +201,8 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
 ### Fixed
 
 - Bump `github/codeql-action` from 2 to 3
-- Bump `actions/checkout` from 3 to 4 — the plantuml action was still on an old version
+- Bump `actions/checkout` from 3 to 4
+- The plantuml action was still on an old version
 - Bump `actions/upload-pages-artifact` from 1 to 3
 - Bump `actions/deploy-pages` from 1 to 4
 
@@ -211,7 +223,7 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
 
 ### Fixed
 
-- Renders puml to GitHub page
+- Renders `puml` to GitHub page
 - Resolve more warnings raised by Fleet
 - Bump `actions/setup-go` from 4 to 5
 
@@ -231,8 +243,8 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
 
 ### Fixed
 
-- `ioutil.ReadAll`, `ioutil.ReadFile` deprecated since golanmg 1.16
-- Fix variables (config, require) that comflict with a package import
+- `ioutil.ReadAll`, `ioutil.ReadFile` deprecated since `golang` 1.16
+- Fix variables (config, require) that conflict with a package import
 - Bump `github.com/yuin/goldmark` from 1.5.6 to 1.6.0
 - Bump `alpine` from 3.18.2 to 3.18.4.
 
@@ -241,7 +253,7 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
 ### Fixed
 
 - As per [GitHub Blog](https://github.blog/changelog/2021-09-27-showing-code-scanning-alerts-on-pull-requests/),
-  perform CodeQL analyses only for pushes to the `main` branch and pull requests agains the `main`.
+  perform CodeQL analyses only for pushes to `main` branch and pull requests against `main`.
 - As
   per [GitHub Docs](https://docs.github.com/en/code-security/code-scanning/creating-an-advanced-setup-for-code-scanning/customizing-your-advanced-setup-for-code-scanning#avoiding-unnecessary-scans-of-pull-requests),
   skip CodeQL analyses for text files.
@@ -327,7 +339,7 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
 - Bump `github.com/stretchr/testify` from 1.8.1 to 1.8.2
 - Bump `github.com/yuin/goldmark` from 1.5.3 to 1.5.4
 - Bump `alpine` from 3.17.0 to 3.17.2 in `/build/docker/alpine`
-- Always checkout the repository first, this allows setup actions to uses info from the  
+- Always checkout the repository first, this allows setup actions to use info from the  
   repository. Looking at you, setup-go
 
 ## [1.7.4] - 2023-03-19
@@ -404,8 +416,7 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
 - Bump `docker/setup-buildx-action` from 1 to 2
 - Bump Go from 1.18.1-alpine3.15 to 1.18.2-alpine3.15.
 - Bump `actions/setup-go` from 3.0.0 to 3.1.0
-- Use a custom changemap in which Changes implies change to existing functionality, hence
-  a major version bump.
+- Use a custom `changemap` in which `Changes` implies change to existing functionality, hence a major version bump.
 
 ## [1.6.3] - 2022-05-08
 
@@ -549,7 +560,7 @@ Categories, defined in [changemap.json](.github/clq/changemap.json)):
 
 ### Fixed
 
-- Recognize release status *prereleased* when creating github’s release
+- Recognize release status *prereleased* when creating GitHub’s release
 - Include latest version in readme
 
 ## [1.1.0] - 2020-06-08

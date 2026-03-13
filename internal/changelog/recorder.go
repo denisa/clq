@@ -4,7 +4,7 @@ import (
 	"fmt"
 )
 
-// recorder keeps a logs of events (entering ot exiting a header) for use in unit testings.
+// recorder keeps a logs of events (entering or exiting a header) for use in unit testings.
 type recorder struct {
 	events []string
 }

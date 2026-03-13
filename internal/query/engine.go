@@ -14,7 +14,7 @@ type Engine struct {
 	current int
 }
 
-// NewEngine parses the query and contructs a new dedicated query engine.
+// NewEngine parses the query and constructs a new dedicated query engine.
 // It is not an error for the query to be empty.
 func NewEngine(query string, outputFormat output.Format) (*Engine, error) {
 	qe := &Engine{output: outputFormat}
