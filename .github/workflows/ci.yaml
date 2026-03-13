@@ -139,7 +139,7 @@ jobs:
           VERSION=$release_version make clean assertVersionDefined build-all
           test "$(out/dist/clq-linux-amd64 -changeMap .github/clq/changemap.json -version)" = "clq $release_version"
           VERSION=${release_version} make assertVersionDefined docker-test
-      - uses: docker/build-push-action@v6
+      - uses: docker/build-push-action@v7
         with:
           builder: ${{ steps.buildx.outputs.name }}
           build-args: |
@@ -150,7 +150,7 @@ jobs:
           push: true
           tags: |
             denisa/clq:${{ steps.clq-extract.outputs.version }}-alpine
-      - uses: docker/build-push-action@v6
+      - uses: docker/build-push-action@v7
         with:
           builder: ${{ steps.buildx.outputs.name }}
           build-args: |
