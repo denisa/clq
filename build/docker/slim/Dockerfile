@@ -2,7 +2,7 @@ FROM dhi.io/golang:1.26-alpine3.23-dev AS builder
 
 ARG DOCKER_TAG=latest
 
-RUN apk update && apk add --no-cache git
+RUN apk add --no-cache git
 
 WORKDIR $GOPATH/src/denisa/clq/
 COPY . .
