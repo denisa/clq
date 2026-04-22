@@ -18,6 +18,14 @@ Categories, defined in [changemap.json](.github/clq/changemap.json):
   - `Fixed` for any bugfixes.
   - `Security` in case of vulnerabilities.
 
+## [1.8.27] - 2026-04-22
+
+### Fixed
+
+- Bump `actions/upload-pages-artifact` from 4 to 5.
+- Optimize `apk update` away.
+- Bump `actions/deploy-pages` from 4 to 5
+
 ## [1.8.26] - 2026-04-22
 
 ### Fixed
