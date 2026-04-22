@@ -22,7 +22,7 @@ Categories, defined in [changemap.json](.github/clq/changemap.json):
 
 ### Fixed
 
-- updated all Docker base images to [Docker Hardened Images](https://docs.docker.com/dhi/)
+- Updated all Docker base images to [Docker Hardened Images](https://docs.docker.com/dhi/)
 
 ## [1.8.25] - 2026-03-12
 
