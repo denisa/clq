@@ -23,7 +23,8 @@ Categories, defined in [changemap.json](.github/clq/changemap.json):
 ### Fixed
 
 - Bump `actions/upload-pages-artifact` from 4 to 5.
-- Optimize `apk update` away
+- Optimize `apk update` away.
+- Bump `actions/deploy-pages` from 4 to 5
 
 ## [1.8.26] - 2026-04-22
 
