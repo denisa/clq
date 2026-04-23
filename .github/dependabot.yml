@@ -1,4 +1,10 @@
 version: 2
+registries:
+  dhi-registry:
+    type: docker-registry
+    url: https://dhi.io
+    username: ${{secrets.DOCKER_HUB_USERNAME}}
+    password: ${{secrets.DOCKER_HUB_ACCESS_TOKEN}}
 updates:
   - package-ecosystem: "github-actions"
     directory: "/"
@@ -15,10 +21,14 @@ updates:
 
   - package-ecosystem: "docker"
     directory: "/build/docker/alpine"
+    registries:
+      - dhi-registry
     schedule:
       interval: "weekly"
 
   - package-ecosystem: "docker"
     directory: "/build/docker/slim"
+    registries:
+      - dhi-registry
     schedule:
       interval: "weekly"

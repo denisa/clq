@@ -18,6 +18,13 @@ Categories, defined in [changemap.json](.github/clq/changemap.json):
   - `Fixed` for any bugfixes.
   - `Security` in case of vulnerabilities.
 
+## [1.8.28] - 2026-04-23
+
+### Fixed
+
+- Grant Dependabot access to `dhi.io`.
+- Track patch version of the `golang`, alpine Docker images.
+
 ## [1.8.27] - 2026-04-22
 
 ### Fixed
