@@ -10,6 +10,6 @@ RUN \
       -ldflags="-X main.version=${DOCKER_TAG} -w -s -extldflags '-static'" -a \
       -o /go/bin/clq .
 
-FROM dhi.io/alpine-base:3.23
+FROM dhi.io/alpine-base:3.24
 COPY --from=builder /go/bin/clq /usr/bin/clq
 ENTRYPOINT ["/usr/bin/clq"]
