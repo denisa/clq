@@ -1,4 +1,4 @@
-FROM dhi.io/golang:1.26-alpine3.23-dev AS builder
+FROM dhi.io/golang:1.26-alpine3.24-dev AS builder
 ARG DOCKER_TAG=latest
 
 RUN apk add --no-cache git
