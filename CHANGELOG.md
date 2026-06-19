@@ -18,6 +18,26 @@ Categories, defined in [changemap.json](.github/clq/changemap.json):
   - `Fixed` for any bugfixes.
   - `Security` in case of vulnerabilities.
 
+## [1.8.28] - 2026-04-23
+
+### Fixed
+
+- Grant dependabot access to `dhi.io`.
+
+## [1.8.27] - 2026-04-22
+
+### Fixed
+
+- Bump `actions/upload-pages-artifact` from 4 to 5.
+- Optimize `apk update` away.
+- Bump `actions/deploy-pages` from 4 to 5
+
+## [1.8.26] - 2026-04-22
+
+### Fixed
+
+- Updated all Docker base images to [Docker Hardened Images](https://docs.docker.com/dhi/)
+
 ## [1.8.25] - 2026-03-12
 
 ### Fixed
