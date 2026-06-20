@@ -1,4 +1,4 @@
-FROM dhi.io/golang:1.26-alpine3.23-dev AS builder
+FROM dhi.io/golang:1.26-alpine3.24-dev AS builder
 ARG DOCKER_TAG=latest
 
 RUN apk add --no-cache git
@@ -10,6 +10,6 @@ RUN \
       -ldflags="-X main.version=${DOCKER_TAG} -w -s -extldflags '-static'" -a \
       -o /go/bin/clq .
 
-FROM dhi.io/alpine-base:3.23
+FROM dhi.io/alpine-base:3.24
 COPY --from=builder /go/bin/clq /usr/bin/clq
 ENTRYPOINT ["/usr/bin/clq"]
