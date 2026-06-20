@@ -18,6 +18,12 @@ Categories, defined in [changemap.json](.github/clq/changemap.json):
   - `Fixed` for any bugfixes.
   - `Security` in case of vulnerabilities.
 
+## [1.8.30] - 2026-06-20
+
+### Fixed
+
+- Bump `github.com/yuin/goldmark` from 1.7.16 to 1.8.2
+
 ## [1.8.29] - 2026-06-19
 
 ### Fixed
