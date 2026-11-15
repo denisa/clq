@@ -24,6 +24,7 @@ Categories, defined in [changemap.json](.github/clq/changemap.json):
 
 - Bump `actions/checkout` from 6 to 7
 - Bump `actions/setup-go` from 6 to 7
+- Bump `super-linter/super-linter` from 8 to 9
 
 ## [1.8.30] - 2026-06-20
 
