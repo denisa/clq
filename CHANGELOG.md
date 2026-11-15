@@ -18,6 +18,16 @@ Categories, defined in [changemap.json](.github/clq/changemap.json):
   - `Fixed` for any bugfixes.
   - `Security` in case of vulnerabilities.
 
+## [1.8.31] - 2026-11-15
+
+### Fixed
+
+- Bump `actions/checkout` from 6 to 7
+- Bump `actions/setup-go` from 6 to 7
+- Bump `super-linter/super-linter` from 8 to 9
+- Bump `github.com/stretchr/testify` from 1.11.1 to 1.12.1
+- Bump `github.com/yuin/goldmark` from 1.8.2 to 1.8.7
+
 ## [1.8.30] - 2026-06-20
 
 ### Fixed
